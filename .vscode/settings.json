@@ -1,0 +1,22 @@
+{
+    "chat.agent.maxRequests": 500,
+    "chat.experimental.useSkillAdherencePrompt": true,
+    "github.copilot.chat.agentCustomizationSkill.enabled": true,
+    "chat.useNestedAgentsMdFiles": true,
+    "nixEnvSelector.nixFile": "devenv.nix",
+    "chat.useClaudeMdFile": false,
+    "github.copilot.chat.codeGeneration.useInstructionFiles": false,
+    "chat.customAgentInSubagent.enabled": true,
+    "chat.unifiedAgentsBar.enabled": false,
+    "github.copilot.chat.copilotMemory.enabled": true,
+    "github.copilot.chat.cli.mcp.enabled": true,
+    "github.copilot.chat.cli.branchSupport.enabled": true,
+    "github.copilot.chat.cli.sessionController.enabled": true,
+    "github.copilot.chat.codesearch.enabled": true,
+    "github.copilot.chat.tools.memory.enabled": true,
+    "chat.agentSkillsLocations": {
+        ".github/skills": false,
+        ".claude/skills": false
+    },
+    "github.copilot.chat.backgroundCompaction": true
+}

@@ -1,0 +1,22 @@
+{
+  "customizations": {
+    "codespaces": {
+      "openFiles": [
+        "README.md"
+      ]
+    },
+    "vscode": {
+      "extensions": [
+        "github.copilot-chat",
+        "arrterian.nix-env-selector",
+        "jraylan.seamless-agent",
+        "Rubymaniac.vscode-direnv"
+      ]
+    }
+  },
+  "image": "ghcr.io/cachix/devenv/devcontainer:latest",
+  "name": "Agent Playground Dev Container",
+  "overrideCommand": false,
+  "postCreateCommand": "true",
+  "updateContentCommand": "devenv shell -- echo 'devenv ready' && direnv allow"
+}
