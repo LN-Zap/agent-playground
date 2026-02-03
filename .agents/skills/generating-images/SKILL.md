@@ -16,31 +16,31 @@ Generate, edit, and batch-process images using Google's Gemini AI. Choose betwee
 
 ### Generate an image
 ```bash
-uv run skills/generating-images/scripts/image.py \
+uv run ./scripts/image.py \
   --prompt "A minimalist logo design"
 ```
 
 ### Edit an existing image
 ```bash
-uv run skills/generating-images/scripts/image.py \
+uv run ./scripts/image.py \
   --prompt "Make the background blue" \
   --reference "photo.jpg"
 ```
 
 ### Generate 20 variations
 ```bash
-uv run skills/generating-images/scripts/batch_generate.py \
-  "Pixel art robot" -n 20 -d ./robots -p robot
+uv run ./scripts/batch_generate.py \
+  "Pixel art robot" -n 20 -d ./assets/robots -p robot
 ```
 
 ### Generate with search grounding (real-world accuracy)
 ```bash
-uv run skills/generating-images/scripts/image.py \
+uv run ./scripts/image.py \
   --prompt "The Eiffel Tower at sunset" \
   --search
 ```
 
-For more examples, see [references/examples.md](./references/examples.md).
+For more examples, see [references/examples.md](references/examples.md).
 
 ## Core Workflows
 
@@ -124,7 +124,7 @@ Search grounding ensures generated images are accurate to current knowledge abou
 
 `square`, `landscape`, `portrait`, `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`
 
-For aspect ratio details and use cases, see [references/prompts.md](./references/prompts.md#aspect-ratio-guidelines).
+For aspect ratio details and use cases, see [references/prompts.md](references/prompts.md#aspect-ratio-guidelines).
 
 ## Prompt Guidance
 
@@ -136,13 +136,15 @@ Write specific, detailed prompts for best results.
 
 **Key elements:** Include subject, style, colors, mood, context, and technical details (aspect ratio, transparency).
 
-For comprehensive prompt examples and categories (pixel art, 3D, abstract, photography, UI/UX), see [references/prompts.md](./references/prompts.md).
+For comprehensive prompt examples and categories (pixel art, 3D, abstract, photography, UI/UX), see [references/prompts.md](references/prompts.md).
 
 ## Output Location
 
-**Single generation:** If `--output` is omitted, saves to `<project-root>/assets/generated_<timestamp>.png` (auto-detects project root via .git, package.json, pyproject.toml, etc.)
+**Single generation:** If `--output` is omitted, saves to `assets/generated_<timestamp>.png` in the current working directory (auto-creates `assets/` directory if needed)
 
-**Batch generation:** Requires `--dir` flag; files saved with sequential naming (`prefix-01.png`, `prefix-02.png`, etc.)
+**Batch generation:** Requires `--dir` flag; creates the directory if it doesn't exist and saves files with sequential naming (`prefix-01.png`, `prefix-02.png`, etc.)
+
+**Recommended:** Always use `assets/` subdirectory to keep generated images organized alongside your project
 
 ## Best Practices
 
@@ -162,8 +164,8 @@ For comprehensive prompt examples and categories (pixel art, 3D, abstract, photo
 
 ## References
 
-- [Example Commands](./references/examples.md) - Concrete command examples for all features
-- [Prompt Reference](./references/prompts.md) - Comprehensive prompt categories, modifiers, and patterns
+- [Example Commands](references/examples.md) - Concrete command examples for all features
+- [Prompt Reference](references/prompts.md) - Comprehensive prompt categories, modifiers, and patterns
 - [Google Gemini Docs](https://ai.google.dev/docs) - Official API documentation
 - [UV Package Manager](https://docs.astral.sh/uv/) - Package manager documentation
 
