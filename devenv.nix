@@ -21,6 +21,10 @@ in {
   packages = [ pkgs.git ];
 
   # https://devenv.sh/languages/
+  languages.python.enable = true;
+  languages.python.venv.enable = true;
+  languages.python.uv.enable = true;
+  
   # languages.rust.enable = true;
 
   # https://devenv.sh/processes/
@@ -37,6 +41,7 @@ in {
   enterShell = ''
     hello
     git --version
+    python3 --version
   '';
 
   # https://devenv.sh/tasks/
