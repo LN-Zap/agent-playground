@@ -2,7 +2,12 @@
 
 let
   agents = [
+    "github-copilot"
+    "gemini-cli"
+    "antigravity"
+    "codex"
     "claude-code"
+    "opencode"
   ];
   agentFlags = builtins.concatStringsSep " " (map (a: "--agent ${a}") agents);
 in {
