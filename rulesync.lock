@@ -1,0 +1,28 @@
+{
+  "lockfileVersion": 1,
+  "sources": {
+    "anthropics/skills": {
+      "requestedRef": "main",
+      "resolvedRef": "1ed29a03dc852d30fa6ef2ca53a67dc2c2c2c563",
+      "resolvedAt": "2026-02-15T15:03:27.313Z",
+      "skills": {
+        "frontend-design": {
+          "integrity": "sha256-537c1df9d0c694ecf9139a911f9ad0bd111a7ebc173a55457568459e543fe75b"
+        },
+        "skill-creator": {
+          "integrity": "sha256-e141179cf76bbe3fdbd2616f1573b24b8abb3dca93676ca782d736c63a73c074"
+        }
+      }
+    },
+    "softaworks/agent-toolkit": {
+      "requestedRef": "main",
+      "resolvedRef": "62b5df50daf75a28d3c0c626d6147539287575fc",
+      "resolvedAt": "2026-02-15T15:24:00.819Z",
+      "skills": {
+        "crafting-effective-readmes": {
+          "integrity": "sha256-c193e2ad59f3b56f26696f5ecb0872de1963ec651f7b7a57fe98afe19f6c7ce2"
+        }
+      }
+    }
+  }
+}
