@@ -75,11 +75,19 @@ in
   tasks."skills:add:zap" = {
     exec = "npx skills add LN-Zap/zap-skills ${agentFlags} -y";
   };
+  tasks."skills:add:skill-creator" = {
+    exec = "npx skills add anthropics/skills --skill skill-creator ${agentFlags} -y";
+  };
+  tasks."skills:add:figma" = {
+    exec = "npx skills add openai/skills --skill figma ${agentFlags} -y";
+  };
 
   # Synchronize all skills from various sources (call when updating skills)
   tasks."skills:sync" = {
     exec = ''
-      devenv tasks run skills:add:zap
+      devenv tasks run skills:add:zap && \
+      devenv tasks run skills:add:skill-creator &&
+      devenv tasks run skills:add:figma
     '';
   };
 
