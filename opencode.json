@@ -14,6 +14,24 @@
       "type": "remote",
       "url": "https://api.githubcopilot.com/mcp/",
       "enabled": true
+    },
+    "playwright": {
+      "type": "local",
+      "command": [
+        "npx",
+        "@playwright/mcp@latest",
+        "--isolated"
+      ],
+      "enabled": true
+    },
+    "chrome-devtools": {
+      "type": "local",
+      "command": [
+        "npx",
+        "chrome-devtools-mcp@latest",
+        "--isolated=true"
+      ],
+      "enabled": true
     }
   }
 }
