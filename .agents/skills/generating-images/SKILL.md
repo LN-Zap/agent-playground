@@ -12,6 +12,14 @@ Generate, edit, and batch-process images using Google's Gemini AI. Choose betwee
 - **UV Package Manager**: Required for script execution. [Install UV](https://github.com/astral-sh/uv)
 - **Gemini API Key**: Set `GEMINI_API_KEY` environment variable or create `.env` in project root with `GEMINI_API_KEY=your_key_here`
 
+## Script Location
+
+All script paths in this skill (e.g., `scripts/image.py`) are **relative to this SKILL.md file's directory**. When executing commands, construct absolute paths by combining the skill folder with the relative path.
+
+For example, if you loaded this skill from `/workspace/someproj/.github/skills/generating-images/SKILL.md`, then:
+- `scripts/image.py` → `/workspace/someproj/.github/skills/generating-images/scripts/image.py`
+- `scripts/batch_generate.py` → `/workspace/someproj/.github/skills/generating-images/scripts/batch_generate.py`
+
 ## Quick Start
 
 ### Generate an image
