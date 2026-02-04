@@ -75,20 +75,16 @@ in
   tasks."skills:add:zap" = {
     exec = "npx skills add LN-Zap/zap-skills ${agentFlags} -y";
   };
+  # Add local skills from skills-local directory
+  tasks."skills:add:local" = {
+    exec = "npx skills add ./skills-local ${agentFlags} -y";
+  };
+  # Add third-party skills
   tasks."skills:add:skill-creator" = {
     exec = "npx skills add anthropics/skills --skill skill-creator ${agentFlags} -y";
   };
   tasks."skills:add:figma" = {
-    exec = "npx skills add openai/skills --skill figma ${agentFlags} -y";
-  };
-
-  # Synchronize all skills from various sources (call when updating skills)
-  tasks."skills:sync" = {
-    exec = ''
-      devenv tasks run skills:add:zap && \
-      devenv tasks run skills:add:skill-creator &&
-      devenv tasks run skills:add:figma
-    '';
+    exec = "npx skills add openai/skills --skill figma --skill figma-implement-design ${agentFlags} -y";
   };
 
   # https://devenv.sh/tests/
