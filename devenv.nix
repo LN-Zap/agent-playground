@@ -45,14 +45,22 @@ in {
   '';
 
   # https://devenv.sh/tasks/
-  tasks."skills:sync:zap" = {
+
+  # Generate rules using rulesync. Runs automatically when entering the shell.
+  tasks."rulesync" = {
+    exec = "npx rulesync generate";
+    before = [ "devenv:enterShell" ];
+  };
+
+  # Install Zap skills
+  tasks."skills:add:zap" = {
     exec = "npx skills add LN-Zap/zap-skills ${agentFlags} -y";
   };
 
-  # Synchronize all skills from various sources
+  # Synchronize all skills from various sources (call when updating skills)
   tasks."skills:sync" = {
     exec = ''
-      devenv tasks run skills:sync:zap
+      devenv tasks run skills:add:zap
     '';
   };
 
