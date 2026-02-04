@@ -1,5 +1,5 @@
 ---
-name: figma-to-variations
+name: generating-figma-variations
 description: Generate variations of Figma designs by rendering them locally and applying modifications. Use for design variations, color alternatives, style changes, background modifications, or element transformations. Triggers on requests involving Figma designs that need variations, mockups, or visual modifications.
 ---
 
