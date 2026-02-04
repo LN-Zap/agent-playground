@@ -10,6 +10,7 @@
     "agentsmd"
   ],
   "features": [
-    "mcp"
+    "mcp",
+    "ignore"
   ]
 }
