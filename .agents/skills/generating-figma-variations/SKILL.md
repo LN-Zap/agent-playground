@@ -9,9 +9,14 @@ Generate variations of Figma designs using browser-based techniques (determinist
 
 ## Prerequisites
 
-- **figma-implement-design skill** - Fetch design context, screenshots, and assets from Figma
-- **Nano Banana skill** - AI-based image editing (generating-images skill)
-- **Playwright MCP** - Render HTML and take screenshots
+**Before starting, load these skills:**
+
+1. **figma-implement-design skill** (REQUIRED) - Load this skill for Phase 1 of this workflow. It ensures pixel-perfect Figma fetching and asset handling.
+
+2. **generating-images skill** (if using AI technique) - Load for Nano Banana AI image editing
+
+**Also required:**
+- **Playwright MCP** - For rendering HTML and taking screenshots
 
 ## Technique Selection
 
@@ -55,18 +60,22 @@ Use the **conducting-interviews skill** (if available) to probe the user:
 
 **If requirements are already clear:** Skip this phase and proceed.
 
-### Phase 1: Fetch Design & Render
+### Phase 1: Fetch Design & Render Using figma-implement-design Skill
 
-**Delegate to the figma-implement-design skill** for fetching:
+**IMPORTANT: You MUST load and follow the figma-implement-design skill for this phase.**
 
-1. **Get Node ID** - Parse from Figma URL or use desktop selection
-2. **Fetch Design Context** - `get_design_context` for structured data
-3. **Capture Visual Reference** - `get_screenshot` for source of truth
-4. **Download Assets** - All images, icons, SVGs from Figma MCP
+1. **Load the figma-implement-design skill**
+2. **Follow Steps 1-4** from that skill exactly:
+   - Step 1: Get Node ID (parse from URL or use desktop selection)
+   - Step 2: Fetch Design Context (`get_design_context`)
+   - Step 3: Capture Visual Reference (`get_screenshot`)
+   - Step 4: Download Required Assets
+
+**Critical**: The figma-implement-design skill ensures pixel-perfect translation. Do NOT skip loading it or try to implement a simpler version.
 
 **Critical**: Download ALL assets locally - Figma MCP localhost URLs are ephemeral.
 
-After fetching, create an HTML file referencing local assets and serve via HTTP (Playwright blocks `file://`). Use Playwright MCP to screenshot the rendered design as your base image.
+After completing Steps 1-4 from figma-implement-design, create an HTML file referencing local assets and serve via HTTP (Playwright blocks `file://`). Use Playwright MCP to screenshot the rendered design as your base image.
 
 ### Phase 2: Generate Variations
 
