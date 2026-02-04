@@ -1,4 +1,10 @@
-{ pkgs, lib, config, inputs, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  inputs,
+  ...
+}:
 
 let
   agents = [
@@ -10,7 +16,8 @@ let
     "opencode"
   ];
   agentFlags = builtins.concatStringsSep " " (map (a: "--agent ${a}") agents);
-in {
+in
+{
   # https://devenv.sh/basics/
   env.GREET = "devenv";
 
@@ -18,14 +25,23 @@ in {
   dotenv.enable = true;
 
   # https://devenv.sh/packages/
-  packages = [ pkgs.git ];
+  packages = [
+    pkgs.git
+    pkgs.nodejs
+  ];
 
   # https://devenv.sh/languages/
   languages.python.enable = true;
   languages.python.venv.enable = true;
   languages.python.uv.enable = true;
-  
-  # languages.rust.enable = true;
+
+  # https://devenv.sh/integrations/treefmt/
+  treefmt = {
+    enable = true;
+    config.programs = {
+      nixfmt.enable = true;
+    };
+  };
 
   # https://devenv.sh/processes/
   # processes.cargo-watch.exec = "cargo-watch";
