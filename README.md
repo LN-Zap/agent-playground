@@ -31,8 +31,8 @@ The playground currently synchronizes rules and skills for the following platfor
 To add support for a new AI agent or platform:
 
 1. **Update Rule targets**: Add the new provider to the `targets` list in [rulesync.jsonc](rulesync.jsonc).
-2. **Configure Skills**: If the agent requires specific formatting for skills, update the `agents` list in [devenv.nix](devenv.nix) to ensure they are synchronized correctly during the `skills:sync` task.
-3. **Trigger Sync**: Re-enter the environment or run `npx rulesync generate` to create the new configuration files.
+1. **Configure Skills**: If the agent requires specific formatting for skills, update the `agents` list in [devenv.nix](devenv.nix) to ensure they are synchronized correctly during the `skills:sync` task.
+1. **Trigger Sync**: Re-enter the environment or run `npx rulesync generate` to create the new configuration files.
 
 ## Getting Started
 
@@ -46,23 +46,28 @@ To add support for a new AI agent or platform:
 ### Setup
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/LN-Zap/agent-playground.git
    ```
 
-2. Navigate to the project directory:
+1. Navigate to the project directory:
+
    ```bash
    cd agent-playground
    ```
 
-3. (Optional but Recommended) Initialize the development environment:
+1. (Optional but Recommended) Initialize the development environment:
    If you have `direnv` installed, run:
+
    ```bash
    direnv allow
    ```
-   The environment will now automatically activate every time you `cd` into the directory. 
+
+   The environment will now automatically activate every time you `cd` into the directory.
 
    If you don't use `direnv`, you can enter the environment manually:
+
    ```bash
    devenv shell
    ```
@@ -73,6 +78,6 @@ To add support for a new AI agent or platform:
 
 Contributions focusing on new provider-agnostic patterns and cross-agent workflows are welcome!
 
----
+______________________________________________________________________
 
 Happy experimenting!
