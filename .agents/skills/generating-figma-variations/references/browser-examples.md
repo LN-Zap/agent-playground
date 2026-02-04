@@ -129,11 +129,53 @@ document.querySelector('.headline').textContent = 'New Headline';
 
 ## Playwright Workflow
 
+### Starting an HTTP Server
+
+Playwright blocks `file://` URLs, so serve HTML via HTTP first:
+
+```bash
+cd /path/to/assets && python -m http.server 8770
+```
+
+**Port selection tip:** If port is in use, try another (8771, 8772, etc.) or kill existing server:
+```bash
+lsof -ti:8770 | xargs kill -9  # Kill process on port 8770
+```
+
+### Playwright MCP Tool Syntax
+
+**Navigate to page:**
+```
+mcp_playwright_browser_navigate(url="http://localhost:8770/page.html")
+```
+
+**Take screenshot (required parameters):**
+```
+mcp_playwright_browser_take_screenshot(
+  filename="output.png",
+  type="png",           # REQUIRED: "png" or "jpeg"
+  fullPage=true         # Optional: capture full page
+)
+```
+
+**Evaluate JavaScript to modify page:**
+```
+mcp_playwright_browser_evaluate(
+  function="() => { document.getElementById('el').className = 'new-class'; }"
+)
+```
+**NOTE:** Pass JavaScript as an arrow function string, not raw statements.
+
+**Close browser when done:**
+```
+mcp_playwright_browser_close()
+```
+
 ### Apply variations via JavaScript
 
 ```javascript
-// Apply color filter
-document.querySelector('.logo').className = 'logo logo-orange-gold';
+// Apply color filter class
+document.getElementById('logo').className = 'strike-logo logo-orange';
 
 // Hide element
 document.querySelector('.badge').style.display = 'none';
@@ -144,13 +186,16 @@ document.querySelector('.hero-image').src = 'variant-b.png';
 
 ### Playwright MCP sequence
 
-1. Navigate to HTML page
-2. Take screenshot (original/base)
-3. Evaluate JavaScript to apply variation
-4. Take screenshot (variation 1)
-5. Evaluate JavaScript for next variation
-6. Take screenshot (variation 2)
-7. Repeat for each variation
+1. Start HTTP server to serve HTML/assets
+2. Navigate to HTML page
+3. Take screenshot (original/base)
+4. Evaluate JavaScript to apply variation
+5. Take screenshot (variation 1)
+6. Evaluate JavaScript for next variation
+7. Take screenshot (variation 2)
+8. Repeat for each variation
+9. Move screenshots to desired output folder
+10. Close browser
 
 ---
 
@@ -164,3 +209,7 @@ document.querySelector('.hero-image').src = 'variant-b.png';
 | Filter affects everything | Filter on wrong element | Apply filter to specific element only |
 | Element won't hide | Wrong selector | Verify selector matches element |
 | Transform looks wrong | Transform origin | Set `transform-origin` to control pivot point |
+| Port already in use | Previous server still running | Kill with `lsof -ti:PORT \| xargs kill -9` or try another port |
+| Screenshot fails with "must have required property 'type'" | Missing required parameter | Add `type="png"` to screenshot call |
+| Evaluate fails with "must have required property 'function'" | Wrong parameter name | Use `function="() => { ... }"` not `expression` |
+| Evaluate returns undefined but doesn't change page | JavaScript syntax | Ensure function modifies DOM (e.g., `getElementById().className = ...`) |

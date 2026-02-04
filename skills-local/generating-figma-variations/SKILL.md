@@ -165,9 +165,14 @@ Switch to browser-based technique if possible:
 |-------|----------|
 | Asset doesn't match Figma | Use actual Figma assets |
 | Assets disappear | Download locally before closing Figma |
-| Playwright blocks file:// | Serve via HTTP server |
+| Playwright blocks file:// | Serve via HTTP server (`python -m http.server PORT`) |
+| Port already in use | Try different port or kill with `lsof -ti:PORT \| xargs kill -9` |
+| Screenshot fails "must have required property 'type'" | Add `type="png"` parameter |
+| Evaluate fails "must have required property 'function'" | Use `function="() => { ... }"` syntax |
 | AI changes unintended elements | Use browser-based, or expand AI prompt |
 | AI generates new image instead of editing | Pass image as `--reference` parameter |
+
+**See `references/browser-examples.md`** for detailed Playwright MCP tool syntax and troubleshooting.
 
 ---
 
