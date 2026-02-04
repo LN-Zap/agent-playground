@@ -99,7 +99,6 @@ in
     "github.copilot-chat"
     "arrterian.nix-env-selector"
     "jraylan.seamless-agent"
-    "ms-vscode-remote.remote-containers"
   ];
 
   # See full reference at https://devenv.sh/reference/options/

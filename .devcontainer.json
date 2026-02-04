@@ -1,1 +1,16 @@
-/nix/store/lhgcjpjzlwx2mqm53brygkway4zl71rz-devcontainer.json
+{
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "github.copilot-chat",
+        "arrterian.nix-env-selector",
+        "jraylan.seamless-agent"
+      ]
+    }
+  },
+  "image": "ghcr.io/cachix/devenv/devcontainer:latest",
+  "name": "Agent Playground Dev Container",
+  "overrideCommand": false,
+  "updateContentCommand": "devenv test"
+}
+
