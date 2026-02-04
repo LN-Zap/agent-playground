@@ -13,3 +13,6 @@ devenv.local.nix
 
 # Playwright MCP
 .playwright-mcp
+
+# tmp
+/tmp
