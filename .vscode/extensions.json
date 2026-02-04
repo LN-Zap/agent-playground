@@ -1,7 +1,6 @@
 
 {
   "recommendations": [
-    "github.copilot",
     "github.copilot-chat",
     "arrterian.nix-env-selector",
     "jraylan.seamless-agent",

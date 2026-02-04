@@ -80,7 +80,6 @@ in {
   devcontainer.enable = true;
   devcontainer.settings.name = "Agent Playground Dev Container";
   devcontainer.settings.customizations.vscode.extensions = [
-    "github.copilot"
     "github.copilot-chat"
     "arrterian.nix-env-selector"
     "jraylan.seamless-agent"
