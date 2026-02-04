@@ -76,5 +76,16 @@ in {
   # https://devenv.sh/git-hooks/
   # git-hooks.hooks.shellcheck.enable = true;
 
+  # https://devenv.sh/integrations/codespaces-devcontainer/
+  devcontainer.enable = true;
+  devcontainer.settings.name = "Agent Playground Dev Container";
+  devcontainer.settings.customizations.vscode.extensions = [
+    "mkhl.direnv"
+    "github.copilot"
+    "github.copilot-chat"
+    "arrterian.nix-env-selector"
+    "jraylan.seamless-agent"
+  ];
+
   # See full reference at https://devenv.sh/reference/options/
 }
