@@ -47,8 +47,11 @@ in {
   # https://devenv.sh/tasks/
 
   # Generate rules using rulesync. Runs automatically when entering the shell.
-  tasks."rulesync" = {
+  tasks."rulesync:generate" = {
     exec = "npx rulesync generate";
+    execIfModified = [
+      ".rulesync"
+    ];
     before = [ "devenv:enterShell" ];
   };
 
