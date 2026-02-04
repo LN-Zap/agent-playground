@@ -10,3 +10,6 @@ devenv.local.nix
 
 # dotnev
 .env
+
+# Playwright MCP
+.playwright-mcp
