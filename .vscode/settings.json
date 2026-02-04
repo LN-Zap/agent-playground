@@ -2,5 +2,6 @@
     "chat.agent.maxRequests": 500,
     "chat.experimental.useSkillAdherencePrompt": true,
     "github.copilot.chat.agentCustomizationSkill.enabled": true,
-    "chat.useNestedAgentsMdFiles": true
+    "chat.useNestedAgentsMdFiles": true,
+    "nixEnvSelector.nixFile": "devenv.nix"
 }
