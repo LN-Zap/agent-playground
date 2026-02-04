@@ -4,7 +4,8 @@
       "extensions": [
         "github.copilot-chat",
         "arrterian.nix-env-selector",
-        "jraylan.seamless-agent"
+        "jraylan.seamless-agent",
+        "Rubymaniac.vscode-direnv"
       ]
     }
   },

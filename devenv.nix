@@ -99,6 +99,7 @@ in
     "github.copilot-chat"
     "arrterian.nix-env-selector"
     "jraylan.seamless-agent"
+    "Rubymaniac.vscode-direnv"
   ];
 
   # See full reference at https://devenv.sh/reference/options/
