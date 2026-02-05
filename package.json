@@ -1,0 +1,10 @@
+{
+  "name": "agent-playground",
+  "description": "A development environment for the Agent Playground project.",
+  "author": "Tom Kirkpatrick <tom@strike.me>",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "rulesync": "6.5.0"
+  }
+}

@@ -16,3 +16,6 @@ devenv.local.nix
 
 # tmp
 /tmp
+
+# note
+node_modules

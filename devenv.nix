@@ -35,6 +35,11 @@ in
   languages.python.venv.enable = true;
   languages.python.uv.enable = true;
 
+  languages.javascript.enable = true;
+  languages.javascript.package = pkgs.nodejs-slim_22;
+  languages.javascript.npm.enable = true;
+  languages.javascript.npm.install.enable = true;
+
   # https://devenv.sh/integrations/treefmt/
   treefmt = {
     enable = true;
