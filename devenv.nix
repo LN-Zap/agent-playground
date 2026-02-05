@@ -104,7 +104,7 @@ in
   # https://devenv.sh/integrations/codespaces-devcontainer/
   devcontainer.enable = true;
   devcontainer.settings.name = "Agent Playground Dev Container";
-  devcontainer.settings.postCreateCommand = "direnv allow";
+  devcontainer.settings.postCreateCommand = "rm -rf .devenv/tasks.db* .devenv/nix-eval-cache.db-* || true; direnv allow";
   devcontainer.settings.customizations.vscode.extensions = [
     "github.copilot-chat"
     "arrterian.nix-env-selector"
