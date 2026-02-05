@@ -96,9 +96,9 @@ in
   # https://devenv.sh/integrations/codespaces-devcontainer/
   devcontainer.enable = true;
   devcontainer.settings.name = "Agent Playground Dev Container";
-  # Build shell with persistent state (not devenv test which uses temp directory)
-  devcontainer.settings.postCreateCommand = "devenv shell -- echo 'devenv ready' && direnv allow";
-  devcontainer.settings.updateContentCommand = "true"; # No-op - shell already built in postCreateCommand
+  devcontainer.settings.postCreateCommand = "true"; # No-op - setup runs in updateContentCommand
+  # Build shell with persistent state during prebuild, then trust .envrc for auto-activation
+  devcontainer.settings.updateContentCommand = "devenv shell -- echo 'devenv ready' && direnv allow";
   devcontainer.settings.customizations.vscode.extensions = [
     "github.copilot-chat"
     "arrterian.nix-env-selector"
