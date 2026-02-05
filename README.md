@@ -30,18 +30,29 @@ The playground currently synchronizes rules and skills for the following platfor
 
 To add support for a new AI agent or platform:
 
-1. **Update Rule targets**: Add the new provider to the `targets` list in [rulesync.jsonc](rulesync.jsonc).
-1. **Configure Skills**: If the agent requires specific formatting for skills, update the `agents` list in [devenv.nix](devenv.nix) to ensure they are synchronized correctly during the `skills:sync` task.
-1. **Trigger Sync**: Re-enter the environment or run `npx rulesync generate` to create the new configuration files.
+### Agent skills
+
+Agent skills are the portable capability bundles that get installed and synchronized across agents via the skills CLI.
+
+1. **Adding**: Add the new agent to the `agents` list in [devenv.nix](devenv.nix) so skills are targeted to it.
+1. **Configuring**: Update the skills tasks in devenv.nix.
+1. **Synchronizing**: Use `skills:add` to resync all skills, or `skills:add:[skill-group]` to sync a single skill group (for example, `skills:add:figma`).
+
+### Rules
+
+Rules are the provider-agnostic instruction sets that get generated and distributed with rulesync.
+
+1. **Adding**: Add the new provider to the `targets` list in [rulesync.jsonc](rulesync.jsonc).
+1. **Configuring**: Update rule definitions in `.rulesync` as needed for the new agent.
+1. **Synchronizing**: Re-enter the environment or run `npx rulesync generate` to create the new configuration files.
 
 ## Getting Started
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (Project dependency and script runner)
-- [Nix](https://nixos.org/download.html) (Declarative package manager for reproducible environments)
-- [devenv.sh](https://devenv.sh/) (Developer environment manager. See the [documentation](https://devenv.sh/getting-started/) for installation.)
-- [direnv](https://direnv.net/) (Shell extension to automatically load the environment)
+- [Nix](https://nixos.org/download.html): Declarative package manager for reproducible environments.
+- [devenv.sh](https://devenv.sh/): Developer environment manager.
+- [direnv](https://direnv.net/): Shell extension to automatically load the environment.
 
 ### Setup
 
@@ -57,22 +68,27 @@ To add support for a new AI agent or platform:
    cd agent-playground
    ```
 
-1. (Optional but Recommended) Initialize the development environment:
-   If you have `direnv` installed, run:
+1. (Optional but Recommended) Enable automatic environment loading with `direnv`:
+   Run this once to allow `direnv` to load in this workspace:
 
    ```bash
    direnv allow
    ```
 
-   The environment will now automatically activate every time you `cd` into the directory.
+   After that, the environment will automatically activate every time you `cd` into the directory.
 
-   If you don't use `direnv`, you can enter the environment manually:
+1. (Alternative) Enter the environment manually:
 
    ```bash
    devenv shell
    ```
 
    *Note: Upon entering the environment, `devenv` automatically executes `rulesync` (see [devenv.nix](devenv.nix)) to generate and synchronize agent-specific instructions. No manual synchronization is required for the initial setup. For more information on how this works, refer to the [devenv documentation](https://devenv.sh/tasks/).*
+
+
+### Dev Containers
+
+This repository supports [Dev Containers](https://containers.dev/) via [.devcontainer.json](.devcontainer.json), which is generated automatically by [devenv](https://devenv.sh/integrations/codespaces-devcontainer/). Dev Containers are an open standard supported by tools like VS Code and GitHub Codespaces, and they provide a reproducible, preconfigured environment with the right tools and extensions, which is useful if you want consistent setup across machines or prefer working in a containerized workspace.
 
 ## Contributing
 
