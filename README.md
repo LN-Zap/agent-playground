@@ -1,5 +1,7 @@
 # Agent Playground
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/LN-Zap/agent-playground)
+
 A robust sandbox for experimenting with AI agent workflows and multi-agent environments. This project serves as a reference for building and maintaining consistent, provider-agnostic agent ecosystems.
 
 ## Core Philosophy
