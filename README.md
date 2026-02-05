@@ -35,16 +35,32 @@ To add support for a new AI agent or platform:
 Agent skills are the portable capability bundles that get installed and synchronized across agents via the skills CLI.
 
 1. **Adding**: Add the new agent to the `agents` list in [devenv.nix](devenv.nix) so skills are targeted to it.
-1. **Configuring**: Update the skills tasks in devenv.nix.
+1. **Configuring**: Update the skills tasks in [devenv.nix](devenv.nix).
 1. **Synchronizing**: Use `skills:add` to resync all skills, or `skills:add:[skill-group]` to sync a single skill group (for example, `skills:add:figma`).
 
 ### Rules
 
-Rules are the provider-agnostic instruction sets that get generated and distributed with rulesync.
+Rules are the provider-agnostic instruction sets that get generated and distributed with rulesync. Agent-specific instruction files and ignore files are generated automatically from [.rulesync](.rulesync) (for example, ignore patterns in [.rulesync/.aiignore](.rulesync/.aiignore)).
 
 1. **Adding**: Add the new provider to the `targets` list in [rulesync.jsonc](rulesync.jsonc).
-1. **Configuring**: Update rule definitions in `.rulesync` as needed for the new agent.
+1. **Configuring**: Update rule definitions in [.rulesync](.rulesync) as needed for the new agent.
 1. **Synchronizing**: Re-enter the environment or run `npx rulesync generate` to create the new configuration files.
+
+### MCP servers
+
+MCP servers are external integrations defined in [.rulesync/mcp.json](.rulesync/mcp.json) and synchronized by rulesync.
+
+1. **Adding**: Add the server definition to [.rulesync/mcp.json](.rulesync/mcp.json).
+1. **Configuring**: Adjust the server command or URL in [.rulesync/mcp.json](.rulesync/mcp.json).
+1. **Synchronizing**: Re-enter the environment or run `npx rulesync generate` to sync MCP settings.
+
+| MCP server | Description |
+| --- | --- |
+| context7 | Library and documentation context retrieval. |
+| figma-desktop | Figma desktop design context and asset access. |
+| github | GitHub repository and workflow access. |
+| playwright | Browser automation via Playwright MCP. |
+| chrome-devtools | Chrome DevTools automation via MCP. |
 
 ## Getting Started
 
