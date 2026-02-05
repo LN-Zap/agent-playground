@@ -24,6 +24,7 @@
   "image": "ghcr.io/cachix/devenv/devcontainer:latest",
   "name": "Agent Playground Dev Container",
   "overrideCommand": false,
+  "postCreateCommand": "direnv allow",
   "secrets": {
     "GEMINI_API_KEY": {
       "description": "API key for Gemini access",
