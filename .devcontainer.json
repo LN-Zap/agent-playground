@@ -24,12 +24,12 @@
   "image": "ghcr.io/cachix/devenv/devcontainer:latest",
   "name": "Agent Playground Dev Container",
   "overrideCommand": false,
-  "postCreateCommand": "rm -rf .devenv/tasks.db* .devenv/nix-eval-cache.db-* || true; direnv allow",
+  "postCreateCommand": "direnv allow && devenv test",
   "secrets": {
     "GEMINI_API_KEY": {
       "description": "API key for Gemini access",
       "documentationUrl": "https://aistudio.google.com/api-keys"
     }
   },
-  "updateContentCommand": "devenv test"
+  "updateContentCommand": null
 }
