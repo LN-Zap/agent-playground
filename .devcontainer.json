@@ -31,5 +31,5 @@
       "documentationUrl": "https://aistudio.google.com/api-keys"
     }
   },
-  "updateContentCommand": null
+  "updateContentCommand": "true"
 }

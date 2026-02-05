@@ -97,7 +97,7 @@ in
   devcontainer.enable = true;
   devcontainer.settings.name = "Agent Playground Dev Container";
   devcontainer.settings.postCreateCommand = "direnv allow && devenv test";
-  devcontainer.settings.updateContentCommand = null; # Disable - already run sequentially in postCreateCommand
+  devcontainer.settings.updateContentCommand = "true"; # No-op - devenv test already runs in postCreateCommand
   devcontainer.settings.customizations.vscode.extensions = [
     "github.copilot-chat"
     "arrterian.nix-env-selector"
