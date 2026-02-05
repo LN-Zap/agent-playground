@@ -68,7 +68,7 @@ in
     execIfModified = [
       ".rulesync"
     ];
-    before = [ "devenv:enterShell" ];
+    # before = [ "devenv:enterShell" ];
   };
 
   # Install Zap skills
