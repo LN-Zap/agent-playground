@@ -4,15 +4,18 @@ A robust sandbox for experimenting with AI agent workflows and multi-agent envir
 
 ## Core Philosophy
 
+The agent ecosystem is young and fragmented, with competing standards for how tools store skills and rules. This repo exists as a boilerplate example for dealing with that complexity, keeping flexibility across agent harnesses, avoiding lock-in to any single provider, and resisting proprietary formats for each platform.
+
+
 - **Define Once, Support Everywhere**: Rules and capabilities are defined in a centralized, provider-agnostic manner.
 - **Provider Agnostic**: Skills and instructions are managed independently of any specific AI platform (GitHub Copilot, Claude Code, Gemini, etc.).
-- **Automated Synchronization**: Uses [skills cli](https://github.com/LN-Zap/skills) and [rulesync cli](https://github.com/dyoshikawa/rulesync) to automatically propagate definitions to all supported agent interfaces.
+- **Automated Synchronization**: Uses [skills cli](https://skills.sh/) and [rulesync cli](https://github.com/dyoshikawa/rulesync) to automatically propagate definitions to all supported agent interfaces.
 - **Experimentation First**: A flexible space for prototyping new agent patterns without being tied to a single tool.
 
 ## Key Components
 
-- **Skills System**: High-level capabilities managed via the [skills](https://github.com/LN-Zap/skills) CLI. These modular units pack logic, constraints, and instructions that any agent can consume, regardless of the provider.
-- **Rule Synchronization**: Uses [rulesync](https://github.com/dyoshikawa/rulesync) to maintain consistency across the workspace. It ensures that whenever a core rule or skill changes, the corresponding agent-specific configurations are updated automatically.
+- **Skills System**: High-level capabilities managed via the `skills` CLI. These modular units pack logic, constraints, and instructions that any agent can consume, regardless of the provider.
+- **Rule Synchronization**: Uses `rulesync` CLI to maintain consistency across the workspace. It ensures that whenever a core rule changes, the corresponding agent-specific configurations are updated automatically.
 - **MCP Integration**: Native support for Model Context Protocol (MCP) servers, allowing agents to interact with external tools and data sources in a standardized way.
 
 ## Supported Agents
