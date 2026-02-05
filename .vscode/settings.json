@@ -3,5 +3,7 @@
     "chat.experimental.useSkillAdherencePrompt": true,
     "github.copilot.chat.agentCustomizationSkill.enabled": true,
     "chat.useNestedAgentsMdFiles": true,
-    "nixEnvSelector.nixFile": "devenv.nix"
+    "nixEnvSelector.nixFile": "devenv.nix",
+    "chat.useClaudeMdFile": false,
+    "github.copilot.chat.codeGeneration.useInstructionFiles": false
 }
