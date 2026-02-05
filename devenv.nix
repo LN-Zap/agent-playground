@@ -75,10 +75,6 @@ in
   tasks."skills:add:zap" = {
     exec = "npx skills add LN-Zap/zap-skills ${agentFlags} -y";
   };
-  # Add local skills from skills-local directory
-  tasks."skills:add:local" = {
-    exec = "npx skills add ./skills-local ${agentFlags} -y";
-  };
   # Add third-party skills
   tasks."skills:add:skill-creator" = {
     exec = "npx skills add anthropics/skills --skill skill-creator ${agentFlags} -y";
