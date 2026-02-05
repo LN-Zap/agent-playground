@@ -101,6 +101,15 @@ in
     "jraylan.seamless-agent"
     "Rubymaniac.vscode-direnv"
   ];
+  devcontainer.settings.customizations.codespaces.openFiles = [
+    "README.md"
+  ];
+  devcontainer.settings.secrets = {
+    GEMINI_API_KEY = {
+      description = "API key for Gemini access";
+      documentationUrl = "https://aistudio.google.com/api-keys";
+    };
+  };
 
   # See full reference at https://devenv.sh/reference/options/
 }
