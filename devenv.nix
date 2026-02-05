@@ -40,14 +40,6 @@ in
   languages.javascript.npm.enable = true;
   languages.javascript.npm.install.enable = true;
 
-  # https://devenv.sh/integrations/treefmt/
-  treefmt = {
-    enable = true;
-    config.programs = {
-      nixfmt.enable = true;
-    };
-  };
-
   # https://devenv.sh/processes/
   # processes.cargo-watch.exec = "cargo-watch";
 
