@@ -67,15 +67,6 @@ in
 
   # https://devenv.sh/tasks/
 
-  # Generate rules using rulesync. Runs automatically when entering the shell.
-  tasks."rulesync:generate" = {
-    exec = "npx rulesync generate";
-    execIfModified = [
-      ".rulesync"
-    ];
-    before = [ "devenv:enterShell" ];
-  };
-
   # Install Zap skills
   tasks."skills:add:zap" = {
     exec = "npx skills add LN-Zap/zap-skills ${agentFlags} -y";
@@ -86,6 +77,19 @@ in
   };
   tasks."skills:add:figma" = {
     exec = "npx skills add openai/skills --skill figma --skill figma-implement-design ${agentFlags} -y";
+  };
+
+  # Aggregate task to generate all skills.
+  tasks."skills:generate" = {
+    exec = "devenv tasks run skills:add";
+  };
+
+  # Generate rules using rulesync.
+  tasks."rulesync:generate" = {
+    exec = "npx rulesync generate";
+    execIfModified = [
+      ".rulesync"
+    ];
   };
 
   # https://devenv.sh/tests/
