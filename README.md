@@ -8,15 +8,14 @@ A robust sandbox for experimenting with AI agent workflows and multi-agent envir
 
 The agent ecosystem is young and fragmented, with competing standards for how tools store skills and rules. This repo exists as a boilerplate example for dealing with that complexity, keeping flexibility across agent harnesses, avoiding lock-in to any single provider, and resisting proprietary formats for each platform.
 
-
 - **Define Once, Support Everywhere**: Rules and capabilities are defined in a centralized, provider-agnostic manner.
 - **Provider Agnostic**: Skills and instructions are managed independently of any specific AI platform (GitHub Copilot, Claude Code, Gemini, etc.).
-- **Automated Synchronization**: Uses [skills cli](https://skills.sh/) and [rulesync cli](https://github.com/dyoshikawa/rulesync) to automatically propagate definitions to all supported agent interfaces.
+- **Automated Synchronization**: Uses [rulesync cli](https://github.com/dyoshikawa/rulesync) to automatically propagate rules, skills, and configurations to all supported agent interfaces.
 - **Experimentation First**: A flexible space for prototyping new agent patterns without being tied to a single tool.
 
 ## Key Components
 
-- **Skills System**: High-level capabilities managed via the `skills` CLI. These modular units pack logic, constraints, and instructions that any agent can consume, regardless of the provider.
+- **Skills System**: Reusable capability modules fetched from external repositories and distributed to agents via rulesync. These modular units pack logic, constraints, and instructions that any agent can consume, regardless of the provider.
 - **Rule Synchronization**: Uses `rulesync` CLI to maintain consistency across the workspace. It ensures that whenever a core rule changes, the corresponding agent-specific configurations are updated automatically.
 - **MCP Integration**: Native support for Model Context Protocol (MCP) servers, allowing agents to interact with external tools and data sources in a standardized way.
 
@@ -29,7 +28,6 @@ The playground currently synchronizes rules and skills for the following platfor
 - **Gemini CLI**
 - **OpenCode**
 - **Codex**
-- **Antigravity**
 
 ## Extending Support
 
@@ -37,22 +35,18 @@ To add support for a new AI agent or platform:
 
 ### Agent skills
 
-Agent skills are the portable capability bundles that get installed and synchronized across agents via the skills CLI. Skills are managed declaratively through [skillsync.json](skillsync.json), with automatic synchronization when the configuration changes.
+Agent skills are reusable capability modules managed through rulesync alongside rules and MCP configurations. Skill sources are declared in the `sources` field of [rulesync.jsonc](rulesync.jsonc) and fetched automatically during `rulesync generate`.
 
-1. **Adding Agents**: Add the new agent to the `agents` array in [skillsync.json](skillsync.json).
-1. **Adding Skills**: Add a new skill entry to the `skills` array in [skillsync.json](skillsync.json):
+1. **Adding Agents**: Add the new agent to the `targets` array in [rulesync.jsonc](rulesync.jsonc).
+1. **Adding Skills**: Add a new source entry to the `sources` array in [rulesync.jsonc](rulesync.jsonc):
 
-   ```json
-   {"source": "org/repo-name"}
+   ```jsonc
+   { "source": "https://github.com/org/repo-name" }
    ```
 
-   This installs all skills by default. To install only specific skills, add a `skills` array:
+   Optionally filter specific skills: `{ "source": "https://github.com/org/repo", "skills": ["skill-a", "skill-b"] }`
 
-   ```json
-   {"source": "org/repo-name", "skills": ["skill-name"]}
-   ```
-
-1. **Synchronizing**: Skills automatically sync when [skillsync.json](skillsync.json) changes (via `execIfModified`). Manual sync: `devenv tasks run skills:add` or target specific skills: `devenv tasks run skills:add:org-repo-name`.
+1. **Synchronizing**: Skills automatically fetch and sync when the configuration changes (via `execIfModified`). Manual sync: `devenv tasks run rulesync:generate` or `npx rulesync generate`.
 
 ### Rules
 
@@ -115,8 +109,7 @@ MCP servers are external integrations defined in [.rulesync/mcp.json](.rulesync/
    devenv shell
    ```
 
-   *Note: Upon entering the environment, `devenv` automatically executes `rulesync` (see [devenv.nix](devenv.nix)) to generate and synchronize agent-specific instructions. No manual synchronization is required for the initial setup. For more information on how this works, refer to the [devenv documentation](https://devenv.sh/tasks/).*
-
+   *Note: Upon entering the environment, `devenv` automatically executes `rulesync` (see [devenv.nix](devenv.nix)) to generate and synchronize agent-specific rules, skills, and configurations. No manual synchronization is required for the initial setup. For more information on how this works, refer to the [devenv documentation](https://devenv.sh/tasks/).*
 
 ### Dev Containers
 
