@@ -26,9 +26,12 @@ The agent ecosystem is young and fragmented, with competing standards for how to
 | GitHub Copilot | `copilot` | `.github/copilot-instructions.md`, `.github/skills/` |
 | Claude Code | `claudecode` | `CLAUDE.md`, `.claude/skills/` |
 | Codex CLI | `codexcli` | `.codex/skills/` |
-| Gemini CLI | `geminicli` | `GEMINI.md`, `.gemini/skills/` |
-| OpenCode | `opencode` | `opencode.json`, `.opencode/skills/` |
-| AGENTS.md | `agentsmd` | `AGENTS.md`, `.agents/skills/`, `.agent/skills/` |
+| Gemini CLI | `geminicli` | `GEMINI.md` |
+| OpenCode | `opencode` | `opencode.json`, `.opencode/skill/` |
+| AGENTS.md | `agentsmd` | `AGENTS.md` |
+| Agent Skills | `agentsskills` | `.agents/skills/` |
+
+> **Note**: `geminicli` does not yet generate `.gemini/skills/` — see [upstream issue](https://github.com/dyoshikawa/rulesync/issues/974). Gemini CLI has native skills support but rulesync currently classifies it as simulated.
 
 ## Configuration
 
