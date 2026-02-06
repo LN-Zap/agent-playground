@@ -37,11 +37,22 @@ To add support for a new AI agent or platform:
 
 ### Agent skills
 
-Agent skills are the portable capability bundles that get installed and synchronized across agents via the skills CLI.
+Agent skills are the portable capability bundles that get installed and synchronized across agents via the skills CLI. Skills are managed declaratively through [skillsync.json](skillsync.json), with automatic synchronization when the configuration changes.
 
-1. **Adding**: Add the new agent to the `agents` list in [devenv.nix](devenv.nix) so skills are targeted to it.
-1. **Configuring**: Update the skills tasks in [devenv.nix](devenv.nix).
-1. **Synchronizing**: Use `skills:add` to resync all skills, or `skills:add:[skill-group]` to sync a single skill group (for example, `skills:add:figma`).
+1. **Adding Agents**: Add the new agent to the `agents` array in [skillsync.json](skillsync.json).
+1. **Adding Skills**: Add a new skill entry to the `skills` array in [skillsync.json](skillsync.json):
+
+   ```json
+   {"source": "org/repo-name"}
+   ```
+
+   This installs all skills by default. To install only specific skills, add a `skills` array:
+
+   ```json
+   {"source": "org/repo-name", "skills": ["skill-name"]}
+   ```
+
+1. **Synchronizing**: Skills automatically sync when [skillsync.json](skillsync.json) changes (via `execIfModified`). Manual sync: `devenv tasks run skills:add` or target specific skills: `devenv tasks run skills:add:org-repo-name`.
 
 ### Rules
 
