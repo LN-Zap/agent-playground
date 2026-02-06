@@ -6,7 +6,8 @@
     "codexcli",
     "geminicli",
     "opencode",
-    "agentsmd"
+    "agentsmd",
+    "agentsskills"
   ],
   "features": [
     "mcp",
