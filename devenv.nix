@@ -6,30 +6,6 @@
   ...
 }:
 
-let
-  # Read skills configuration from skillsync.json
-  skillsConfig = builtins.fromJSON (builtins.readFile ./skillsync.json);
-  agents = skillsConfig.agents;
-  agentFlags = builtins.concatStringsSep " " (map (a: "--agent ${a}") agents);
-
-  # Generate a task for each skill entry in the config
-  generateSkillTask = skillEntry:
-    let
-      taskName = builtins.replaceStrings ["/"] ["-"] skillEntry.source;
-      skillFlags = if builtins.hasAttr "skills" skillEntry
-        then builtins.concatStringsSep " " (map (s: "--skill ${s}") skillEntry.skills)
-        else "";
-    in
-    {
-      name = "skills:add:${taskName}";
-      value = {
-        exec = "npx skills add ${skillEntry.source} ${skillFlags} ${agentFlags} -y";
-      };
-    };
-
-  # Convert skill entries to task definitions
-  skillTasks = builtins.listToAttrs (map generateSkillTask skillsConfig.skills);
-in
 {
   # https://devenv.sh/basics/
   env.GREET = "devenv";
@@ -72,21 +48,12 @@ in
 
   # https://devenv.sh/tasks/
 
-  # Dynamically generated skill installation tasks from skillsync.json
-  tasks = skillTasks // {
-    # Aggregate task to install all skills
-    "skills:generate" = {
-      exec = "devenv tasks run skills:add";
-      execIfModified = [
-        "skillsync.json"
-      ];
-    };
-
-    # Generate rules using rulesync
+  tasks = {
     "rulesync:generate" = {
       exec = "npx rulesync generate";
       execIfModified = [
         ".rulesync"
+        "rulesync.jsonc"
       ];
     };
   };
@@ -115,13 +82,6 @@ in
   devcontainer.settings.customizations.codespaces.openFiles = [
     "README.md"
   ];
-  devcontainer.settings.customizations.codespaces.repositories = {
-    "LN-Zap/zap-skills" = {
-      permissions = {
-        contents = "read";
-      };
-    };
-  };
   devcontainer.settings.secrets = {
     GEMINI_API_KEY = {
       description = "API key for Gemini access";

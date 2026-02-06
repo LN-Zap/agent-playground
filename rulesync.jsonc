@@ -1,7 +1,6 @@
 {
-  "$schema": "https://raw.githubusercontent.com/dyoshikawa/rulesync/refs/heads/main/config-schema.json",
+  "$schema": "https://raw.githubusercontent.com/LN-Zap/rulesync/refs/heads/feat/declarative-sources/config-schema.json",
   "targets": [
-    "antigravity",
     "copilot",
     "claudecode",
     "codexcli",
@@ -12,6 +11,12 @@
   "features": [
     "mcp",
     "ignore",
-    "rules"
+    "rules",
+    "skills"
+  ],
+  "sources": [
+    { "source": "https://github.com/LN-Zap/zap-skills" },
+    { "source": "https://github.com/anthropics/skills", "skills": ["skill-creator"] },
+    { "source": "https://github.com/openai/skills/tree/main/skills/.curated", "skills": ["figma", "figma-implement-design"] }
   ]
 }
