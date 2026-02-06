@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/LN-Zap/rulesync/refs/heads/main/config-schema.json",
+  "$schema": "https://raw.githubusercontent.com/LN-Zap/rulesync/refs/heads/integration/all-enhancements/config-schema.json",
   "targets": [
     "copilot",
     "claudecode",

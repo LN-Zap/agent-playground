@@ -5,6 +5,6 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "rulesync": "github:LN-Zap/rulesync#main"
+    "rulesync": "github:LN-Zap/rulesync#integration/all-enhancements"
   }
 }
