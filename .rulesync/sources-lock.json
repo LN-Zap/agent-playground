@@ -1,0 +1,29 @@
+{
+  "sources": {
+    "https://github.com/LN-Zap/zap-skills": {
+      "resolvedRef": "2f7da9aa432b9ce262a01d83b2fdab354792a07f",
+      "skills": [
+        "brand-guidelines",
+        "conducting-interviews",
+        "generating-figma-variations",
+        "generating-images",
+        "performing-self-reflection",
+        "refining-skills",
+        "using-strike-cli"
+      ]
+    },
+    "https://github.com/anthropics/skills": {
+      "resolvedRef": "a5bcdd7e58cdff48566bf876f0a72a2008dcefbc",
+      "skills": [
+        "skill-creator"
+      ]
+    },
+    "https://github.com/openai/skills/tree/main/skills/.curated": {
+      "resolvedRef": "2f7901ee4202a26757a5237e987a8ec5a1799e29",
+      "skills": [
+        "figma-implement-design",
+        "figma"
+      ]
+    }
+  }
+}
