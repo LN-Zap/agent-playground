@@ -48,6 +48,8 @@ Agent skills are reusable capability modules managed through rulesync alongside 
 
 1. **Synchronizing**: Skills automatically fetch and sync when the configuration changes (via `execIfModified`). Manual sync: `devenv tasks run rulesync:generate` or `npx rulesync generate`.
 
+> **Authentication**: Fetching skills from private repositories requires a `GITHUB_TOKEN` environment variable. In GitHub Codespaces this is provided automatically. For local development, add it to your `.env` file (which is loaded by devenv via `dotenv.enable`).
+
 ### Rules
 
 Rules are the provider-agnostic instruction sets that get generated and distributed with rulesync. Agent-specific instruction files and ignore files are generated automatically from [.rulesync](.rulesync) (for example, ignore patterns in [.rulesync/.aiignore](.rulesync/.aiignore)).

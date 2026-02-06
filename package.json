@@ -5,6 +5,6 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "rulesync": "github:LN-Zap/rulesync#feat/declarative-sources"
+    "rulesync": "github:LN-Zap/rulesync#main"
   }
 }
