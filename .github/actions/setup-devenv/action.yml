@@ -1,0 +1,248 @@
+name: setup-devenv
+description: Activate devenv environment for CI jobs with image/auto/install modes and basic verification.
+
+inputs:
+  mode:
+    description: "Activation mode: auto, image, or install."
+    required: false
+    default: auto
+  activation_script_path:
+    description: Path to pre-baked activation script on runner image.
+    required: false
+    default: /home/runner/copilot-devenv-activate.sh
+  verify_files:
+    description: Newline-delimited repository file paths that must exist.
+    required: false
+    default: rulesync.jsonc
+  verify_commands:
+    description: Newline-delimited command names that must be available.
+    required: false
+    default: devenv
+  runner_label_hint:
+    description: Optional runner label used in error messages.
+    required: false
+    default: ''
+
+outputs:
+  activation_mode:
+    description: Effective activation mode used (script, fallback, install).
+    value: ${{ steps.run.outputs.activation_mode }}
+  activation_seconds:
+    description: Time spent in activation and verification.
+    value: ${{ steps.run.outputs.activation_seconds }}
+  devenv_bin:
+    description: Resolved devenv binary path.
+    value: ${{ steps.run.outputs.devenv_bin }}
+  verification_status:
+    description: Verification status for required files and commands.
+    value: ${{ steps.run.outputs.verification_status }}
+
+runs:
+  using: composite
+  steps:
+    - id: run
+      shell: bash
+      env:
+        MODE: ${{ inputs.mode }}
+        ACTIVATION_SCRIPT_PATH: ${{ inputs.activation_script_path }}
+        VERIFY_FILES: ${{ inputs.verify_files }}
+        VERIFY_COMMANDS: ${{ inputs.verify_commands }}
+        RUNNER_LABEL_HINT: ${{ inputs.runner_label_hint }}
+      run: |
+        set -euo pipefail
+
+        start_epoch=$(date +%s)
+
+        command_available() {
+          local command_name="$1"
+
+          if command -v "$command_name" >/dev/null 2>&1; then
+            return 0
+          fi
+
+          if [ "$command_name" = "devenv" ] && [ -n "${devenv_bin:-}" ] && [ -x "$devenv_bin" ]; then
+            return 0
+          fi
+
+          return 1
+        }
+
+        find_devenv() {
+          if command -v devenv >/dev/null 2>&1; then
+            command -v devenv
+            return 0
+          fi
+
+          if [ -x "$HOME/.nix-profile/bin/devenv" ]; then
+            echo "$HOME/.nix-profile/bin" >> "$GITHUB_PATH"
+            echo "$HOME/.nix-profile/bin/devenv"
+            return 0
+          fi
+
+          if [ -x /nix/var/nix/profiles/default/bin/devenv ]; then
+            echo "/nix/var/nix/profiles/default/bin" >> "$GITHUB_PATH"
+            echo "/nix/var/nix/profiles/default/bin/devenv"
+            return 0
+          fi
+
+          return 1
+        }
+
+        mode="$MODE"
+        case "$mode" in
+          auto|image|install) ;;
+          *)
+            echo "::error::Invalid mode '$mode'. Expected one of: auto, image, install."
+            exit 1
+            ;;
+        esac
+
+        devenv_bin=""
+        if devenv_candidate="$(find_devenv)"; then
+          devenv_bin="$devenv_candidate"
+        fi
+
+        activation_script_state="missing"
+        if [ -x "$ACTIVATION_SCRIPT_PATH" ]; then
+          activation_script_state="present"
+        fi
+
+        echo "setup-devenv telemetry: mode=$mode activation_script=$activation_script_state path=$ACTIVATION_SCRIPT_PATH runner_hint=${RUNNER_LABEL_HINT:-none}"
+
+        if [ -n "$devenv_bin" ]; then
+          devenv_dir="$(dirname "$devenv_bin")"
+          export PATH="$devenv_dir:$PATH"
+          echo "$devenv_dir" >> "$GITHUB_PATH"
+          echo "setup-devenv telemetry: discovered devenv at $devenv_bin"
+        else
+          echo "setup-devenv telemetry: devenv binary not discovered during initial probe"
+        fi
+
+        activation_mode=""
+        if [ "$mode" = "image" ]; then
+          if [ ! -x "$ACTIVATION_SCRIPT_PATH" ]; then
+            runner_msg=""
+            if [ -n "$RUNNER_LABEL_HINT" ]; then
+              runner_msg=" on runner '$RUNNER_LABEL_HINT'"
+            fi
+            echo "::error::Activation script '$ACTIVATION_SCRIPT_PATH' not found${runner_msg}."
+            exit 1
+          fi
+          "$ACTIVATION_SCRIPT_PATH"
+          activation_mode="script"
+        elif [ "$mode" = "install" ]; then
+          if [ -z "$devenv_bin" ]; then
+            echo "::error::devenv is required for install mode but was not found."
+            exit 1
+          fi
+
+          base_env="$(mktemp)"
+          devenv_env="$(mktemp)"
+          trap 'rm -f "$base_env" "$devenv_env"' EXIT
+
+          env | sort > "$base_env"
+          "$devenv_bin" shell -- env | sort > "$devenv_env"
+
+          while IFS= read -r line; do
+            [ -z "$line" ] && continue
+            key="${line%%=*}"
+            value="${line#*=}"
+
+            case "$key" in
+              PATH)
+                echo "$value" >> "$GITHUB_PATH"
+                ;;
+              _|SHLVL|PWD|OLDPWD)
+                ;;
+              *)
+                printf '%s=%s\n' "$key" "$value" >> "$GITHUB_ENV"
+                ;;
+            esac
+          done < <(comm -13 "$base_env" "$devenv_env")
+
+          activation_mode="install"
+        else
+          if [ -x "$ACTIVATION_SCRIPT_PATH" ]; then
+            "$ACTIVATION_SCRIPT_PATH"
+            activation_mode="script"
+          else
+            echo "Activation script not found. Falling back to dynamic devenv activation for this runner instance."
+            if [ -z "$devenv_bin" ]; then
+              echo "::error::Activation script missing and devenv is unavailable for fallback activation."
+              exit 1
+            fi
+
+            base_env="$(mktemp)"
+            devenv_env="$(mktemp)"
+            trap 'rm -f "$base_env" "$devenv_env"' EXIT
+
+            env | sort > "$base_env"
+            "$devenv_bin" shell -- env | sort > "$devenv_env"
+
+            while IFS= read -r line; do
+              [ -z "$line" ] && continue
+              key="${line%%=*}"
+              value="${line#*=}"
+
+              case "$key" in
+                PATH)
+                  export PATH="$value"
+                  echo "$value" >> "$GITHUB_PATH"
+                  ;;
+                _|SHLVL|PWD|OLDPWD)
+                  ;;
+                *)
+                  printf '%s=%s\n' "$key" "$value" >> "$GITHUB_ENV"
+                  ;;
+              esac
+            done < <(comm -13 "$base_env" "$devenv_env")
+
+            activation_mode="fallback"
+          fi
+        fi
+
+        verify_failed=0
+
+        while IFS= read -r required_file; do
+          [ -z "$required_file" ] && continue
+          if [ ! -f "$required_file" ]; then
+            echo "::error::Required file not found: $required_file"
+            verify_failed=1
+          fi
+        done <<< "$VERIFY_FILES"
+
+        while IFS= read -r required_cmd; do
+          [ -z "$required_cmd" ] && continue
+          if ! command_available "$required_cmd"; then
+            echo "::error::Required command not found: $required_cmd"
+            echo "setup-devenv telemetry: command '$required_cmd' missing; PATH=$PATH"
+            if [ -n "$devenv_bin" ]; then
+              echo "setup-devenv telemetry: devenv_bin candidate remains $devenv_bin"
+            fi
+            verify_failed=1
+          else
+            resolved_cmd="$(command -v "$required_cmd" 2>/dev/null || true)"
+            if [ -z "$resolved_cmd" ] && [ "$required_cmd" = "devenv" ] && [ -n "$devenv_bin" ]; then
+              resolved_cmd="$devenv_bin"
+            fi
+            echo "setup-devenv telemetry: command '$required_cmd' resolved to ${resolved_cmd:-unknown}"
+          fi
+        done <<< "$VERIFY_COMMANDS"
+
+        verification_status="ok"
+        if [ "$verify_failed" -ne 0 ]; then
+          verification_status="failed"
+        fi
+
+        end_epoch=$(date +%s)
+
+        {
+          echo "activation_mode=$activation_mode"
+          echo "activation_seconds=$((end_epoch - start_epoch))"
+          echo "devenv_bin=${devenv_bin}"
+          echo "verification_status=$verification_status"
+        } >> "$GITHUB_OUTPUT"
+
+        if [ "$verification_status" != "ok" ]; then
+          exit 1
+        fi

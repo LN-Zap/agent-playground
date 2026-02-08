@@ -1,0 +1,94 @@
+name: Copilot Setup Steps
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
+  copilot-setup-steps:
+    runs-on: ${{ format('{0}-devenv-runner', github.event.repository.name) }}
+    timeout-minutes: 15
+    env:
+      GITHUB_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}
+      GH_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}
+      SKIP_SIMPLE_GIT_HOOKS: '1'
+
+    permissions:
+      actions: read
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          clean: false
+
+      - name: Detect pre-baked activation script
+        id: detect_activation_script
+        shell: bash
+        run: |
+          if [[ -f /home/runner/copilot-devenv-activate.sh ]]; then
+            echo "has_script=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_script=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install Nix
+        if: steps.detect_activation_script.outputs.has_script != 'true'
+        uses: cachix/install-nix-action@4e002c8ec80594ecd40e759629461e26c8abed15 # v31
+
+      - name: Setup Cachix
+        if: steps.detect_activation_script.outputs.has_script != 'true'
+        uses: cachix/cachix-action@3ba601ff5bbb07c7220846facfa2cd81eeee15a1 # v16
+        with:
+          name: devenv
+
+      - name: Install devenv
+        if: steps.detect_activation_script.outputs.has_script != 'true'
+        run: nix profile install nixpkgs#devenv
+
+      - name: Activate pre-baked devenv environment
+        id: activate_devenv
+        uses: LN-Zap/setup-devenv@27cef0fd2c4fdb0ef65f31bf1578a1a0633b1ca6 # v1
+        with:
+          mode: auto
+          activation_script_path: /home/runner/copilot-devenv-activate.sh
+          verify_files: rulesync.jsonc
+          verify_commands: |
+            devenv
+            node
+            python3
+            jq
+          runner_label_hint: ubuntu-latest
+
+      - name: Write setup summary
+        if: always()
+        shell: bash
+        env:
+          ACTIVATION_MODE: ${{ steps.activate_devenv.outputs.activation_mode }}
+          VERIFICATION_STATUS: ${{ steps.activate_devenv.outputs.verification_status }}
+        run: |
+          if [[ "$ACTIVATION_MODE" == "script" ]]; then
+            {
+              echo "## Copilot Setup Summary"
+              echo
+              echo "✅ Fast path used (pre-baked runner image)."
+              echo "- Activation mode: $ACTIVATION_MODE"
+              echo "- Verification status: $VERIFICATION_STATUS"
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            {
+              echo "## Copilot Setup Summary"
+              echo
+              echo "⚠️ Fast path was not used for this run."
+              echo "- Activation mode: $ACTIVATION_MODE"
+              echo "- Verification status: $VERIFICATION_STATUS"
+              echo "- Enable/restore fast path: [Copilot fast path docs](https://github.com/${GITHUB_REPOSITORY}/blob/master/docs/copilot-fast-path.md)"
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi

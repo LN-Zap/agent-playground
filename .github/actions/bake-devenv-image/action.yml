@@ -1,0 +1,179 @@
+name: bake-devenv-image
+description: Generate activation assets and slim caches for devenv runner image snapshots.
+
+inputs:
+  snapshot_name:
+    description: Snapshot name label for reporting.
+    required: false
+    default: project-devenv
+  activation_script_path:
+    description: Path where activation script will be written.
+    required: false
+    default: /home/runner/copilot-devenv-activate.sh
+  slim_caches:
+    description: Whether transient caches should be removed before snapshot.
+    required: false
+    default: 'true'
+
+outputs:
+  activation_script_written:
+    description: Whether activation script file exists and is executable.
+    value: ${{ steps.run.outputs.activation_script_written }}
+  npm_cache_before:
+    description: npm cache size in bytes before slimming.
+    value: ${{ steps.run.outputs.npm_cache_before }}
+  pip_cache_before:
+    description: pip cache size in bytes before slimming.
+    value: ${{ steps.run.outputs.pip_cache_before }}
+  nix_cache_before:
+    description: nix cache size in bytes before slimming.
+    value: ${{ steps.run.outputs.nix_cache_before }}
+  uv_cache_before:
+    description: uv cache size in bytes before slimming.
+    value: ${{ steps.run.outputs.uv_cache_before }}
+  total_removed:
+    description: Approximate total bytes removed from caches.
+    value: ${{ steps.run.outputs.total_removed }}
+  snapshot_name:
+    description: Snapshot name label.
+    value: ${{ steps.run.outputs.snapshot_name }}
+
+runs:
+  using: composite
+  steps:
+    - id: run
+      shell: bash
+      env:
+        SNAPSHOT_NAME: ${{ inputs.snapshot_name }}
+        ACTIVATION_SCRIPT_PATH: ${{ inputs.activation_script_path }}
+        SLIM_CACHES: ${{ inputs.slim_caches }}
+      run: |
+        set -euo pipefail
+
+        env | sort > /tmp/base.env
+        devenv shell -- env | sort > /tmp/devenv.env
+
+        python3 - <<'PY'
+        from __future__ import annotations
+
+        import os
+        import shlex
+        from pathlib import Path
+
+        def parse_env(path: str) -> dict[str, str]:
+          parsed: dict[str, str] = {}
+          with open(path, "r", encoding="utf-8") as handle:
+            for line in handle:
+              line = line.rstrip("\n")
+              if not line or "=" not in line:
+                continue
+              key, value = line.split("=", 1)
+              parsed[key] = value
+          return parsed
+
+        base_env = parse_env("/tmp/base.env")
+        devenv_env = parse_env("/tmp/devenv.env")
+
+        base_path = [entry for entry in base_env.get("PATH", "").split(":") if entry]
+        devenv_path = [entry for entry in devenv_env.get("PATH", "").split(":") if entry]
+        path_additions = [entry for entry in devenv_path if entry not in base_path]
+
+        excluded = {
+          "PATH",
+          "PWD",
+          "OLDPWD",
+          "SHLVL",
+          "_",
+        }
+
+        def should_exclude(key: str) -> bool:
+          if key in excluded:
+            return True
+          return key.startswith("GITHUB_") or key.startswith("RUNNER_")
+
+        changed_env: dict[str, str] = {}
+        for key, value in devenv_env.items():
+          if should_exclude(key):
+            continue
+          if base_env.get(key) == value:
+            continue
+          changed_env[key] = value
+
+        output_path = Path(os.environ["ACTIVATION_SCRIPT_PATH"])
+        lines: list[str] = [
+          "#!/usr/bin/env bash",
+          "set -euo pipefail",
+          "if [ -z \"${GITHUB_ENV:-}\" ] || [ -z \"${GITHUB_PATH:-}\" ]; then",
+          "  echo 'GITHUB_ENV and GITHUB_PATH must be set' >&2",
+          "  exit 1",
+          "fi",
+          "",
+        ]
+
+        for entry in path_additions:
+          lines.append(f"echo {shlex.quote(entry)} >> \"$GITHUB_PATH\"")
+
+        if path_additions:
+          lines.append("")
+
+        for key in sorted(changed_env):
+          value = changed_env[key]
+          delimiter = f"__COPILOT_ENV_{key}__"
+          lines.extend(
+            [
+              f"cat <<'EOF' >> \"$GITHUB_ENV\"",
+              f"{key}<<{delimiter}",
+              value,
+              delimiter,
+              "EOF",
+            ]
+          )
+
+        output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        output_path.chmod(0o755)
+        PY
+
+        size_of() {
+          local target="$1"
+          if [ -e "$target" ]; then
+            du -sb "$target" | awk '{print $1}'
+          else
+            echo 0
+          fi
+        }
+
+        npm_cache_before=$(size_of "$HOME/.npm")
+        pip_cache_before=$(size_of "$HOME/.cache/pip")
+        nix_cache_before=$(size_of "$HOME/.cache/nix")
+        uv_cache_before=$(size_of "$HOME/.cache/uv")
+
+        echo "Pre-slim cache sizes (bytes):"
+        echo "  ~/.npm: $npm_cache_before"
+        echo "  ~/.cache/pip: $pip_cache_before"
+        echo "  ~/.cache/nix: $nix_cache_before"
+        echo "  ~/.cache/uv: $uv_cache_before"
+
+        if [ "$SLIM_CACHES" = "true" ]; then
+          rm -rf "$HOME/.npm"
+          rm -rf "$HOME/.cache/pip"
+          rm -rf "$HOME/.cache/nix"
+          rm -rf "$HOME/.cache/uv"
+          nix store optimise || true
+        fi
+
+        total_removed=$((npm_cache_before + pip_cache_before + nix_cache_before + uv_cache_before))
+
+        activation_script_written="no"
+        if [ -x "$ACTIVATION_SCRIPT_PATH" ]; then
+          activation_script_written="yes"
+        fi
+
+        {
+          echo "activation_script_written=$activation_script_written"
+          echo "npm_cache_before=$npm_cache_before"
+          echo "pip_cache_before=$pip_cache_before"
+          echo "nix_cache_before=$nix_cache_before"
+          echo "uv_cache_before=$uv_cache_before"
+          echo "total_removed=$total_removed"
+          echo "snapshot_name=$SNAPSHOT_NAME"
+        } >> "$GITHUB_OUTPUT"

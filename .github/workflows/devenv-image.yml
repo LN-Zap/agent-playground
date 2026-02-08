@@ -1,0 +1,85 @@
+name: Devenv Image
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * 1'
+  push:
+    paths:
+      - devenv.nix
+      - devenv.yaml
+      - devenv.lock
+      - .github/workflows/devenv-image.yml
+
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    snapshot: ${{ github.event.repository.name }}-devenv
+    env:
+      GITHUB_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}
+      GH_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}
+      SNAPSHOT_NAME: ${{ github.event.repository.name }}-devenv
+
+    permissions:
+      actions: read
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        env:
+          SKIP_SIMPLE_GIT_HOOKS: '1'
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@4e002c8ec80594ecd40e759629461e26c8abed15 # v31
+
+      - name: Setup Cachix
+        uses: cachix/cachix-action@3ba601ff5bbb07c7220846facfa2cd81eeee15a1 # v16
+        with:
+          name: devenv
+
+      - name: Install devenv
+        run: nix profile install nixpkgs#devenv
+
+      - name: Build devenv shell
+        run: devenv shell -- echo 'devenv ready'
+
+      - name: Setup devenv environment
+        id: setup_devenv
+        uses: LN-Zap/setup-devenv@27cef0fd2c4fdb0ef65f31bf1578a1a0633b1ca6 # v1
+        with:
+          mode: install
+          activation_script_path: /home/runner/copilot-devenv-activate.sh
+          verify_files: rulesync.jsonc
+          verify_commands: |
+            devenv
+            node
+            python3
+            jq
+          runner_label_hint: ubuntu-latest
+
+      - name: Bake devenv image assets
+        id: bake_image
+        uses: LN-Zap/bake-devenv-image@12a8bbfa3f60994ed5c69ae01b8e37c8b03d2755 # v1
+        with:
+          snapshot_name: ${{ env.SNAPSHOT_NAME }}
+          activation_script_path: /home/runner/copilot-devenv-activate.sh
+          slim_caches: 'true'
+          cache_paths: |
+            $HOME/.npm
+            $HOME/.cache/pip
+            $HOME/.cache/nix
+            $HOME/.cache/uv
+
+      - name: Write image build summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Devenv Image Summary"
+            echo
+            echo "✅ Snapshot refresh completed."
+            echo "- Snapshot: $SNAPSHOT_NAME"
+            echo "- Next step: run Copilot Setup Steps to verify fast path usage"
+          } >> "$GITHUB_STEP_SUMMARY"
