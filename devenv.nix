@@ -16,7 +16,12 @@
   # https://devenv.sh/packages/
   packages = [
     pkgs.git
+    pkgs.jq
+    pkgs.yq-go
     pkgs.nodejs
+    pkgs.twilio-cli
+    pkgs.cloudflared
+    (pkgs.google-cloud-sdk.withExtraComponents [pkgs.google-cloud-sdk.components.gke-gcloud-auth-plugin])
   ];
 
   # https://devenv.sh/languages/
@@ -86,6 +91,10 @@
     GEMINI_API_KEY = {
       description = "API key for Gemini access";
       documentationUrl = "https://aistudio.google.com/api-keys";
+    };
+    GH_TOKEN = {
+      description = "GitHub token with repo access";
+      documentationUrl = "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token";
     };
   };
 
