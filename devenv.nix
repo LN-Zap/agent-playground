@@ -96,6 +96,18 @@
       description = "GitHub token with repo access";
       documentationUrl = "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token";
     };
+    CLOUDFLARE_API_TOKEN = {
+      description = "Cloudflare API token for Workers/Observability";
+      documentationUrl = "https://dash.cloudflare.com/profile/api-tokens";
+    };
+    CLOUDFLARE_ACCOUNT_ID = {
+      description = "Cloudflare Account ID";
+      documentationUrl = "https://developers.cloudflare.com/fundamentals/account/account-id/";
+    };
+    PAGERDUTY_USER_API_KEY = {
+      description = "PagerDuty User API key";
+      documentationUrl = "https://support.pagerduty.com/docs/generating-api-keys";
+    };
   };
 
   # See full reference at https://devenv.sh/reference/options/

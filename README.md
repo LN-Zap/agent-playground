@@ -89,6 +89,31 @@ To regenerate manually: `npx rulesync generate`
 
 ## Getting Started
 
+
+### Environment Variables
+
+Add the following variables to your `.env` file (see example below):
+
+| Variable                   | Description                                 | Documentation |
+|----------------------------|---------------------------------------------|---------------|
+| `GEMINI_API_KEY`           | API key for Gemini access                   | [Get key](https://aistudio.google.com/api-keys) |
+| `GH_TOKEN`                 | GitHub token with repo access               | [Create token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) |
+| `CLOUDFLARE_API_TOKEN`     | Cloudflare API token for Workers/Observability | [API Tokens](https://dash.cloudflare.com/profile/api-tokens) |
+| `CLOUDFLARE_ACCOUNT_ID`    | Cloudflare Account ID                       | [Find Account ID](https://developers.cloudflare.com/fundamentals/account/account-id/) |
+| `PAGERDUTY_USER_API_KEY`   | PagerDuty User API key                      | [Create API Key](https://support.pagerduty.com/docs/generating-api-keys) |
+
+Example `.env`:
+
+```env
+GEMINI_API_KEY=your-gemini-key
+GH_TOKEN=your-github-token
+CLOUDFLARE_API_TOKEN=your-cloudflare-token
+CLOUDFLARE_ACCOUNT_ID=your-cloudflare-account-id
+PAGERDUTY_USER_API_KEY=your-pagerduty-api-key
+```
+
+---
+
 ### Prerequisites
 
 - [Nix](https://nixos.org/download.html): Declarative package manager for reproducible environments.
