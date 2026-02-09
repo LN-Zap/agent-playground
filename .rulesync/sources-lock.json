@@ -13,16 +13,22 @@
       ]
     },
     "https://github.com/anthropics/skills": {
-      "resolvedRef": "a5bcdd7e58cdff48566bf876f0a72a2008dcefbc",
+      "resolvedRef": "1ed29a03dc852d30fa6ef2ca53a67dc2c2c2c563",
       "skills": [
         "skill-creator"
       ]
     },
     "https://github.com/openai/skills/tree/main/skills/.curated": {
-      "resolvedRef": "2f7901ee4202a26757a5237e987a8ec5a1799e29",
+      "resolvedRef": "7fc1e3f3b1778a0ce14bc3ee6afc223d5b997ca2",
       "skills": [
         "figma-implement-design",
         "figma"
+      ]
+    },
+    "https://github.com/cloudflare/skills": {
+      "resolvedRef": "de290a47c903e41a86ddfe29898efa3395621864",
+      "skills": [
+        "cloudflare"
       ]
     }
   }
