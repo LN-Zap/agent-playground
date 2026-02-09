@@ -10,7 +10,7 @@ The agent ecosystem is young and fragmented, with competing standards for how to
 
 - **Define Once, Support Everywhere**: Rules and capabilities are defined centrally in [.rulesync](.rulesync) and distributed to all supported agents.
 - **Provider Agnostic**: Skills and instructions are managed independently of any specific AI platform.
-- **Automated Synchronization**: [rulesync](https://github.com/dyoshikawa/rulesync) propagates rules, skills, and configurations to all agent interfaces.
+- **Automated Synchronization**: [rulesync](https://github.com/dyoshikawa/rulesync) propagates rules, skills, and configurations to all agent interfaces. Generated files are gitignored and created automatically — nothing to commit.
 - **Declarative Sources**: Remote skill repositories are declared in [rulesync.jsonc](rulesync.jsonc) and fetched automatically with lockfile-based determinism.
 
 ## Key Components
@@ -32,6 +32,8 @@ The agent ecosystem is young and fragmented, with competing standards for how to
 | Agent Skills | `agentsskills` | `.agents/skills/` |
 
 > **Note**: `geminicli` does not yet generate `.gemini/skills/` — see [upstream issue](https://github.com/dyoshikawa/rulesync/issues/974). Gemini CLI has native skills support but rulesync currently classifies it as simulated.
+
+All generated output files are **gitignored** and created automatically during setup. The source of truth lives in [.rulesync/](.rulesync) and [rulesync.jsonc](rulesync.jsonc).
 
 ## Configuration
 
@@ -61,7 +63,17 @@ Add server definitions to [.rulesync/mcp.json](.rulesync/mcp.json).
 
 ### Synchronizing
 
-Run `npx rulesync generate` to regenerate all agent-specific files. With devenv, this runs automatically when `.rulesync/` or `rulesync.jsonc` changes.
+Generated files are created and updated automatically — you should rarely need to run anything manually:
+
+| Trigger | Mechanism | Who benefits |
+| --- | --- | --- |
+| `npm install` | `postinstall` script runs `rulesync generate` | Everyone |
+| `git pull` | `post-merge` git hook runs `rulesync generate` | Everyone |
+| Branch switch | `post-checkout` git hook runs `rulesync generate` | Everyone |
+| Source file change | devenv task with `execIfModified` | devenv/direnv users |
+| Codespaces start | `updateContentCommand` triggers devenv | Codespaces users |
+
+To regenerate manually: `npx rulesync generate`
 
 > **Authentication**: Fetching skills from private repositories requires a `GITHUB_TOKEN` environment variable. In Codespaces this is provided automatically. For local development, add it to `.env` (loaded by devenv via `dotenv.enable`).
 
@@ -92,15 +104,21 @@ Run `npx rulesync generate` to regenerate all agent-specific files. With devenv,
    cd agent-playground
    ```
 
-1. Enable automatic environment loading with `direnv`:
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+   This installs dependencies, generates all agent configuration files via `rulesync generate`, and installs git hooks for ongoing synchronization.
+
+3. *(Optional)* Enable automatic environment loading with `direnv`:
 
    ```bash
    direnv allow
    ```
 
-   The environment will activate automatically when you enter the directory. Alternatively, enter it manually with `devenv shell`.
-
-   *Upon entering the environment, devenv runs `rulesync generate` automatically (see [devenv.nix](devenv.nix)). No manual synchronization is required for initial setup.*
+   devenv provides additional auto-regeneration when source files change. See [devenv.nix](devenv.nix).
 
 ### Dev Containers
 

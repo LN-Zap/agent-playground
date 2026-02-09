@@ -4,7 +4,18 @@
   "author": "Tom Kirkpatrick <tom@strike.me>",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "prepare": "simple-git-hooks",
+    "postinstall": "npx rulesync generate"
+  },
+  "simple-git-hooks": {
+    "post-merge": "npx rulesync generate",
+    "post-checkout": "npx rulesync generate"
+  },
   "dependencies": {
     "rulesync": "github:LN-Zap/rulesync#integration/all-enhancements"
+  },
+  "devDependencies": {
+    "simple-git-hooks": "^2.13.1"
   }
 }
