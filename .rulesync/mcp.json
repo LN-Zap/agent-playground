@@ -33,6 +33,10 @@
     "pagerduty": {
       "command": "uvx",
       "args": ["pagerduty-mcp"]
+    },
+    "ja4db": {
+      "type": "http",
+      "url": "https://docs.ja4db.com/~gitbook/mcp"
     }
   }
 }
