@@ -5,5 +5,9 @@
     "chat.useNestedAgentsMdFiles": true,
     "nixEnvSelector.nixFile": "devenv.nix",
     "chat.useClaudeMdFile": false,
-    "github.copilot.chat.codeGeneration.useInstructionFiles": false
+    "github.copilot.chat.codeGeneration.useInstructionFiles": false,
+    "chat.customAgentInSubagent.enabled": true,
+    "chat.unifiedAgentsBar.enabled": false,
+    "github.copilot.chat.copilotMemory.enabled": true,
+    "github.copilot.chat.cli.mcp.enabled": true
 }
