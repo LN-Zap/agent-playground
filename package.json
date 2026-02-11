@@ -1,19 +1,20 @@
 {
   "name": "agent-playground",
   "description": "A development environment for the Agent Playground project.",
-  "author": "Tom Kirkpatrick <tom@strike.me>",
+  "author": "Tom Kirkpatrick <tom@kirk patrick.me>",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "prepare": "simple-git-hooks",
-    "postinstall": "npx rulesync generate"
+    "postinstall": "npx rulesync install && npx rulesync generate",
+    "rulesync": "npx rulesync"
   },
   "simple-git-hooks": {
-    "post-merge": "npx rulesync generate",
-    "post-checkout": "npx rulesync generate"
+    "post-merge": "npx rulesync install && npx rulesync generate",
+    "post-checkout": "npx rulesync install && npx rulesync generate"
   },
   "dependencies": {
-    "rulesync": "github:LN-Zap/rulesync#integration/all-enhancements"
+    "rulesync": "github:LN-Zap/rulesync#integration/built-artifacts"
   },
   "devDependencies": {
     "simple-git-hooks": "^2.13.1"
