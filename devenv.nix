@@ -18,6 +18,7 @@
     pkgs.git
     pkgs.jq
     pkgs.yq-go
+    pkgs.yamlfmt
     pkgs.nodejs
     pkgs.twilio-cli
     pkgs.cloudflared
