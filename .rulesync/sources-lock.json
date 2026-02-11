@@ -15,11 +15,12 @@
     "https://github.com/anthropics/skills": {
       "resolvedRef": "1ed29a03dc852d30fa6ef2ca53a67dc2c2c2c563",
       "skills": [
+        "frontend-design",
         "skill-creator"
       ]
     },
     "https://github.com/openai/skills/tree/main/skills/.curated": {
-      "resolvedRef": "7fc1e3f3b1778a0ce14bc3ee6afc223d5b997ca2",
+      "resolvedRef": "4ab6e0fd99c6667163bc34173e3ed3a3fed75ebc",
       "skills": [
         "figma-implement-design",
         "figma"
