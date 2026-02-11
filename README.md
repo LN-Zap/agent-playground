@@ -7,7 +7,7 @@ A sandbox for experimenting with AI agent workflows and multi-agent environments
 **Key objectives:**
 
 - **Provider-agnostic agent management**: Centrally define skills, rules, and configurations once, then distribute them across multiple AI coding assistants
-- **Reproducible environments**: Use [Nix](https://nixos.org/) and [devenv](https://devenv.sh/) to ensure consistent development environments across all platforms and contributors
+- **Reproducible environments**: Ensure consistent development environments across all platforms and contributors
 - **Automated workflows**: Leverage git hooks and package scripts for seamless synchronization without manual intervention
 - **Real-world patterns**: Demonstrate practical approaches to managing complexity in modern AI-assisted development
 
