@@ -30,5 +30,8 @@
       "command": "uvx",
       "args": ["pagerduty-mcp"]
     },
+    "deepwiki": {
+      "serverUrl": "https://mcp.deepwiki.com/mcp"
+    }
   }
 }
