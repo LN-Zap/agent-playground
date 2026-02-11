@@ -21,17 +21,13 @@ The agent ecosystem is young and fragmented, with competing standards for how to
 
 ## Supported Agents
 
-| Agent | Target | Output |
-| --- | --- | --- |
-| GitHub Copilot | `copilot` | `.github/copilot-instructions.md`, `.github/skills/` |
-| Claude Code | `claudecode` | `CLAUDE.md`, `.claude/skills/` |
-| Codex CLI | `codexcli` | `.codex/skills/` |
-| Gemini CLI | `geminicli` | `GEMINI.md` |
-| OpenCode | `opencode` | `opencode.json`, `.opencode/skill/` |
-| AGENTS.md | `agentsmd` | `AGENTS.md` |
-| Agent Skills | `agentsskills` | `.agents/skills/` |
-
-> **Note**: `geminicli` does not yet generate `.gemini/skills/` — see [upstream issue](https://github.com/dyoshikawa/rulesync/issues/974). Gemini CLI has native skills support but rulesync currently classifies it as simulated.
+- GitHub Copilot
+- Claude Code
+- Codex CLI
+- Gemini CLI
+- OpenCode
+- AGENTS.md
+- Agent Skills
 
 All generated output files are **gitignored** and created automatically during setup. The source of truth lives in [.rulesync/](.rulesync) and [rulesync.jsonc](rulesync.jsonc).
 
