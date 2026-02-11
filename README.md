@@ -2,20 +2,29 @@
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/LN-Zap/agent-playground?quickstart=1)
 
-A sandbox for experimenting with AI agent workflows and multi-agent environments. This project serves as a reference for building and maintaining consistent, provider-agnostic agent ecosystems.
+A sandbox for experimenting with AI agent workflows and multi-agent environments. This project serves as a reference implementation for building maintainable, provider-agnostic agent ecosystems with fully reproducible development environments.
+
+**Key objectives:**
+
+- **Provider-agnostic agent management**: Centrally define skills, rules, and configurations once, then distribute them across multiple AI coding assistants
+- **Reproducible environments**: Use [Nix](https://nixos.org/) and [devenv](https://devenv.sh/) to ensure consistent development environments across all platforms and contributors
+- **Automated workflows**: Leverage git hooks and package scripts for seamless synchronization without manual intervention
+- **Real-world patterns**: Demonstrate practical approaches to managing complexity in modern AI-assisted development
 
 ## Core Philosophy
 
-The agent ecosystem is young and fragmented, with competing standards for how tools store skills and rules. This repo exists as a boilerplate for dealing with that complexity — keeping flexibility across agent harnesses, avoiding lock-in, and resisting proprietary formats.
+The agent ecosystem is young and fragmented, with competing standards for how tools store skills, rules, MCP configurations, hooks, commands, and ignore lists. This repo exists as a boilerplate for dealing with that complexity: keeping flexibility across agent harnesses, avoiding lock-in, and resisting proprietary formats.
+
+**[rulesync](https://github.com/dyoshikawa/rulesync)** is the engine that makes this possible. It provides a provider-agnostic framework for managing agent configurations centrally and distributing them to multiple agent platforms. This project demonstrates how rulesync can be applied in a real-world development environment to maintain consistency across diverse AI coding assistants.
 
 - **Define Once, Support Everywhere**: Rules and capabilities are defined centrally in [.rulesync](.rulesync) and distributed to all supported agents.
 - **Provider Agnostic**: Skills and instructions are managed independently of any specific AI platform.
-- **Automated Synchronization**: [rulesync](https://github.com/dyoshikawa/rulesync) propagates rules, skills, and configurations to all agent interfaces. Generated files are gitignored and created automatically — nothing to commit.
+- **Automated Synchronization**: rulesync propagates rules, skills, and configurations to all agent interfaces. Generated files are gitignored and created automatically. Nothing to commit.
 - **Declarative Sources**: Remote skill repositories are declared in [rulesync.jsonc](rulesync.jsonc) and fetched automatically with lockfile-based determinism.
 
 ## Key Components
 
-- **Skills**: Reusable capability modules declared in [rulesync.jsonc](rulesync.jsonc) and fetched from remote GitHub repositories. Distributed to all agents via rulesync.
+- **Skills**: A curated collection of reusable capability modules useful across the Zap ecosystem. Skills are declared in [rulesync.jsonc](rulesync.jsonc), fetched from remote GitHub repositories, and distributed to all agents.
 - **Rules**: Provider-agnostic instructions defined in [.rulesync/rules](.rulesync/rules) and generated into each agent's native format.
 - **MCP Servers**: External tool integrations defined in [.rulesync/mcp.json](.rulesync/mcp.json) and synchronized across agents.
 
@@ -26,40 +35,20 @@ The agent ecosystem is young and fragmented, with competing standards for how to
 - Codex CLI
 - Gemini CLI
 - OpenCode
-- AGENTS.md
-- Agent Skills
 
 All generated output files are **gitignored** and created automatically during setup. The source of truth lives in [.rulesync/](.rulesync) and [rulesync.jsonc](rulesync.jsonc).
 
+To add support for additional agents, configure the `targets` array in [rulesync.jsonc](rulesync.jsonc). See the [rulesync documentation](https://github.com/dyoshikawa/rulesync) for available agent targets and configuration options.
+
 ## Configuration
 
-All configuration lives in [rulesync.jsonc](rulesync.jsonc):
+All configuration lives in [rulesync.jsonc](rulesync.jsonc). Edit this file to control which agent formats to generate, which features to enable, and which remote skill repositories to fetch.
 
-- **`targets`** — Which agent formats to generate.
-- **`features`** — Which features to enable (`rules`, `skills`, `mcp`, `ignore`).
-- **`sources`** — Remote skill repositories to fetch from.
-
-### Adding skills
-
-Add a source entry to the `sources` array:
-
-```jsonc
-{ "source": "https://github.com/org/repo-name" }
-```
-
-To fetch only specific skills: `{ "source": "https://github.com/org/repo", "skills": ["skill-a", "skill-b"] }`
-
-### Adding rules
-
-Add or edit Markdown files in [.rulesync/rules](.rulesync/rules). Use YAML frontmatter to control targeting and scope.
-
-### Adding MCP servers
-
-Add server definitions to [.rulesync/mcp.json](.rulesync/mcp.json).
+For detailed configuration options and syntax, see the [rulesync documentation](https://github.com/dyoshikawa/rulesync).
 
 ### Synchronizing
 
-Generated files are created and updated automatically — you should rarely need to run anything manually:
+Generated files are created and updated automatically. You should rarely need to run anything manually:
 
 | Trigger | Mechanism | Who benefits |
 | --- | --- | --- |
@@ -73,40 +62,22 @@ To regenerate manually: `npx rulesync generate`
 
 > **Authentication**: Fetching skills from private repositories requires a `GITHUB_TOKEN` environment variable. In Codespaces this is provided automatically. For local development, add it to `.env` (loaded by devenv via `dotenv.enable`).
 
-## MCP Servers
-
-| Server | Description |
-| --- | --- |
-| context7 | Library and documentation context retrieval. |
-| figma-desktop | Figma desktop design context and asset access. |
-| github | GitHub repository and workflow access. |
-| playwright | Browser automation via Playwright MCP. |
-| chrome-devtools | Chrome DevTools automation via MCP. |
-
 ## Getting Started
 
 
 ### Environment Variables
 
-Add the following variables to your `.env` file (see example below):
+Add the following variables to your `.env` file:
 
 | Variable                   | Description                                 | Documentation |
 |----------------------------|---------------------------------------------|---------------|
 | `GEMINI_API_KEY`           | API key for Gemini access                   | [Get key](https://aistudio.google.com/api-keys) |
 | `GH_TOKEN`                 | GitHub token with repo access               | [Create token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) |
 | `CLOUDFLARE_API_TOKEN`     | Cloudflare API token for Workers/Observability | [API Tokens](https://dash.cloudflare.com/profile/api-tokens) |
-| `CLOUDFLARE_ACCOUNT_ID`    | Cloudflare Account ID                       | [Find Account ID](https://developers.cloudflare.com/fundamentals/account/account-id/) |
+| `CLOUDFLARE_ACCOUNT_ID`    | Cloudflare Account ID                       | [Find Account ID](https://developers.cloudflare.com/fundamentals/setup/find-account-and-zone-ids/) |
 | `PAGERDUTY_USER_API_KEY`   | PagerDuty User API key                      | [Create API Key](https://support.pagerduty.com/docs/generating-api-keys) |
 
-Example `.env`:
-
-```env
-GEMINI_API_KEY=your-gemini-key
-GH_TOKEN=your-github-token
-CLOUDFLARE_API_TOKEN=your-cloudflare-token
-CLOUDFLARE_ACCOUNT_ID=your-cloudflare-account-id
-PAGERDUTY_USER_API_KEY=your-pagerduty-api-key
-```
+See [.env.example](.env.example) for a documented template.
 
 ---
 
