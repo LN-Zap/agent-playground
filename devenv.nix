@@ -88,14 +88,17 @@
   devcontainer.settings.customizations.codespaces.openFiles = [
     "README.md"
   ];
+  devcontainer.settings.customizations.codespaces.repositories = {
+    "LN-Zap/zap-skills" = {
+      permissions = {
+        contents = "read";
+      };
+    };
+  };
   devcontainer.settings.secrets = {
     GEMINI_API_KEY = {
       description = "API key for Gemini access";
       documentationUrl = "https://aistudio.google.com/api-keys";
-    };
-    GH_TOKEN = {
-      description = "GitHub token with repo access";
-      documentationUrl = "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token";
     };
     CLOUDFLARE_API_TOKEN = {
       description = "Cloudflare API token for Workers/Observability";

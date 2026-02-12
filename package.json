@@ -14,7 +14,7 @@
     "post-checkout": "npx rulesync install && npx rulesync generate"
   },
   "dependencies": {
-    "rulesync": "github:LN-Zap/rulesync#integration/built-artifacts"
+    "rulesync": "github:LN-Zap/rulesync#41e098de14245041ebae509bbbc40f6b521c7fb0"
   },
   "devDependencies": {
     "simple-git-hooks": "^2.13.1"

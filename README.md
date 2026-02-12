@@ -72,7 +72,6 @@ Add the following variables to your `.env` file:
 | Variable                   | Description                                 | Documentation |
 |----------------------------|---------------------------------------------|---------------|
 | `GEMINI_API_KEY`           | API key for Gemini access                   | [Get key](https://aistudio.google.com/api-keys) |
-| `GH_TOKEN`                 | GitHub token with repo access               | [Create token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) |
 | `CLOUDFLARE_API_TOKEN`     | Cloudflare API token for Workers/Observability | [API Tokens](https://dash.cloudflare.com/profile/api-tokens) |
 | `CLOUDFLARE_ACCOUNT_ID`    | Cloudflare Account ID                       | [Find Account ID](https://developers.cloudflare.com/fundamentals/setup/find-account-and-zone-ids/) |
 | `PAGERDUTY_USER_API_KEY`   | PagerDuty User API key                      | [Create API Key](https://support.pagerduty.com/docs/generating-api-keys) |

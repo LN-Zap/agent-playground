@@ -4,7 +4,7 @@
     "ln-zap/zap-skills": {
       "requestedRef": "master",
       "resolvedRef": "2f7da9aa432b9ce262a01d83b2fdab354792a07f",
-      "resolvedAt": "2026-02-11T10:55:43.653Z",
+      "resolvedAt": "2026-02-12T15:15:49.473Z",
       "skills": {
         "brand-guidelines": {
           "integrity": "sha256-be550c91b3bda605a754c61f27f65dcf82a9b5ad1621fe2fc35aef856d95d02e"
@@ -32,7 +32,7 @@
     "anthropics/skills": {
       "requestedRef": "main",
       "resolvedRef": "1ed29a03dc852d30fa6ef2ca53a67dc2c2c2c563",
-      "resolvedAt": "2026-02-11T10:55:47.147Z",
+      "resolvedAt": "2026-02-12T15:15:52.982Z",
       "skills": {
         "frontend-design": {
           "integrity": "sha256-537c1df9d0c694ecf9139a911f9ad0bd111a7ebc173a55457568459e543fe75b"
@@ -45,7 +45,7 @@
     "openai/skills/tree/main/skills/.curated": {
       "requestedRef": "main",
       "resolvedRef": "4ab6e0fd99c6667163bc34173e3ed3a3fed75ebc",
-      "resolvedAt": "2026-02-11T10:55:51.132Z",
+      "resolvedAt": "2026-02-12T15:15:57.119Z",
       "skills": {
         "figma-implement-design": {
           "integrity": "sha256-52d46d669bb7334200003bc17483fdeb19a6df841c1389b78dd25f11dcf62174"
@@ -57,8 +57,8 @@
     },
     "cloudflare/skills": {
       "requestedRef": "main",
-      "resolvedRef": "de290a47c903e41a86ddfe29898efa3395621864",
-      "resolvedAt": "2026-02-11T10:56:50.693Z",
+      "resolvedRef": "486fb92891e6ea11cc7bf7d2dc178b1b5564faef",
+      "resolvedAt": "2026-02-12T15:17:03.602Z",
       "skills": {
         "cloudflare": {
           "integrity": "sha256-468b0a48c3900a74eca92352e5a399f178b746105133a9fc8ef04741a18f5b65"
