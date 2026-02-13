@@ -13,10 +13,10 @@
     "post-merge": "npx rulesync install && npx rulesync generate",
     "post-checkout": "npx rulesync install && npx rulesync generate"
   },
-  "devDependencies": {
-    "simple-git-hooks": "^2.13.1"
-  },
   "dependencies": {
     "rulesync": "7.2.0"
+  },
+  "devDependencies": {
+    "simple-git-hooks": "2.13.1"
   }
 }
