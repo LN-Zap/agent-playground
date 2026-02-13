@@ -31,7 +31,8 @@
       "args": ["pagerduty-mcp"]
     },
     "deepwiki": {
-      "serverUrl": "https://mcp.deepwiki.com/mcp"
+      "type": "http",
+      "url": "https://mcp.deepwiki.com/mcp"
     }
   }
 }
