@@ -181,6 +181,90 @@ jobs:
         if: always()
         shell: bash
         run: |
+          set -euo pipefail
+
+          human_bytes() {
+            local value="$1"
+            if [[ -z "$value" || "$value" == "n/a" ]]; then
+              echo "n/a"
+            else
+              numfmt --to=iec --suffix=B --format="%.2f" "$value"
+            fi
+          }
+
+          grouped_bytes() {
+            local value="$1"
+            if [[ -z "$value" || "$value" == "n/a" ]]; then
+              echo "n/a"
+            else
+              numfmt --grouping "$value"
+            fi
+          }
+
+          format_value() {
+            local value="$1"
+            if [[ -z "$value" || "$value" == "n/a" ]]; then
+              echo "n/a"
+            else
+              echo "$(human_bytes "$value") ($(grouped_bytes "$value") bytes)"
+            fi
+          }
+
+          format_delta() {
+            local current="$1"
+            local previous="$2"
+
+            if [[ -z "$current" || -z "$previous" || "$current" == "n/a" || "$previous" == "n/a" ]]; then
+              echo "n/a"
+              return
+            fi
+
+            local delta=$((current - previous))
+            local sign=""
+            if (( delta > 0 )); then
+              sign="+"
+            fi
+
+            local abs_delta=$delta
+            if (( abs_delta < 0 )); then
+              abs_delta=$(( -abs_delta ))
+            fi
+
+            echo "${sign}$(human_bytes "$abs_delta") (${sign}$(grouped_bytes "$delta") bytes)"
+          }
+
+          previous_run_id=""
+          previous_run_id=$(gh run list \
+            --repo "$GITHUB_REPOSITORY" \
+            --workflow devenv-image.yml \
+            --limit 20 \
+            --json databaseId,status,conclusion \
+            --jq '[.[] | select((.databaseId|tostring) != env.GITHUB_RUN_ID and .status == "completed" and .conclusion == "success")][0].databaseId // ""')
+
+          prev_npm="n/a"
+          prev_pip="n/a"
+          prev_nix="n/a"
+          prev_uv="n/a"
+          prev_removed="n/a"
+
+          if [[ -n "$previous_run_id" ]]; then
+            prev_log="$(mktemp)"
+            trap 'rm -f "$prev_log"' EXIT
+            gh run view "$previous_run_id" --repo "$GITHUB_REPOSITORY" --log > "$prev_log"
+
+            prev_npm=$(awk -F': ' '/~\/\.npm:/ {v=$2} END {print v}' "$prev_log")
+            prev_pip=$(awk -F': ' '/~\/\.cache\/pip:/ {v=$2} END {print v}' "$prev_log")
+            prev_nix=$(awk -F': ' '/~\/\.cache\/nix:/ {v=$2} END {print v}' "$prev_log")
+            prev_uv=$(awk -F': ' '/~\/\.cache\/uv:/ {v=$2} END {print v}' "$prev_log")
+            prev_removed=$(awk -F': ' '/Approx cache bytes removed before snapshot:/ {v=$2} END {print v}' "$prev_log")
+          fi
+
+          curr_npm='${{ steps.slim_snapshot.outputs.npm_cache_before || 'n/a' }}'
+          curr_pip='${{ steps.slim_snapshot.outputs.pip_cache_before || 'n/a' }}'
+          curr_nix='${{ steps.slim_snapshot.outputs.nix_cache_before || 'n/a' }}'
+          curr_uv='${{ steps.slim_snapshot.outputs.uv_cache_before || 'n/a' }}'
+          curr_removed='${{ steps.slim_snapshot.outputs.total_removed || 'n/a' }}'
+
           activation_script_present="no"
           if [ -x /home/runner/copilot-devenv-activate.sh ]; then
             activation_script_present="yes"
@@ -192,10 +276,16 @@ jobs:
             echo "- Snapshot target: copilot-devenv"
             echo "- DEVENV_WITH_GCLOUD: $DEVENV_WITH_GCLOUD"
             echo "- Activation script present: $activation_script_present"
-            echo "- npm cache before slim (bytes): ${{ steps.slim_snapshot.outputs.npm_cache_before || 'n/a' }}"
-            echo "- pip cache before slim (bytes): ${{ steps.slim_snapshot.outputs.pip_cache_before || 'n/a' }}"
-            echo "- nix cache before slim (bytes): ${{ steps.slim_snapshot.outputs.nix_cache_before || 'n/a' }}"
-            echo "- uv cache before slim (bytes): ${{ steps.slim_snapshot.outputs.uv_cache_before || 'n/a' }}"
-            echo "- Approx cache bytes removed: ${{ steps.slim_snapshot.outputs.total_removed || 'n/a' }}"
+            echo "- Previous successful run ID: ${previous_run_id:-none}"
+            echo
+            echo "### Cache Size Trend"
+            echo
+            echo "| Metric | Current | Previous | Delta |"
+            echo "| --- | --- | --- | --- |"
+            echo "| npm cache before slim | $(format_value "$curr_npm") | $(format_value "$prev_npm") | $(format_delta "$curr_npm" "$prev_npm") |"
+            echo "| pip cache before slim | $(format_value "$curr_pip") | $(format_value "$prev_pip") | $(format_delta "$curr_pip" "$prev_pip") |"
+            echo "| nix cache before slim | $(format_value "$curr_nix") | $(format_value "$prev_nix") | $(format_delta "$curr_nix" "$prev_nix") |"
+            echo "| uv cache before slim | $(format_value "$curr_uv") | $(format_value "$prev_uv") | $(format_delta "$curr_uv" "$prev_uv") |"
+            echo "| Approx cache bytes removed | $(format_value "$curr_removed") | $(format_value "$prev_removed") | $(format_delta "$curr_removed" "$prev_removed") |"
             echo "- Image workflow: .github/workflows/devenv-image.yml"
           } >> "$GITHUB_STEP_SUMMARY"
