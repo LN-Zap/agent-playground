@@ -7,7 +7,10 @@
   "scripts": {
     "prepare": "simple-git-hooks",
     "postinstall": "npx rulesync install && npx rulesync generate --delete",
-    "rulesync": "npx rulesync"
+    "rulesync": "npx rulesync",
+    "docs:build": "mkdocs build",
+    "docs:serve": "mkdocs serve",
+    "docs:deploy": "mkdocs gh-deploy"
   },
   "simple-git-hooks": {
     "post-merge": "npx rulesync install && npx rulesync generate --delete",

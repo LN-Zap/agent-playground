@@ -1,0 +1,57 @@
+site_name: Agent Playground
+site_description: A sandbox for experimenting with AI agent workflows and multi-agent environments
+site_author: Tom Kirkpatrick
+repo_url: https://github.com/LN-Zap/agent-playground
+repo_name: LN-Zap/agent-playground
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    primary: indigo
+    accent: indigo
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+plugins:
+  - techdocs-core
+  - search
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - meta
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - tables
+  - attr_list
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Setup: getting-started/setup.md
+      - Configuration: getting-started/configuration.md
+  - Rules:
+      - Overview: rules/overview.md
+      - Feature Change Guidelines: rules/feature-change-guidelines.md
+      - GitHub Actions Security: rules/github-actions-security.md
+  - Agents:
+      - Code Reviewer: agents/code-reviewer.md
+      - Security Reviewer: agents/security-reviewer.md
+      - Swarm Reviewer: agents/swarm-reviewer.md
+  - Reference:
+      - Supported Tools: reference/tools.md
+      - Supported Agents: reference/agents.md
