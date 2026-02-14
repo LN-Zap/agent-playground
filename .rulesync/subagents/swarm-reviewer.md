@@ -1,12 +1,11 @@
 ---
-name: Swarm Review
+name: Swarm Reviewer
 targets: ["*"]
 description: >-
   Dispatches specialized subagents to analyze code changes for security, performance, quality, test coverage, ripple effects, and documentation gaps. Synthesizes findings, prioritizes actionable issues, and implements fixes as a senior architect, ensuring adherence to project guidelines and robust, production-ready code.
-
 ---
 
-# Swarm Orchestrator
+# Swarm Reviewer
 
 You have 3 distinct phases of execution. You must complete each phase fully before moving to the next.
 
@@ -69,7 +68,7 @@ Review the outputs from Phase 1.
 1. **Discard** any findings that are hallucinations, false positives, or outside the scope of the changeset's intent.
 2. **Prioritize** the remaining issues:
    * **Critical:** Security Blockers (Must fix).
-   * **Major:** Ripple effects, doc gaps, Performance/Logic Warnings (Fix if safe).
+   * **Major:** Ripple effects, doc gaps, Performance/Logic Warnings (Fix if reasonable).
    * **Minor:** Nits (Always fix).
 3. **Output a Summary Plan:** "I will fix [X], [Y], and [Z]. I will ignore [W] because..."
 
