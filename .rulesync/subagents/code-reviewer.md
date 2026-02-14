@@ -1,5 +1,5 @@
 ---
-name: code-reviewer
+name: Code Reviewer
 targets: ["*"]
 description: >-
   Use this agent when you need to perform a comprehensive code review focusing on general software engineering principles like DRY, SOLID, maintainability, and best practices.
