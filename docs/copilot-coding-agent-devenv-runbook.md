@@ -145,6 +145,34 @@ Before running either workflow, configure `RULESYNC_GITHUB_TOKEN` as described a
 4. Create Copilot setup runner capacity with label `copilot-devenv-runner` using image `copilot-devenv`.
 5. Run `Copilot Setup Steps` to validate.
 
+### Rebind runner to latest custom image version
+
+If `copilot-devenv-runner` is configured for `latest` but setup still fails with missing pre-baked tools, roll the runner capacity so fresh instances are created from the newest image version.
+
+Recommended sequence:
+
+1. Open organization settings → Actions → GitHub-hosted runners.
+2. Open `copilot-devenv-runner`.
+3. Confirm image is `copilot-devenv` and version policy is `latest`.
+4. Force capacity refresh using one of these methods:
+   - Edit and save runner configuration (image/version/size), then save.
+   - Preferred deterministic refresh (if supported): temporarily scale minimum capacity to `0`, wait for existing instances to drain/terminate, then scale back up.
+   - If needed, delete and recreate the runner with the same label and `copilot-devenv` image.
+5. Re-run `Copilot Setup Steps` and confirm `Verify pre-baked runner image` passes.
+
+Notes:
+
+- `latest` guarantees new instances use the newest image version, not that already-provisioned instances hot-swap immediately.
+- Long provisioning times can leave old instances around longer than expected; a forced refresh makes rollout deterministic.
+- If edit/save does not trigger replacement quickly, use scale-to-zero rollout.
+- If your runner UI enforces minimum concurrency `>= 1` and does not allow scale-to-zero, use delete/recreate to force fresh instances.
+
+How to verify refresh actually happened:
+
+1. Check runner capacity/instance counters on the runner details page before and after rollout.
+2. Re-run `Copilot Setup Steps`.
+3. Confirm `Verify pre-baked runner image` passes (this is the authoritative check for this repository).
+
 ### Setup path B: Self-hosted infrastructure
 
 1. Provision Linux x64 runner hosts (recommended 4+ cores).
@@ -183,7 +211,7 @@ Primary path (custom image present):
 1. Checkout repository
    - Uses `clean: false` so pre-baked generated artifacts are preserved.
    - Uses `SKIP_SIMPLE_GIT_HOOKS=1` so checkout does not trigger repository hooks.
-2. Export devenv environment to `GITHUB_PATH` and `GITHUB_ENV`
+2. Activate pre-baked tool paths by appending known prebuilt paths to `GITHUB_PATH`
 3. Verify pre-baked runtime tools and generated artifacts exist
 
 No runtime npm install or rulesync generation should be needed in this workflow when the runner image is correctly baked.
@@ -193,6 +221,11 @@ No runtime npm install or rulesync generation should be needed in this workflow 
 - Stripping transient caches from the image build workflow does **not** add noticeable time to Copilot setup workflow when running image-first mode.
 - Copilot setup does not execute npm install/rulesync generation, so npm cache presence is not on the hot path.
 - Cache stripping mainly affects future image rebuild time (slightly) and image size/provisioning time (positively).
+
+### Setup-time optimization note
+
+- Prefer fast PATH activation from pre-baked locations over full environment diff/export at setup time.
+- Full `devenv shell -- env` export is accurate but slower; use only if PATH activation proves insufficient.
 
 ## Verification Checklist
 
@@ -229,6 +262,7 @@ Use this when creating a fresh copy of the repository and setting it up from zer
 - **`rulesync` 403/rate-limit errors**: verify `RULESYNC_GITHUB_TOKEN` is set and can read `LN-Zap/zap-skills`.
 - **Failure during `Checkout code` with rulesync/node errors**: ensure checkout runs with `SKIP_SIMPLE_GIT_HOOKS=1` so repository git hooks do not execute inside `actions/checkout`.
 - **Failure in `Verify pre-baked runner image`**: the runner is not using a fresh `copilot-devenv` image. Re-run `Devenv Image`, then update/recreate `copilot-devenv-runner` to use the latest image.
+- **Runner is set to `latest` but still fails validation**: force a runner capacity refresh (scale to zero and back, or recreate runner) so instances are reprovisioned from the newest image version.
 - **Failure in `Verify pre-baked artifacts`**: generated files were not baked into the image. Confirm image workflow completed `npm install` successfully before snapshot.
 - **Cannot find custom-image options in GitHub**: your org/plan may not expose GitHub-managed custom images; use self-hosted setup path.
 - **No custom image produced**: verify custom images are enabled on `devenv-image-gen` runner.
