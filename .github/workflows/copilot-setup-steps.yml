@@ -1,0 +1,129 @@
+name: "Copilot Setup Steps"
+
+# Automatically run the setup steps when they are changed to allow for easy validation, and
+# allow manual testing through the repository's "Actions" tab
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
+  copilot-setup-steps:
+    runs-on: copilot-devenv-runner
+    timeout-minutes: 15
+    env:
+      GITHUB_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}
+      GH_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}
+
+    # Set the permissions to the lowest permissions possible needed for your steps.
+    # Copilot will be given its own token for its operations.
+    permissions:
+      # If you want to clone the repository as part of your setup steps, for example to install dependencies, you'll need the `contents: read` permission. If you don't clone the repository in your setup steps, Copilot will do this for you automatically after the steps complete.
+      contents: read
+
+    # You can define any steps you want, and they will run before the agent starts.
+    # If you do not check out your code, Copilot will do this for you.
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Check for devenv
+        id: check-devenv
+        run: |
+          if command -v devenv >/dev/null 2>&1; then
+            echo "has_devenv=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_devenv=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install Nix (fallback)
+        if: steps.check-devenv.outputs.has_devenv == 'false'
+        uses: cachix/install-nix-action@v31
+
+      - name: Setup Cachix (fallback)
+        if: steps.check-devenv.outputs.has_devenv == 'false'
+        uses: cachix/cachix-action@v16
+        with:
+          name: devenv
+
+      - name: Cache Nix store (fallback)
+        if: steps.check-devenv.outputs.has_devenv == 'false'
+        uses: actions/cache@v4
+        with:
+          path: /nix/store
+          key: nix-${{ runner.os }}-${{ hashFiles('devenv.lock') }}
+          restore-keys: |
+            nix-${{ runner.os }}-
+
+      - name: Install devenv (fallback)
+        if: steps.check-devenv.outputs.has_devenv == 'false'
+        run: nix profile install nixpkgs#devenv
+
+      - name: Build devenv shell (fallback)
+        if: steps.check-devenv.outputs.has_devenv == 'false'
+        run: devenv shell -- echo 'devenv ready'
+
+      - name: Export devenv environment
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          env | sort > /tmp/base.env
+          devenv shell -- env | sort > /tmp/devenv.env
+
+          python3 - <<'PY'
+          import os
+
+          def parse_env(path: str) -> dict[str, str]:
+              parsed: dict[str, str] = {}
+              with open(path, "r", encoding="utf-8") as handle:
+                  for line in handle:
+                      line = line.rstrip("\n")
+                      if not line or "=" not in line:
+                          continue
+                      key, value = line.split("=", 1)
+                      parsed[key] = value
+              return parsed
+
+          base_env = parse_env("/tmp/base.env")
+          devenv_env = parse_env("/tmp/devenv.env")
+
+          base_path = [entry for entry in base_env.get("PATH", "").split(":") if entry]
+          devenv_path = [entry for entry in devenv_env.get("PATH", "").split(":") if entry]
+          path_additions = [entry for entry in devenv_path if entry not in base_path]
+
+          github_path = os.environ["GITHUB_PATH"]
+          with open(github_path, "a", encoding="utf-8") as handle:
+              for entry in path_additions:
+                  handle.write(f"{entry}\n")
+
+          excluded = {
+              "PATH",
+              "PWD",
+              "OLDPWD",
+              "SHLVL",
+              "_",
+          }
+
+          def should_exclude(key: str) -> bool:
+              if key in excluded:
+                  return True
+              return key.startswith("GITHUB_") or key.startswith("RUNNER_")
+
+          github_env = os.environ["GITHUB_ENV"]
+          with open(github_env, "a", encoding="utf-8") as handle:
+              for key, value in sorted(devenv_env.items()):
+                  if should_exclude(key):
+                      continue
+                  if base_env.get(key) == value:
+                      continue
+                  handle.write(f"{key}<<EOF\n{value}\nEOF\n")
+          PY
+
+      - name: Install npm dependencies
+        run: devenv shell -- npm install
