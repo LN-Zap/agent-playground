@@ -236,7 +236,7 @@ jobs:
           previous_run_id=""
           previous_run_id=$(gh run list \
             --repo "$GITHUB_REPOSITORY" \
-            --workflow devenv-image.yml \
+            --workflow "Devenv Image" \
             --limit 20 \
             --json databaseId,status,conclusion \
             --jq '[.[] | select((.databaseId|tostring) != env.GITHUB_RUN_ID and .status == "completed" and .conclusion == "success")][0].databaseId // ""')
