@@ -36,9 +36,24 @@ jobs:
 
       - name: Check runtime tooling
         id: check-runtime
+        shell: bash
         run: |
+          set -euo pipefail
+
+          nix_bin=""
+
           if command -v nix >/dev/null 2>&1; then
+            nix_bin="$(command -v nix)"
+          elif [ -x /nix/var/nix/profiles/default/bin/nix ]; then
+            nix_bin="/nix/var/nix/profiles/default/bin/nix"
+          elif [ -x "$HOME/.nix-profile/bin/nix" ]; then
+            nix_bin="$HOME/.nix-profile/bin/nix"
+          fi
+
+          if [ -n "$nix_bin" ]; then
             echo "has_nix=true" >> "$GITHUB_OUTPUT"
+            nix_bin_dir="$(dirname "$nix_bin")"
+            echo "$nix_bin_dir" >> "$GITHUB_PATH"
           else
             echo "has_nix=false" >> "$GITHUB_OUTPUT"
           fi
