@@ -203,6 +203,8 @@ Build flow:
 8. Remove transient caches (`~/.npm`, pip/nix/uv cache dirs) and run `nix store optimise`
 9. Snapshot image as `copilot-devenv`
 
+`devenv.nix` keeps gcloud enabled by default for local/team usage. This workflow sets `DEVENV_WITH_GCLOUD=0` during image build to reduce custom image footprint and provisioning time.
+
 ## Copilot Setup Flow
 
 Workflow: `.github/workflows/copilot-setup-steps.yml`
@@ -237,7 +239,7 @@ After setup or updates:
 1. Trigger `Devenv Image` workflow manually.
 2. Confirm `copilot-devenv` appears in org/repo custom images.
 3. Run `Copilot Setup Steps` workflow and verify all steps pass.
-4. Confirm agent runtime tools are available (for example: `node`, `python3`, `jq`, `gcloud`).
+4. Confirm agent runtime tools are available (for example: `node`, `python3`, `jq`).
 5. Confirm setup time target:
    - Custom image path: under 1 minute
 6. Confirm no `rulesync` GitHub API `403`/rate-limit errors appear in workflow logs.
@@ -257,7 +259,7 @@ Use this when creating a fresh copy of the repository and setting it up from zer
 8. Create setup runner with label `copilot-devenv-runner` using base image `copilot-devenv`.
 9. Run `Copilot Setup Steps` workflow and confirm success.
 10. Confirm workflow logs contain no rulesync private-repo access errors.
-11. Assign a test issue to Copilot Coding Agent and validate tooling availability (`node`, `python3`, `jq`, `gcloud`).
+11. Assign a test issue to Copilot Coding Agent and validate tooling availability (`node`, `python3`, `jq`).
 
 ## Troubleshooting
 

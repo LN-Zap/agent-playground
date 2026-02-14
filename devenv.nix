@@ -6,6 +6,9 @@
   ...
 }:
 
+let
+  enableGcloud = builtins.getEnv "DEVENV_WITH_GCLOUD" != "0";
+in
 {
   # https://devenv.sh/basics/
   env.GREET = "devenv";
@@ -22,6 +25,7 @@
     pkgs.nodejs
     pkgs.twilio-cli
     pkgs.cloudflared
+  ] ++ lib.optionals enableGcloud [
     (pkgs.google-cloud-sdk.withExtraComponents [pkgs.google-cloud-sdk.components.gke-gcloud-auth-plugin])
   ];
 

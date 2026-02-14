@@ -145,6 +145,8 @@ GitHub Copilot Coding Agent setup is defined in [.github/workflows/copilot-setup
 - **Image-first setup**: copilot setup consumes pre-baked devenv/tooling/artifacts from the custom runner image and fails fast if the runner is stale or misconfigured
 - **Single source of truth**: environment packages and language tooling remain defined in [devenv.nix](devenv.nix)
 
+`devenv` includes Google Cloud tooling by default. For image prebuilds, [.github/workflows/devenv-image.yml](.github/workflows/devenv-image.yml) sets `DEVENV_WITH_GCLOUD=0` so the custom image stays leaner; local/team environments keep the default behavior (no extra setup required).
+
 Required for private rulesync sources in CI/Copilot workflows:
 
 - Configure `RULESYNC_GITHUB_TOKEN` with read access to configured source repositories (including private `LN-Zap/zap-skills`) to avoid GitHub API `403`/rate-limit failures during `npm install` (`rulesync install/generate`).
