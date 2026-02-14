@@ -40,10 +40,32 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          command -v devenv >/dev/null 2>&1
-          command -v node >/dev/null 2>&1
-          command -v python3 >/dev/null 2>&1
-          test -f .github/copilot-instructions.md
+          missing=0
+
+          if ! command -v devenv >/dev/null 2>&1; then
+            echo "::error::devenv not found. copilot-devenv-runner is not using a fresh copilot-devenv custom image."
+            missing=1
+          fi
+
+          if ! command -v node >/dev/null 2>&1; then
+            echo "::error::node not found on runner image."
+            missing=1
+          fi
+
+          if ! command -v python3 >/dev/null 2>&1; then
+            echo "::error::python3 not found on runner image."
+            missing=1
+          fi
+
+          if [ ! -f .github/copilot-instructions.md ]; then
+            echo "::error::Generated copilot instructions missing. Ensure devenv-image workflow completed npm install before snapshot and checkout uses clean=false."
+            missing=1
+          fi
+
+          if [ "$missing" -ne 0 ]; then
+            echo "::error::Runner bootstrap validation failed. Rebuild image via Devenv Image workflow and reattach/update copilot-devenv-runner to that image."
+            exit 1
+          fi
 
       - name: Export devenv environment
         shell: bash
