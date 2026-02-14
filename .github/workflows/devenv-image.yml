@@ -1,0 +1,41 @@
+name: Devenv Image
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * 1'
+  push:
+    paths:
+      - devenv.nix
+      - devenv.yaml
+      - devenv.lock
+      - .github/workflows/devenv-image.yml
+
+jobs:
+  build-image:
+    runs-on: devenv-image-gen
+    timeout-minutes: 30
+    snapshot: copilot-devenv
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+
+      - name: Setup Cachix
+        uses: cachix/cachix-action@v16
+        with:
+          name: devenv
+
+      - name: Install devenv
+        run: nix profile install nixpkgs#devenv
+
+      - name: Build devenv shell
+        run: devenv shell -- echo 'devenv ready'
+
+      - name: Install npm dependencies
+        run: devenv shell -- npm install
