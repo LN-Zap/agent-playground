@@ -85,7 +85,11 @@ jobs:
 
       - name: Install devenv (fallback)
         if: steps.check-runtime.outputs.has_devenv == 'false'
-        run: nix profile install nixpkgs#devenv
+        shell: bash
+        run: |
+          set -euo pipefail
+          nix profile install nixpkgs#devenv
+          echo "$HOME/.nix-profile/bin" >> "$GITHUB_PATH"
 
       - name: Build devenv shell (fallback)
         if: steps.check-runtime.outputs.has_devenv == 'false'
