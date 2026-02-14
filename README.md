@@ -30,8 +30,6 @@ The agent ecosystem is young and fragmented, with competing standards for how to
 
 ## Supported Tools
 
-The following MCP servers are configured in [.rulesync/mcp.json](.rulesync/mcp.json):
-
 | Name | Description |
 | --- | --- |
 | [context7](https://context7.com/docs/resources/all-clients) | Documentation and reference retrieval via Context7 MCP. |
@@ -44,15 +42,17 @@ The following MCP servers are configured in [.rulesync/mcp.json](.rulesync/mcp.j
 | [notion](https://developers.notion.com/guides/mcp/get-started-with-mcp) | Notion MCP for searching and managing pages and databases. |
 | [n8n](https://docs.n8n.io/advanced-ai/accessing-n8n-mcp-server/) | n8n MCP server integration for workflow automation endpoints. |
 
+To add support for additional MCP tools, update the `mcpServers` object in [.rulesync/mcp.json](.rulesync/mcp.json). See the [rulesync documentation](https://github.com/dyoshikawa/rulesync) for synchronization behavior and target support.
+
 ## Supported Agents
 
-- GitHub Copilot
-- Claude Code
-- Codex CLI
-- Gemini CLI
-- OpenCode
-
-All generated output files are **gitignored** and created automatically during setup. The source of truth lives in [.rulesync/](.rulesync) and [rulesync.jsonc](rulesync.jsonc).
+| Name | Description |
+| --- | --- |
+| [GitHub Copilot](https://docs.github.com/en/copilot) | AI coding assistant integrated across GitHub and major IDEs. |
+| [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) | Anthropic's CLI-first coding agent for local development workflows. |
+| [Codex CLI](https://github.com/openai/codex) | OpenAI's terminal coding agent for repository-aware development tasks. |
+| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | Google's open-source command-line AI agent for coding and automation. |
+| [OpenCode](https://opencode.ai/docs) | Open-source AI coding agent with MCP support and provider flexibility. |
 
 To add support for additional agents, configure the `targets` array in [rulesync.jsonc](rulesync.jsonc). See the [rulesync documentation](https://github.com/dyoshikawa/rulesync) for available agent targets and configuration options.
 
@@ -63,6 +63,8 @@ All configuration lives in [rulesync.jsonc](rulesync.jsonc). Edit this file to c
 For detailed configuration options and syntax, see the [rulesync documentation](https://github.com/dyoshikawa/rulesync).
 
 ### Synchronizing
+
+All generated output files are **gitignored** and created automatically during setup. The source of truth lives in [.rulesync/](.rulesync) and [rulesync.jsonc](rulesync.jsonc).
 
 Generated files are created and updated automatically. You should rarely need to run anything manually:
 
@@ -77,6 +79,10 @@ Generated files are created and updated automatically. You should rarely need to
 To regenerate manually: `npx rulesync generate`
 
 > **Authentication**: Fetching skills from private repositories requires a `GITHUB_TOKEN` environment variable. In Codespaces this is provided automatically. For local development, add it to `.env` (loaded by devenv via `dotenv.enable`).
+>
+> **Recommended scopes**:
+> - **Fine-grained PAT (recommended)**: Grant repository access to the skill source repositories and set **Contents: Read-only** and **Metadata: Read-only**.
+> - **Classic PAT**: Use the `repo` scope (minimum practical scope for private repository read access).
 
 ## Getting Started
 
@@ -88,6 +94,7 @@ Add the following variables to your `.env` file:
 | Variable                   | Description                                 | Documentation |
 |----------------------------|---------------------------------------------|---------------|
 | `GEMINI_API_KEY`           | API key for Gemini access                   | [Get key](https://aistudio.google.com/api-keys) |
+| `GITHUB_TOKEN`             | GitHub token for fetching private skill repositories | [Create token](https://github.com/settings/tokens) |
 | `CLOUDFLARE_API_TOKEN`     | Cloudflare API token for Workers/Observability | [API Tokens](https://dash.cloudflare.com/profile/api-tokens) |
 | `CLOUDFLARE_ACCOUNT_ID`    | Cloudflare Account ID                       | [Find Account ID](https://developers.cloudflare.com/fundamentals/setup/find-account-and-zone-ids/) |
 | `PAGERDUTY_USER_API_KEY`   | PagerDuty User API key                      | [Create API Key](https://support.pagerduty.com/docs/generating-api-keys) |
