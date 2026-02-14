@@ -65,55 +65,64 @@ jobs:
           exit 1
 
       - name: Activate pre-baked devenv environment
+        id: activate_devenv
         shell: bash
         run: |
           set -euo pipefail
+          start_epoch=$(date +%s)
+          activation_mode="script"
+
           if [ -x /home/runner/copilot-devenv-activate.sh ]; then
             /home/runner/copilot-devenv-activate.sh
-            exit 0
+          else
+            activation_mode="fallback"
+            echo "Activation script not found. Falling back to dynamic devenv activation for this runner instance."
+
+            DEVENV_BIN="$(command -v devenv || true)"
+            if [ -z "$DEVENV_BIN" ] && [ -x "$HOME/.nix-profile/bin/devenv" ]; then
+              DEVENV_BIN="$HOME/.nix-profile/bin/devenv"
+            fi
+
+            if [ -z "$DEVENV_BIN" ] && [ -x /nix/var/nix/profiles/default/bin/devenv ]; then
+              DEVENV_BIN=/nix/var/nix/profiles/default/bin/devenv
+            fi
+
+            if [ -z "$DEVENV_BIN" ]; then
+              echo "::error::devenv is unavailable, and activation script is missing. Rebuild image and refresh runner capacity."
+              exit 1
+            fi
+
+            BASE_ENV="$(mktemp)"
+            DEVENV_ENV="$(mktemp)"
+            trap 'rm -f "$BASE_ENV" "$DEVENV_ENV"' EXIT
+
+            env | sort > "$BASE_ENV"
+            "$DEVENV_BIN" shell -- env | sort > "$DEVENV_ENV"
+
+            while IFS= read -r line; do
+              [ -z "$line" ] && continue
+              key="${line%%=*}"
+              value="${line#*=}"
+
+              case "$key" in
+                PATH)
+                  echo "$value" >> "$GITHUB_PATH"
+                  ;;
+                _|SHLVL|PWD|OLDPWD)
+                  ;;
+                *)
+                  printf '%s=%s\n' "$key" "$value" >> "$GITHUB_ENV"
+                  ;;
+              esac
+            done < <(comm -13 "$BASE_ENV" "$DEVENV_ENV")
           fi
 
-          echo "Activation script not found. Falling back to dynamic devenv activation for this runner instance."
-
-          DEVENV_BIN="$(command -v devenv || true)"
-          if [ -z "$DEVENV_BIN" ] && [ -x "$HOME/.nix-profile/bin/devenv" ]; then
-            DEVENV_BIN="$HOME/.nix-profile/bin/devenv"
-          fi
-
-          if [ -z "$DEVENV_BIN" ] && [ -x /nix/var/nix/profiles/default/bin/devenv ]; then
-            DEVENV_BIN=/nix/var/nix/profiles/default/bin/devenv
-          fi
-
-          if [ -z "$DEVENV_BIN" ]; then
-            echo "::error::devenv is unavailable, and activation script is missing. Rebuild image and refresh runner capacity."
-            exit 1
-          fi
-
-          BASE_ENV="$(mktemp)"
-          DEVENV_ENV="$(mktemp)"
-          trap 'rm -f "$BASE_ENV" "$DEVENV_ENV"' EXIT
-
-          env | sort > "$BASE_ENV"
-          "$DEVENV_BIN" shell -- env | sort > "$DEVENV_ENV"
-
-          while IFS= read -r line; do
-            [ -z "$line" ] && continue
-            key="${line%%=*}"
-            value="${line#*=}"
-
-            case "$key" in
-              PATH)
-                echo "$value" >> "$GITHUB_PATH"
-                ;;
-              _|SHLVL|PWD|OLDPWD)
-                ;;
-              *)
-                printf '%s=%s\n' "$key" "$value" >> "$GITHUB_ENV"
-                ;;
-            esac
-          done < <(comm -13 "$BASE_ENV" "$DEVENV_ENV")
+          end_epoch=$(date +%s)
+          echo "activation_mode=$activation_mode" >> "$GITHUB_OUTPUT"
+          echo "activation_seconds=$((end_epoch - start_epoch))" >> "$GITHUB_OUTPUT"
 
       - name: Verify pre-baked artifacts
+        id: verify_artifacts
         shell: bash
         run: |
           set -euo pipefail
@@ -122,3 +131,17 @@ jobs:
           command -v node >/dev/null 2>&1
           command -v python3 >/dev/null 2>&1
           command -v jq >/dev/null 2>&1
+
+      - name: Write setup summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Copilot Setup Summary"
+            echo
+            echo "- Runner label: copilot-devenv-runner"
+            echo "- Activation mode: ${{ steps.activate_devenv.outputs.activation_mode || 'unknown' }}"
+            echo "- Activation duration (seconds): ${{ steps.activate_devenv.outputs.activation_seconds || 'n/a' }}"
+            echo "- Artifact verification step: ${{ steps.verify_artifacts.outcome || 'skipped' }}"
+            echo "- Setup workflow: .github/workflows/copilot-setup-steps.yml"
+          } >> "$GITHUB_STEP_SUMMARY"

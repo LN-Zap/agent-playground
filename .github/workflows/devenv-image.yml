@@ -134,6 +134,7 @@ jobs:
           PY
 
       - name: Slim snapshot contents
+        id: slim_snapshot
         shell: bash
         run: |
           set -euo pipefail
@@ -167,3 +168,34 @@ jobs:
 
           total_removed=$((npm_cache_before + pip_cache_before + nix_cache_before + uv_cache_before))
           echo "Approx cache bytes removed before snapshot: $total_removed"
+
+          {
+            echo "npm_cache_before=$npm_cache_before"
+            echo "pip_cache_before=$pip_cache_before"
+            echo "nix_cache_before=$nix_cache_before"
+            echo "uv_cache_before=$uv_cache_before"
+            echo "total_removed=$total_removed"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Write image build summary
+        if: always()
+        shell: bash
+        run: |
+          activation_script_present="no"
+          if [ -x /home/runner/copilot-devenv-activate.sh ]; then
+            activation_script_present="yes"
+          fi
+
+          {
+            echo "## Devenv Image Summary"
+            echo
+            echo "- Snapshot target: copilot-devenv"
+            echo "- DEVENV_WITH_GCLOUD: $DEVENV_WITH_GCLOUD"
+            echo "- Activation script present: $activation_script_present"
+            echo "- npm cache before slim (bytes): ${{ steps.slim_snapshot.outputs.npm_cache_before || 'n/a' }}"
+            echo "- pip cache before slim (bytes): ${{ steps.slim_snapshot.outputs.pip_cache_before || 'n/a' }}"
+            echo "- nix cache before slim (bytes): ${{ steps.slim_snapshot.outputs.nix_cache_before || 'n/a' }}"
+            echo "- uv cache before slim (bytes): ${{ steps.slim_snapshot.outputs.uv_cache_before || 'n/a' }}"
+            echo "- Approx cache bytes removed: ${{ steps.slim_snapshot.outputs.total_removed || 'n/a' }}"
+            echo "- Image workflow: .github/workflows/devenv-image.yml"
+          } >> "$GITHUB_STEP_SUMMARY"
