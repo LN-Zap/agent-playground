@@ -44,3 +44,38 @@ jobs:
 
       - name: Install npm dependencies
         run: devenv shell -- npm install
+
+      - name: Slim snapshot contents
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          size_of() {
+            local target="$1"
+            if [ -e "$target" ]; then
+              du -sb "$target" | awk '{print $1}'
+            else
+              echo 0
+            fi
+          }
+
+          npm_cache_before=$(size_of "$HOME/.npm")
+          pip_cache_before=$(size_of "$HOME/.cache/pip")
+          nix_cache_before=$(size_of "$HOME/.cache/nix")
+          uv_cache_before=$(size_of "$HOME/.cache/uv")
+
+          echo "Pre-slim cache sizes (bytes):"
+          echo "  ~/.npm: $npm_cache_before"
+          echo "  ~/.cache/pip: $pip_cache_before"
+          echo "  ~/.cache/nix: $nix_cache_before"
+          echo "  ~/.cache/uv: $uv_cache_before"
+
+          rm -rf "$HOME/.npm"
+          rm -rf "$HOME/.cache/pip"
+          rm -rf "$HOME/.cache/nix"
+          rm -rf "$HOME/.cache/uv"
+
+          nix store optimise || true
+
+          total_removed=$((npm_cache_before + pip_cache_before + nix_cache_before + uv_cache_before))
+          echo "Approx cache bytes removed before snapshot: $total_removed"

@@ -170,8 +170,8 @@ Build flow:
 3. Configure Cachix (`devenv`)
 4. Install `devenv`
 5. Build devenv shell (`devenv shell -- echo 'devenv ready'`)
-6. Run `devenv shell -- npm ci --ignore-scripts --no-audit --fund=false`
-7. Run `devenv shell -- npx rulesync install && npx rulesync generate --delete`
+6. Run `devenv shell -- npm install` (normal scripts/hooks enabled)
+7. Remove transient caches (`~/.npm`, pip/nix/uv cache dirs) and run `nix store optimise`
 8. Snapshot image as `copilot-devenv`
 
 ## Copilot Setup Flow
@@ -187,6 +187,12 @@ Primary path (custom image present):
 3. Verify pre-baked runtime tools and generated artifacts exist
 
 No runtime npm install or rulesync generation should be needed in this workflow when the runner image is correctly baked.
+
+### Cache stripping and setup-time impact
+
+- Stripping transient caches from the image build workflow does **not** add noticeable time to Copilot setup workflow when running image-first mode.
+- Copilot setup does not execute npm install/rulesync generation, so npm cache presence is not on the hot path.
+- Cache stripping mainly affects future image rebuild time (slightly) and image size/provisioning time (positively).
 
 ## Verification Checklist
 
@@ -226,7 +232,6 @@ Use this when creating a fresh copy of the repository and setting it up from zer
 - **Failure in `Verify pre-baked artifacts`**: generated files were not baked into the image. Confirm image workflow completed `npm install` successfully before snapshot.
 - **Cannot find custom-image options in GitHub**: your org/plan may not expose GitHub-managed custom images; use self-hosted setup path.
 - **No custom image produced**: verify custom images are enabled on `devenv-image-gen` runner.
-- **Slow fallback setup**: verify `/nix/store` cache is restoring and `devenv.lock` is stable.
 - **Missing tools in agent shell**: check `Export devenv environment` step output and confirm `PATH` additions were written to `GITHUB_PATH`.
 
 ## Change Management
