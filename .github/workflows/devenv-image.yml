@@ -16,6 +16,9 @@ jobs:
     runs-on: devenv-image-gen
     timeout-minutes: 30
     snapshot: copilot-devenv
+    env:
+      GITHUB_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}
+      GH_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}
     permissions:
       contents: read
 
