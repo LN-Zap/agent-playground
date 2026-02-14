@@ -31,80 +31,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+        with:
+          clean: false
         env:
           SKIP_SIMPLE_GIT_HOOKS: '1'
 
-      - name: Check runtime tooling
-        id: check-runtime
+      - name: Verify pre-baked runner image
         shell: bash
         run: |
           set -euo pipefail
-
-          nix_bin=""
-
-          if command -v nix >/dev/null 2>&1; then
-            nix_bin="$(command -v nix)"
-          elif [ -x /nix/var/nix/profiles/default/bin/nix ]; then
-            nix_bin="/nix/var/nix/profiles/default/bin/nix"
-          elif [ -x "$HOME/.nix-profile/bin/nix" ]; then
-            nix_bin="$HOME/.nix-profile/bin/nix"
-          fi
-
-          if [ -n "$nix_bin" ]; then
-            echo "has_nix=true" >> "$GITHUB_OUTPUT"
-            nix_bin_dir="$(dirname "$nix_bin")"
-            echo "$nix_bin_dir" >> "$GITHUB_PATH"
-          else
-            echo "has_nix=false" >> "$GITHUB_OUTPUT"
-          fi
-
-          if command -v devenv >/dev/null 2>&1; then
-            echo "has_devenv=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "has_devenv=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Install Nix (fallback)
-        if: steps.check-runtime.outputs.has_nix == 'false'
-        uses: cachix/install-nix-action@v31
-
-      - name: Setup Cachix (fallback)
-        if: steps.check-runtime.outputs.has_devenv == 'false' && steps.check-runtime.outputs.has_nix == 'false'
-        uses: cachix/cachix-action@v16
-        with:
-          name: devenv
-
-      - name: Cache Nix store (fallback)
-        if: steps.check-runtime.outputs.has_devenv == 'false' && steps.check-runtime.outputs.has_nix == 'false'
-        uses: actions/cache@v4
-        with:
-          path: /nix/store
-          key: nix-${{ runner.os }}-${{ hashFiles('devenv.lock') }}
-          restore-keys: |
-            nix-${{ runner.os }}-
-
-      - name: Install devenv (fallback)
-        if: steps.check-runtime.outputs.has_devenv == 'false'
-        shell: bash
-        run: |
-          set -euo pipefail
-          nix profile install nixpkgs#devenv
-          echo "$HOME/.nix-profile/bin" >> "$GITHUB_PATH"
-
-      - name: Build devenv shell (fallback)
-        if: steps.check-runtime.outputs.has_devenv == 'false'
-        run: devenv shell -- echo 'devenv ready'
-
-      - name: Restore setup caches
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.npm
-            node_modules
-            .rulesync/skills
-          key: copilot-setup-${{ runner.os }}-${{ hashFiles('package-lock.json', 'rulesync.lock', 'rulesync.jsonc') }}
-          restore-keys: |
-            copilot-setup-${{ runner.os }}-
+          command -v devenv >/dev/null 2>&1
+          command -v node >/dev/null 2>&1
+          command -v python3 >/dev/null 2>&1
+          test -f .github/copilot-instructions.md
 
       - name: Export devenv environment
         shell: bash
@@ -163,17 +102,9 @@ jobs:
                   handle.write(f"{key}<<EOF\n{value}\nEOF\n")
           PY
 
-      - name: Install npm dependencies
-        env:
-          SKIP_INSTALL_SIMPLE_GIT_HOOKS: '1'
+      - name: Verify pre-baked artifacts
         shell: bash
         run: |
           set -euo pipefail
-          if [ -d node_modules/rulesync ]; then
-            echo "rulesync dependency already cached; skipping npm install"
-          else
-            devenv shell -- npm ci --ignore-scripts --prefer-offline --no-audit --fund=false
-          fi
-
-      - name: Generate rulesync artifacts
-        run: devenv shell -- npx rulesync install && npx rulesync generate --delete
+          test -d .agents/skills
+          test -f AGENTS.md

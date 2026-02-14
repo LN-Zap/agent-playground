@@ -42,10 +42,5 @@ jobs:
       - name: Build devenv shell
         run: devenv shell -- echo 'devenv ready'
 
-      - name: Install npm dependencies (cache warm-up)
-        env:
-          SKIP_INSTALL_SIMPLE_GIT_HOOKS: '1'
-        run: devenv shell -- npm ci --ignore-scripts --no-audit --fund=false
-
-      - name: Generate rulesync artifacts (cache warm-up)
-        run: devenv shell -- npx rulesync install && npx rulesync generate --delete
+      - name: Install npm dependencies
+        run: devenv shell -- npm install

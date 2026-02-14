@@ -6,7 +6,7 @@ This runbook describes how to operate the Copilot Coding Agent environment so it
 
 - Keep `devenv.nix` as the single source of truth for tooling.
 - Use a custom image for fast startup on the Copilot Coding Agent.
-- Fall back to inline Nix + devenv bootstrap when a custom image is unavailable.
+- Keep Copilot setup lean by consuming the pre-baked image directly (no runtime reinstall).
 
 ## Why this needs a custom-image runner
 
@@ -181,19 +181,12 @@ Workflow: `.github/workflows/copilot-setup-steps.yml`
 Primary path (custom image present):
 
 1. Checkout repository
+   - Uses `clean: false` so pre-baked generated artifacts are preserved.
+   - Uses `SKIP_SIMPLE_GIT_HOOKS=1` so checkout does not trigger repository hooks.
 2. Export devenv environment to `GITHUB_PATH` and `GITHUB_ENV`
-3. Restore setup caches (`~/.npm`, `node_modules`, `.rulesync/skills`)
-4. Install deps via fast path (`npm ci --ignore-scripts --prefer-offline --no-audit --fund=false`, skipped when `node_modules/rulesync` is already cached)
-5. Run `devenv shell -- npx rulesync install && npx rulesync generate --delete`
+3. Verify pre-baked runtime tools and generated artifacts exist
 
-Fallback path (custom image not available):
-
-1. Install Nix
-2. Configure Cachix
-3. Restore `/nix/store` cache by `devenv.lock` hash
-4. Install `devenv`
-5. Build devenv shell
-6. Export environment and continue setup with same cache-assisted npm/rulesync flow
+No runtime npm install or rulesync generation should be needed in this workflow when the runner image is correctly baked.
 
 ## Verification Checklist
 
@@ -205,11 +198,7 @@ After setup or updates:
 4. Confirm agent runtime tools are available (for example: `node`, `python3`, `jq`, `gcloud`).
 5. Confirm setup time target:
    - Custom image path: under 1 minute
-   - Fallback path with warm cache: under 5 minutes
 6. Confirm no `rulesync` GitHub API `403`/rate-limit errors appear in workflow logs.
-7. Confirm `Install npm dependencies` logs either:
-   - `rulesync dependency already cached; skipping npm install`, or
-   - completes `npm ci` quickly using cache.
 
 ## New Fork Bootstrap Checklist (first-time setup)
 
@@ -233,9 +222,8 @@ Use this when creating a fresh copy of the repository and setting it up from zer
 - **Runner label mismatch**: ensure workflow `runs-on` labels match configured runners exactly.
 - **`rulesync` 403/rate-limit errors**: verify `RULESYNC_GITHUB_TOKEN` is set and can read `LN-Zap/zap-skills`.
 - **Failure during `Checkout code` with rulesync/node errors**: ensure checkout runs with `SKIP_SIMPLE_GIT_HOOKS=1` so repository git hooks do not execute inside `actions/checkout`.
-- **Nix install fails with backup-before-nix conflicts**: this indicates Nix artifacts already exist on runner image. Ensure fallback only installs Nix when `nix` is missing; if `nix` exists, only install `devenv`.
-- **Nix exists but not on PATH**: ensure setup checks common Nix binary paths (`/nix/var/nix/profiles/default/bin/nix`, `$HOME/.nix-profile/bin/nix`) and appends discovered path to `GITHUB_PATH` before fallback install steps.
-- **`devenv: command not found` after fallback install**: append `$HOME/.nix-profile/bin` to `GITHUB_PATH` immediately after `nix profile install nixpkgs#devenv`.
+- **Failure in `Verify pre-baked runner image`**: the runner is not using a fresh `copilot-devenv` image. Re-run `Devenv Image`, then update/recreate `copilot-devenv-runner` to use the latest image.
+- **Failure in `Verify pre-baked artifacts`**: generated files were not baked into the image. Confirm image workflow completed `npm install` successfully before snapshot.
 - **Cannot find custom-image options in GitHub**: your org/plan may not expose GitHub-managed custom images; use self-hosted setup path.
 - **No custom image produced**: verify custom images are enabled on `devenv-image-gen` runner.
 - **Slow fallback setup**: verify `/nix/store` cache is restoring and `devenv.lock` is stable.
