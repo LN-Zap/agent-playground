@@ -28,6 +28,22 @@ The agent ecosystem is young and fragmented, with competing standards for how to
 - **Rules**: Provider-agnostic instructions defined in [.rulesync/rules](.rulesync/rules) and generated into each agent's native format.
 - **MCP Servers**: External tool integrations defined in [.rulesync/mcp.json](.rulesync/mcp.json) and synchronized across agents.
 
+## Supported Tools
+
+The following MCP servers are configured in [.rulesync/mcp.json](.rulesync/mcp.json):
+
+| Name | Description |
+| --- | --- |
+| [context7](https://context7.com/docs/resources/all-clients) | Documentation and reference retrieval via Context7 MCP. |
+| [figma](https://developers.figma.com/docs/figma-mcp-server/) | Local Figma MCP bridge for design and file interactions. |
+| [github](https://github.com/github/github-mcp-server) | GitHub MCP integration for repository, issue, and PR operations. |
+| [playwright](https://github.com/microsoft/playwright-mcp) | Browser automation and testing through Playwright MCP. |
+| [chrome-devtools](https://github.com/ChromeDevTools/chrome-devtools-mcp) | Chrome DevTools MCP for browser inspection and debugging. |
+| [pagerduty](https://github.com/PagerDuty/pagerduty-mcp-server) | PagerDuty incident and operations integrations via MCP. |
+| [deepwiki](https://docs.devin.ai/work-with-devin/deepwiki-mcp) | DeepWiki MCP for AI-powered repository documentation queries. |
+| [notion](https://developers.notion.com/guides/mcp/get-started-with-mcp) | Notion MCP for searching and managing pages and databases. |
+| [n8n](https://docs.n8n.io/advanced-ai/accessing-n8n-mcp-server/) | n8n MCP server integration for workflow automation endpoints. |
+
 ## Supported Agents
 
 - GitHub Copilot
