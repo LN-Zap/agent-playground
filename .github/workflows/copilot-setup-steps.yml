@@ -59,21 +59,21 @@ jobs:
           echo "::error::devenv not found in expected image locations. Rebuild image and refresh copilot-devenv-runner capacity."
           exit 1
 
-        - name: Activate pre-baked tool paths
+      - name: Activate pre-baked tool paths
         shell: bash
         run: |
           set -euo pipefail
           candidate_paths=(
-          "$GITHUB_WORKSPACE/.devenv/profile/bin"
-          "$GITHUB_WORKSPACE/.devenv/state/venv/bin"
-          "$HOME/.nix-profile/bin"
-          "/nix/var/nix/profiles/default/bin"
+            "$GITHUB_WORKSPACE/.devenv/profile/bin"
+            "$GITHUB_WORKSPACE/.devenv/state/venv/bin"
+            "$HOME/.nix-profile/bin"
+            "/nix/var/nix/profiles/default/bin"
           )
 
           for path_entry in "${candidate_paths[@]}"; do
-          if [ -d "$path_entry" ]; then
-            echo "$path_entry" >> "$GITHUB_PATH"
-          fi
+            if [ -d "$path_entry" ]; then
+              echo "$path_entry" >> "$GITHUB_PATH"
+            fi
           done
 
       - name: Verify pre-baked artifacts
