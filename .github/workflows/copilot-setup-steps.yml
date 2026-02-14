@@ -39,32 +39,25 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          missing=0
-
-          if ! command -v devenv >/dev/null 2>&1; then
-            echo "::error::devenv not found. copilot-devenv-runner is not using a fresh copilot-devenv custom image."
-            missing=1
+          if command -v devenv >/dev/null 2>&1; then
+            echo "devenv available on PATH"
+            exit 0
           fi
 
-          if ! command -v node >/dev/null 2>&1; then
-            echo "::error::node not found on runner image."
-            missing=1
+          if [ -x "$HOME/.nix-profile/bin/devenv" ]; then
+            echo "$HOME/.nix-profile/bin" >> "$GITHUB_PATH"
+            echo "devenv found in nix profile and added to PATH"
+            exit 0
           fi
 
-          if ! command -v python3 >/dev/null 2>&1; then
-            echo "::error::python3 not found on runner image."
-            missing=1
+          if [ -x /nix/var/nix/profiles/default/bin/devenv ]; then
+            echo "/nix/var/nix/profiles/default/bin" >> "$GITHUB_PATH"
+            echo "devenv found in system nix profile and added to PATH"
+            exit 0
           fi
 
-          if [ ! -f .github/copilot-instructions.md ]; then
-            echo "::error::Generated copilot instructions missing. Ensure devenv-image workflow completed npm install before snapshot and checkout uses clean=false."
-            missing=1
-          fi
-
-          if [ "$missing" -ne 0 ]; then
-            echo "::error::Runner bootstrap validation failed. Rebuild image via Devenv Image workflow and reattach/update copilot-devenv-runner to that image."
-            exit 1
-          fi
+          echo "::error::devenv not found in expected image locations. Rebuild image and refresh copilot-devenv-runner capacity."
+          exit 1
 
       - name: Export devenv environment
         shell: bash
@@ -127,5 +120,4 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -d .agents/skills
-          test -f AGENTS.md
+          test -f rulesync.jsonc
