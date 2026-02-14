@@ -37,10 +37,6 @@
     "notion": {
       "type": "http",
       "url": "https://mcp.notion.com/mcp"
-    },
-    "n8n": {
-      "type": "http",
-      "url": "https://n8n.live.zaphq.io/mcp-server/http"
     }
   }
 }
