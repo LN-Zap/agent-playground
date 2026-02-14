@@ -31,6 +31,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+        env:
+          SKIP_SIMPLE_GIT_HOOKS: '1'
 
       - name: Check for devenv
         id: check-devenv
