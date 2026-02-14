@@ -68,7 +68,50 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          /home/runner/copilot-devenv-activate.sh
+          if [ -x /home/runner/copilot-devenv-activate.sh ]; then
+            /home/runner/copilot-devenv-activate.sh
+            exit 0
+          fi
+
+          echo "Activation script not found. Falling back to dynamic devenv activation for this runner instance."
+
+          DEVENV_BIN="$(command -v devenv || true)"
+          if [ -z "$DEVENV_BIN" ] && [ -x "$HOME/.nix-profile/bin/devenv" ]; then
+            DEVENV_BIN="$HOME/.nix-profile/bin/devenv"
+          fi
+
+          if [ -z "$DEVENV_BIN" ] && [ -x /nix/var/nix/profiles/default/bin/devenv ]; then
+            DEVENV_BIN=/nix/var/nix/profiles/default/bin/devenv
+          fi
+
+          if [ -z "$DEVENV_BIN" ]; then
+            echo "::error::devenv is unavailable, and activation script is missing. Rebuild image and refresh runner capacity."
+            exit 1
+          fi
+
+          BASE_ENV="$(mktemp)"
+          DEVENV_ENV="$(mktemp)"
+          trap 'rm -f "$BASE_ENV" "$DEVENV_ENV"' EXIT
+
+          env | sort > "$BASE_ENV"
+          "$DEVENV_BIN" shell -- env | sort > "$DEVENV_ENV"
+
+          while IFS= read -r line; do
+            [ -z "$line" ] && continue
+            key="${line%%=*}"
+            value="${line#*=}"
+
+            case "$key" in
+              PATH)
+                echo "$value" >> "$GITHUB_PATH"
+                ;;
+              _|SHLVL|PWD|OLDPWD)
+                ;;
+              *)
+                printf '%s=%s\n' "$key" "$value" >> "$GITHUB_ENV"
+                ;;
+            esac
+          done < <(comm -13 "$BASE_ENV" "$DEVENV_ENV")
 
       - name: Verify pre-baked artifacts
         shell: bash
