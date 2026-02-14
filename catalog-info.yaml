@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: agent-playground
+  description: A sandbox for experimenting with AI agent workflows and multi-agent environments
+  annotations:
+    github.com/project-slug: LN-Zap/agent-playground
+    backstage.io/techdocs-ref: dir:.
+spec:
+  type: library
+  lifecycle: experimental
+  owner: team
