@@ -40,7 +40,6 @@ The agent ecosystem is young and fragmented, with competing standards for how to
 | [pagerduty](https://github.com/PagerDuty/pagerduty-mcp-server) | PagerDuty incident and operations integrations via MCP. |
 | [deepwiki](https://docs.devin.ai/work-with-devin/deepwiki-mcp) | DeepWiki MCP for AI-powered repository documentation queries. |
 | [notion](https://developers.notion.com/guides/mcp/get-started-with-mcp) | Notion MCP for searching and managing pages and databases. |
-| [n8n](https://docs.n8n.io/advanced-ai/accessing-n8n-mcp-server/) | n8n MCP server integration for workflow automation endpoints. |
 
 To add support for additional MCP tools, update the `mcpServers` object in [.rulesync/mcp.json](.rulesync/mcp.json). See the [rulesync documentation](https://github.com/dyoshikawa/rulesync) for synchronization behavior and target support.
 
