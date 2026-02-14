@@ -6,12 +6,12 @@
   "private": true,
   "scripts": {
     "prepare": "simple-git-hooks",
-    "postinstall": "npx rulesync install && npx rulesync generate",
+    "postinstall": "npx rulesync install && npx rulesync generate --delete",
     "rulesync": "npx rulesync"
   },
   "simple-git-hooks": {
-    "post-merge": "npx rulesync install && npx rulesync generate",
-    "post-checkout": "npx rulesync install && npx rulesync generate"
+    "post-merge": "npx rulesync install && npx rulesync generate --delete",
+    "post-checkout": "npx rulesync install && npx rulesync generate --delete"
   },
   "dependencies": {
     "rulesync": "7.2.0"
