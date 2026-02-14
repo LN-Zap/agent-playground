@@ -170,8 +170,9 @@ Build flow:
 3. Configure Cachix (`devenv`)
 4. Install `devenv`
 5. Build devenv shell (`devenv shell -- echo 'devenv ready'`)
-6. Run `devenv shell -- npm install`
-7. Snapshot image as `copilot-devenv`
+6. Run `devenv shell -- npm ci --ignore-scripts --no-audit --fund=false`
+7. Run `devenv shell -- npx rulesync install && npx rulesync generate --delete`
+8. Snapshot image as `copilot-devenv`
 
 ## Copilot Setup Flow
 
@@ -181,7 +182,9 @@ Primary path (custom image present):
 
 1. Checkout repository
 2. Export devenv environment to `GITHUB_PATH` and `GITHUB_ENV`
-3. Run `devenv shell -- npm install`
+3. Restore setup caches (`~/.npm`, `node_modules`, `.rulesync/skills`)
+4. Install deps via fast path (`npm ci --ignore-scripts --prefer-offline --no-audit --fund=false`, skipped when `node_modules/rulesync` is already cached)
+5. Run `devenv shell -- npx rulesync install && npx rulesync generate --delete`
 
 Fallback path (custom image not available):
 
@@ -190,7 +193,7 @@ Fallback path (custom image not available):
 3. Restore `/nix/store` cache by `devenv.lock` hash
 4. Install `devenv`
 5. Build devenv shell
-6. Export environment and continue setup
+6. Export environment and continue setup with same cache-assisted npm/rulesync flow
 
 ## Verification Checklist
 
@@ -204,6 +207,9 @@ After setup or updates:
    - Custom image path: under 1 minute
    - Fallback path with warm cache: under 5 minutes
 6. Confirm no `rulesync` GitHub API `403`/rate-limit errors appear in workflow logs.
+7. Confirm `Install npm dependencies` logs either:
+   - `rulesync dependency already cached; skipping npm install`, or
+   - completes `npm ci` quickly using cache.
 
 ## New Fork Bootstrap Checklist (first-time setup)
 

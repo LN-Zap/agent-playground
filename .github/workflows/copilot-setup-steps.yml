@@ -95,6 +95,17 @@ jobs:
         if: steps.check-runtime.outputs.has_devenv == 'false'
         run: devenv shell -- echo 'devenv ready'
 
+      - name: Restore setup caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            node_modules
+            .rulesync/skills
+          key: copilot-setup-${{ runner.os }}-${{ hashFiles('package-lock.json', 'rulesync.lock', 'rulesync.jsonc') }}
+          restore-keys: |
+            copilot-setup-${{ runner.os }}-
+
       - name: Export devenv environment
         shell: bash
         run: |
@@ -153,4 +164,16 @@ jobs:
           PY
 
       - name: Install npm dependencies
-        run: devenv shell -- npm install
+        env:
+          SKIP_INSTALL_SIMPLE_GIT_HOOKS: '1'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -d node_modules/rulesync ]; then
+            echo "rulesync dependency already cached; skipping npm install"
+          else
+            devenv shell -- npm ci --ignore-scripts --prefer-offline --no-audit --fund=false
+          fi
+
+      - name: Generate rulesync artifacts
+        run: devenv shell -- npx rulesync install && npx rulesync generate --delete
