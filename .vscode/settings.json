@@ -17,5 +17,6 @@
     "chat.agentSkillsLocations": {
         ".github/skills": false,
         ".claude/skills": false
-    }
+    },
+    "github.copilot.chat.backgroundCompaction": true
 }
