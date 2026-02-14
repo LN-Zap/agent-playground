@@ -13,5 +13,9 @@
     "github.copilot.chat.cli.branchSupport.enabled": true,
     "github.copilot.chat.cli.sessionController.enabled": true,
     "github.copilot.chat.codesearch.enabled": true,
-    "github.copilot.chat.tools.memory.enabled": true
+    "github.copilot.chat.tools.memory.enabled": true,
+    "chat.agentSkillsLocations": {
+        ".github/skills": false,
+        ".claude/skills": false
+    }
 }
