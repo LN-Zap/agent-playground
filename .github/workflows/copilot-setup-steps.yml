@@ -24,6 +24,7 @@ jobs:
     # Set the permissions to the lowest permissions possible needed for your steps.
     # Copilot will be given its own token for its operations.
     permissions:
+      actions: read
       # If you want to clone the repository as part of your setup steps, for example to install dependencies, you'll need the `contents: read` permission. If you don't clone the repository in your setup steps, Copilot will do this for you automatically after the steps complete.
       contents: read
 
@@ -134,14 +135,94 @@ jobs:
 
       - name: Write setup summary
         if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
         shell: bash
         run: |
+          set -euo pipefail
+
+          format_seconds() {
+            local value="$1"
+            if [[ -z "$value" || "$value" == "n/a" ]]; then
+              echo "n/a"
+              return
+            fi
+
+            local minutes=$((value / 60))
+            local seconds=$((value % 60))
+            if (( minutes > 0 )); then
+              echo "${minutes}m ${seconds}s (${value}s)"
+            else
+              echo "${seconds}s"
+            fi
+          }
+
+          format_delta_seconds() {
+            local current="$1"
+            local previous="$2"
+
+            if [[ -z "$current" || -z "$previous" || "$current" == "n/a" || "$previous" == "n/a" ]]; then
+              echo "n/a"
+              return
+            fi
+
+            local delta=$((current - previous))
+            local sign=""
+            if (( delta > 0 )); then
+              sign="+"
+            fi
+
+            local abs_delta=$delta
+            if (( abs_delta < 0 )); then
+              abs_delta=$(( -abs_delta ))
+            fi
+
+            echo "${sign}$(format_seconds "$abs_delta") (${sign}${delta}s)"
+          }
+
+          current_mode='${{ steps.activate_devenv.outputs.activation_mode || 'n/a' }}'
+          current_seconds='${{ steps.activate_devenv.outputs.activation_seconds || 'n/a' }}'
+          current_verify='${{ steps.verify_artifacts.outcome || 'skipped' }}'
+
+          previous_run_id=""
+          previous_run_id=$(gh run list \
+            --repo "$GITHUB_REPOSITORY" \
+            --workflow "Copilot Setup Steps" \
+            --limit 20 \
+            --json databaseId,status,conclusion \
+            --jq '[.[] | select((.databaseId|tostring) != env.GITHUB_RUN_ID and .status == "completed" and .conclusion == "success")][0].databaseId // ""')
+
+          previous_seconds="n/a"
+          previous_verify="n/a"
+          previous_mode="n/a"
+
+          if [[ -n "$previous_run_id" ]]; then
+            previous_seconds=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$previous_run_id/jobs" \
+              --jq 'first(.jobs[]?.steps[]? | select(.name == "Activate pre-baked devenv environment") | ((.completed_at|fromdateiso8601) - (.started_at|fromdateiso8601))) // "n/a"')
+
+            previous_verify=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$previous_run_id/jobs" \
+              --jq 'first(.jobs[]?.steps[]? | select(.name == "Verify pre-baked artifacts") | .conclusion) // "n/a"')
+
+            if gh run view "$previous_run_id" --repo "$GITHUB_REPOSITORY" --log | grep -q "Activation script not found. Falling back to dynamic devenv activation"; then
+              previous_mode="fallback"
+            else
+              previous_mode="script"
+            fi
+          fi
+
           {
             echo "## Copilot Setup Summary"
             echo
             echo "- Runner label: copilot-devenv-runner"
-            echo "- Activation mode: ${{ steps.activate_devenv.outputs.activation_mode || 'unknown' }}"
-            echo "- Activation duration (seconds): ${{ steps.activate_devenv.outputs.activation_seconds || 'n/a' }}"
-            echo "- Artifact verification step: ${{ steps.verify_artifacts.outcome || 'skipped' }}"
+            echo "- Previous successful run ID: ${previous_run_id:-none}"
+            echo
+            echo "### Setup Trend"
+            echo
+            echo "| Metric | Current | Previous | Delta |"
+            echo "| --- | --- | --- | --- |"
+            echo "| Activation mode | ${current_mode} | ${previous_mode} | n/a |"
+            echo "| Activation duration | $(format_seconds "$current_seconds") | $(format_seconds "$previous_seconds") | $(format_delta_seconds "$current_seconds" "$previous_seconds") |"
+            echo "| Artifact verification | ${current_verify} | ${previous_verify} | n/a |"
             echo "- Setup workflow: .github/workflows/copilot-setup-steps.yml"
           } >> "$GITHUB_STEP_SUMMARY"
