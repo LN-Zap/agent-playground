@@ -45,6 +45,93 @@ jobs:
       - name: Install npm dependencies
         run: devenv shell -- npm install
 
+        - name: Generate Copilot activation script
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          env | sort > /tmp/base.env
+          devenv shell -- env | sort > /tmp/devenv.env
+
+          python3 - <<'PY'
+          from __future__ import annotations
+
+          import shlex
+          from pathlib import Path
+
+          def parse_env(path: str) -> dict[str, str]:
+            parsed: dict[str, str] = {}
+            with open(path, "r", encoding="utf-8") as handle:
+              for line in handle:
+                line = line.rstrip("\n")
+                if not line or "=" not in line:
+                  continue
+                key, value = line.split("=", 1)
+                parsed[key] = value
+            return parsed
+
+          base_env = parse_env("/tmp/base.env")
+          devenv_env = parse_env("/tmp/devenv.env")
+
+          base_path = [entry for entry in base_env.get("PATH", "").split(":") if entry]
+          devenv_path = [entry for entry in devenv_env.get("PATH", "").split(":") if entry]
+          path_additions = [entry for entry in devenv_path if entry not in base_path]
+
+          excluded = {
+            "PATH",
+            "PWD",
+            "OLDPWD",
+            "SHLVL",
+            "_",
+          }
+
+          def should_exclude(key: str) -> bool:
+            if key in excluded:
+              return True
+            return key.startswith("GITHUB_") or key.startswith("RUNNER_")
+
+          changed_env: dict[str, str] = {}
+          for key, value in devenv_env.items():
+            if should_exclude(key):
+              continue
+            if base_env.get(key) == value:
+              continue
+            changed_env[key] = value
+
+          output_path = Path("/home/runner/copilot-devenv-activate.sh")
+          lines: list[str] = [
+            "#!/usr/bin/env bash",
+            "set -euo pipefail",
+            "if [ -z \"${GITHUB_ENV:-}\" ] || [ -z \"${GITHUB_PATH:-}\" ]; then",
+            "  echo 'GITHUB_ENV and GITHUB_PATH must be set' >&2",
+            "  exit 1",
+            "fi",
+            "",
+          ]
+
+          for entry in path_additions:
+            lines.append(f"echo {shlex.quote(entry)} >> \"$GITHUB_PATH\"")
+
+          if path_additions:
+            lines.append("")
+
+          for key in sorted(changed_env):
+            value = changed_env[key]
+            delimiter = f"__COPILOT_ENV_{key}__"
+            lines.extend(
+              [
+                f"cat <<'EOF' >> \"$GITHUB_ENV\"",
+                f"{key}<<{delimiter}",
+                value,
+                delimiter,
+                "EOF",
+              ]
+            )
+
+          output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+          output_path.chmod(0o755)
+          PY
+
       - name: Slim snapshot contents
         shell: bash
         run: |

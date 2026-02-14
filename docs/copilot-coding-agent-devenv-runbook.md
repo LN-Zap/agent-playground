@@ -199,8 +199,9 @@ Build flow:
 4. Install `devenv`
 5. Build devenv shell (`devenv shell -- echo 'devenv ready'`)
 6. Run `devenv shell -- npm install` (normal scripts/hooks enabled)
-7. Remove transient caches (`~/.npm`, pip/nix/uv cache dirs) and run `nix store optimise`
-8. Snapshot image as `copilot-devenv`
+7. Generate `/home/runner/copilot-devenv-activate.sh` from base-vs-devenv environment delta
+8. Remove transient caches (`~/.npm`, pip/nix/uv cache dirs) and run `nix store optimise`
+9. Snapshot image as `copilot-devenv`
 
 ## Copilot Setup Flow
 
@@ -211,7 +212,7 @@ Primary path (custom image present):
 1. Checkout repository
    - Uses `clean: false` so pre-baked generated artifacts are preserved.
    - Uses `SKIP_SIMPLE_GIT_HOOKS=1` so checkout does not trigger repository hooks.
-2. Activate pre-baked tool paths by appending known prebuilt paths to `GITHUB_PATH`
+2. Execute pre-baked activation script (`/home/runner/copilot-devenv-activate.sh`) to apply `GITHUB_PATH` and `GITHUB_ENV`
 3. Verify pre-baked runtime tools and generated artifacts exist
 
 No runtime npm install or rulesync generation should be needed in this workflow when the runner image is correctly baked.
@@ -224,8 +225,8 @@ No runtime npm install or rulesync generation should be needed in this workflow 
 
 ### Setup-time optimization note
 
-- Prefer fast PATH activation from pre-baked locations over full environment diff/export at setup time.
-- Full `devenv shell -- env` export is accurate but slower; use only if PATH activation proves insufficient.
+- Environment deltas are computed once during image build, not in Copilot setup runtime.
+- Copilot setup reuses the generated activation script, minimizing runtime cost and avoiding hardcoded path drift.
 
 ## Verification Checklist
 
