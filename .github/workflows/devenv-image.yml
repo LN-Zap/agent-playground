@@ -21,6 +21,7 @@ jobs:
       GH_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}
       DEVENV_WITH_GCLOUD: '0'
     permissions:
+      actions: read
       contents: read
 
     steps:
