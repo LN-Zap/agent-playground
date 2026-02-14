@@ -34,9 +34,15 @@ jobs:
         env:
           SKIP_SIMPLE_GIT_HOOKS: '1'
 
-      - name: Check for devenv
-        id: check-devenv
+      - name: Check runtime tooling
+        id: check-runtime
         run: |
+          if command -v nix >/dev/null 2>&1; then
+            echo "has_nix=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_nix=false" >> "$GITHUB_OUTPUT"
+          fi
+
           if command -v devenv >/dev/null 2>&1; then
             echo "has_devenv=true" >> "$GITHUB_OUTPUT"
           else
@@ -44,17 +50,17 @@ jobs:
           fi
 
       - name: Install Nix (fallback)
-        if: steps.check-devenv.outputs.has_devenv == 'false'
+        if: steps.check-runtime.outputs.has_nix == 'false'
         uses: cachix/install-nix-action@v31
 
       - name: Setup Cachix (fallback)
-        if: steps.check-devenv.outputs.has_devenv == 'false'
+        if: steps.check-runtime.outputs.has_devenv == 'false'
         uses: cachix/cachix-action@v16
         with:
           name: devenv
 
       - name: Cache Nix store (fallback)
-        if: steps.check-devenv.outputs.has_devenv == 'false'
+        if: steps.check-runtime.outputs.has_devenv == 'false'
         uses: actions/cache@v4
         with:
           path: /nix/store
@@ -63,11 +69,11 @@ jobs:
             nix-${{ runner.os }}-
 
       - name: Install devenv (fallback)
-        if: steps.check-devenv.outputs.has_devenv == 'false'
+        if: steps.check-runtime.outputs.has_devenv == 'false'
         run: nix profile install nixpkgs#devenv
 
       - name: Build devenv shell (fallback)
-        if: steps.check-devenv.outputs.has_devenv == 'false'
+        if: steps.check-runtime.outputs.has_devenv == 'false'
         run: devenv shell -- echo 'devenv ready'
 
       - name: Export devenv environment

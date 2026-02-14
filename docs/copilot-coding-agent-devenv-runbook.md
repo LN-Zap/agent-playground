@@ -227,6 +227,7 @@ Use this when creating a fresh copy of the repository and setting it up from zer
 - **Runner label mismatch**: ensure workflow `runs-on` labels match configured runners exactly.
 - **`rulesync` 403/rate-limit errors**: verify `RULESYNC_GITHUB_TOKEN` is set and can read `LN-Zap/zap-skills`.
 - **Failure during `Checkout code` with rulesync/node errors**: ensure checkout runs with `SKIP_SIMPLE_GIT_HOOKS=1` so repository git hooks do not execute inside `actions/checkout`.
+- **Nix install fails with backup-before-nix conflicts**: this indicates Nix artifacts already exist on runner image. Ensure fallback only installs Nix when `nix` is missing; if `nix` exists, only install `devenv`.
 - **Cannot find custom-image options in GitHub**: your org/plan may not expose GitHub-managed custom images; use self-hosted setup path.
 - **No custom image produced**: verify custom images are enabled on `devenv-image-gen` runner.
 - **Slow fallback setup**: verify `/nix/store` cache is restoring and `devenv.lock` is stable.
