@@ -13,7 +13,8 @@
     "mcp",
     "ignore",
     "rules",
-    "skills"
+    "skills",
+    "subagents"
   ],
   "sources": [
     { "source": "https://github.com/LN-Zap/zap-skills" },
