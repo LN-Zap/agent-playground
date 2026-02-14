@@ -213,9 +213,11 @@ Primary path (custom image present):
    - Uses `clean: false` so pre-baked generated artifacts are preserved.
    - Uses `SKIP_SIMPLE_GIT_HOOKS=1` so checkout does not trigger repository hooks.
 2. Execute pre-baked activation script (`/home/runner/copilot-devenv-activate.sh`) to apply `GITHUB_PATH` and `GITHUB_ENV`
+   - If the script is missing on a stale runner instance, setup auto-falls back to dynamic devenv activation for that run.
 3. Verify pre-baked runtime tools and generated artifacts exist
 
 No runtime npm install or rulesync generation should be needed in this workflow when the runner image is correctly baked.
+Dynamic fallback is only a compatibility path while runner capacity catches up to the latest image.
 
 ### Cache stripping and setup-time impact
 
@@ -264,6 +266,7 @@ Use this when creating a fresh copy of the repository and setting it up from zer
 - **Failure during `Checkout code` with rulesync/node errors**: ensure checkout runs with `SKIP_SIMPLE_GIT_HOOKS=1` so repository git hooks do not execute inside `actions/checkout`.
 - **Failure in `Verify pre-baked runner image`**: the runner is not using a fresh `copilot-devenv` image. Re-run `Devenv Image`, then update/recreate `copilot-devenv-runner` to use the latest image.
 - **Runner is set to `latest` but still fails validation**: force a runner capacity refresh (scale to zero and back, or recreate runner) so instances are reprovisioned from the newest image version.
+- **Activation step logs `Activation script not found`**: runner instance is on an older image. Setup will use dynamic devenv activation (slower but successful). Refresh runner capacity to restore fastest path.
 - **Failure in `Verify pre-baked artifacts`**: generated files were not baked into the image. Confirm image workflow completed `npm install` successfully before snapshot.
 - **Cannot find custom-image options in GitHub**: your org/plan may not expose GitHub-managed custom images; use self-hosted setup path.
 - **No custom image produced**: verify custom images are enabled on `devenv-image-gen` runner.
