@@ -69,13 +69,13 @@ jobs:
         uses: cachix/install-nix-action@v31
 
       - name: Setup Cachix (fallback)
-        if: steps.check-runtime.outputs.has_devenv == 'false'
+        if: steps.check-runtime.outputs.has_devenv == 'false' && steps.check-runtime.outputs.has_nix == 'false'
         uses: cachix/cachix-action@v16
         with:
           name: devenv
 
       - name: Cache Nix store (fallback)
-        if: steps.check-runtime.outputs.has_devenv == 'false'
+        if: steps.check-runtime.outputs.has_devenv == 'false' && steps.check-runtime.outputs.has_nix == 'false'
         uses: actions/cache@v4
         with:
           path: /nix/store
