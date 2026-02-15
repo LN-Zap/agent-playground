@@ -1,0 +1,250 @@
+name: devenv-summary
+description: Write devenv-focused setup/image summary with current and previous run trend context.
+
+inputs:
+  mode:
+    description: Summary mode, either setup or image.
+    required: true
+  workflow_name:
+    description: Display workflow name used for previous run lookup.
+    required: true
+  workflow_path:
+    description: Workflow path shown in summary output.
+    required: true
+  github_token:
+    description: Token used for GitHub API and gh CLI calls.
+    required: true
+  runner_label:
+    description: Runner label for setup summary.
+    required: false
+    default: ''
+  snapshot_name:
+    description: Snapshot name for image summary.
+    required: false
+    default: ''
+  activation_mode:
+    description: Current activation mode.
+    required: false
+    default: n/a
+  activation_seconds:
+    description: Current activation duration in seconds.
+    required: false
+    default: n/a
+  verification_status:
+    description: Current verification status.
+    required: false
+    default: n/a
+  npm_cache_before:
+    description: Current npm cache size before slim.
+    required: false
+    default: n/a
+  pip_cache_before:
+    description: Current pip cache size before slim.
+    required: false
+    default: n/a
+  nix_cache_before:
+    description: Current nix cache size before slim.
+    required: false
+    default: n/a
+  uv_cache_before:
+    description: Current uv cache size before slim.
+    required: false
+    default: n/a
+  total_removed:
+    description: Current total removed cache bytes.
+    required: false
+    default: n/a
+
+runs:
+  using: composite
+  steps:
+    - id: run
+      shell: bash
+      env:
+        MODE: ${{ inputs.mode }}
+        WORKFLOW_NAME: ${{ inputs.workflow_name }}
+        WORKFLOW_PATH: ${{ inputs.workflow_path }}
+        GH_TOKEN: ${{ inputs.github_token }}
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+        RUNNER_LABEL: ${{ inputs.runner_label }}
+        SNAPSHOT_NAME: ${{ inputs.snapshot_name }}
+        CURRENT_MODE: ${{ inputs.activation_mode }}
+        CURRENT_SECONDS: ${{ inputs.activation_seconds }}
+        CURRENT_VERIFY: ${{ inputs.verification_status }}
+        CURR_NPM: ${{ inputs.npm_cache_before }}
+        CURR_PIP: ${{ inputs.pip_cache_before }}
+        CURR_NIX: ${{ inputs.nix_cache_before }}
+        CURR_UV: ${{ inputs.uv_cache_before }}
+        CURR_REMOVED: ${{ inputs.total_removed }}
+      run: |
+        set -euo pipefail
+
+        format_seconds() {
+          local value="$1"
+          if [[ -z "$value" || "$value" == "n/a" ]]; then
+            echo "n/a"
+            return
+          fi
+
+          local minutes=$((value / 60))
+          local seconds=$((value % 60))
+          if (( minutes > 0 )); then
+            echo "${minutes}m ${seconds}s (${value}s)"
+          else
+            echo "${seconds}s"
+          fi
+        }
+
+        format_delta_seconds() {
+          local current="$1"
+          local previous="$2"
+
+          if [[ -z "$current" || -z "$previous" || "$current" == "n/a" || "$previous" == "n/a" ]]; then
+            echo "n/a"
+            return
+          fi
+
+          local delta=$((current - previous))
+          local sign=""
+          if (( delta > 0 )); then
+            sign="+"
+          fi
+
+          local abs_delta=$delta
+          if (( abs_delta < 0 )); then
+            abs_delta=$(( -abs_delta ))
+          fi
+
+          echo "${sign}$(format_seconds "$abs_delta") (${sign}${delta}s)"
+        }
+
+        human_bytes() {
+          local value="$1"
+          if [[ -z "$value" || "$value" == "n/a" ]]; then
+            echo "n/a"
+          else
+            numfmt --to=iec --suffix=B --format="%.2f" "$value"
+          fi
+        }
+
+        grouped_bytes() {
+          local value="$1"
+          if [[ -z "$value" || "$value" == "n/a" ]]; then
+            echo "n/a"
+          else
+            numfmt --grouping "$value"
+          fi
+        }
+
+        format_value() {
+          local value="$1"
+          if [[ -z "$value" || "$value" == "n/a" ]]; then
+            echo "n/a"
+          else
+            echo "$(human_bytes "$value") ($(grouped_bytes "$value") bytes)"
+          fi
+        }
+
+        format_delta_bytes() {
+          local current="$1"
+          local previous="$2"
+
+          if [[ -z "$current" || -z "$previous" || "$current" == "n/a" || "$previous" == "n/a" ]]; then
+            echo "n/a"
+            return
+          fi
+
+          local delta=$((current - previous))
+          local sign=""
+          if (( delta > 0 )); then
+            sign="+"
+          fi
+
+          local abs_delta=$delta
+          if (( abs_delta < 0 )); then
+            abs_delta=$(( -abs_delta ))
+          fi
+
+          echo "${sign}$(human_bytes "$abs_delta") (${sign}$(grouped_bytes "$delta") bytes)"
+        }
+
+        previous_run_id=""
+        previous_run_id=$(gh run list \
+          --repo "$GITHUB_REPOSITORY" \
+          --workflow "$WORKFLOW_NAME" \
+          --limit 20 \
+          --json databaseId,status,conclusion \
+          --jq '[.[] | select((.databaseId|tostring) != env.GITHUB_RUN_ID and .status == "completed" and .conclusion == "success")][0].databaseId // ""')
+
+        if [[ "$MODE" == "setup" ]]; then
+          previous_seconds="n/a"
+          previous_verify="n/a"
+          previous_mode="n/a"
+
+          if [[ -n "$previous_run_id" ]]; then
+            previous_seconds=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$previous_run_id/jobs" \
+              --jq 'first(.jobs[]?.steps[]? | select(.name == "Activate pre-baked devenv environment") | ((.completed_at|fromdateiso8601) - (.started_at|fromdateiso8601))) // "n/a"')
+
+            if gh run view "$previous_run_id" --repo "$GITHUB_REPOSITORY" --log | grep -q "Activation script not found. Falling back to dynamic devenv activation"; then
+              previous_mode="fallback"
+            else
+              previous_mode="script"
+            fi
+          fi
+
+          {
+            echo "## Copilot Setup Summary"
+            echo
+            echo "- Runner label: ${RUNNER_LABEL}"
+            echo "- Previous successful run ID: ${previous_run_id:-none}"
+            echo
+            echo "### Setup Trend"
+            echo
+            echo "| Metric | Current | Previous | Delta |"
+            echo "| --- | --- | --- | --- |"
+            echo "| Activation mode | ${CURRENT_MODE} | ${previous_mode} | n/a |"
+            echo "| Activation duration | $(format_seconds "$CURRENT_SECONDS") | $(format_seconds "$previous_seconds") | $(format_delta_seconds "$CURRENT_SECONDS" "$previous_seconds") |"
+            echo "| Artifact verification | ${CURRENT_VERIFY} | ${previous_verify} | n/a |"
+            echo "- Setup workflow: ${WORKFLOW_PATH}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+        elif [[ "$MODE" == "image" ]]; then
+          prev_npm="n/a"
+          prev_pip="n/a"
+          prev_nix="n/a"
+          prev_uv="n/a"
+          prev_removed="n/a"
+
+          if [[ -n "$previous_run_id" ]]; then
+            prev_log="$(mktemp)"
+            trap 'rm -f "$prev_log"' EXIT
+            gh run view "$previous_run_id" --repo "$GITHUB_REPOSITORY" --log > "$prev_log"
+
+            prev_npm=$(awk -F': ' '/~\/\.npm:/ {v=$2} END {print v}' "$prev_log")
+            prev_pip=$(awk -F': ' '/~\/\.cache\/pip:/ {v=$2} END {print v}' "$prev_log")
+            prev_nix=$(awk -F': ' '/~\/\.cache\/nix:/ {v=$2} END {print v}' "$prev_log")
+            prev_uv=$(awk -F': ' '/~\/\.cache\/uv:/ {v=$2} END {print v}' "$prev_log")
+            prev_removed=$(awk -F': ' '/Approx cache bytes removed before snapshot:/ {v=$2} END {print v}' "$prev_log")
+          fi
+
+          {
+            echo "## Devenv Image Summary"
+            echo
+            echo "- Snapshot target: ${SNAPSHOT_NAME}"
+            echo "- Previous successful run ID: ${previous_run_id:-none}"
+            echo
+            echo "### Cache Size Trend"
+            echo
+            echo "| Metric | Current | Previous | Delta |"
+            echo "| --- | --- | --- | --- |"
+            echo "| npm cache before slim | $(format_value "$CURR_NPM") | $(format_value "$prev_npm") | $(format_delta_bytes "$CURR_NPM" "$prev_npm") |"
+            echo "| pip cache before slim | $(format_value "$CURR_PIP") | $(format_value "$prev_pip") | $(format_delta_bytes "$CURR_PIP" "$prev_pip") |"
+            echo "| nix cache before slim | $(format_value "$CURR_NIX") | $(format_value "$prev_nix") | $(format_delta_bytes "$CURR_NIX" "$prev_nix") |"
+            echo "| uv cache before slim | $(format_value "$CURR_UV") | $(format_value "$prev_uv") | $(format_delta_bytes "$CURR_UV" "$prev_uv") |"
+            echo "| Approx cache bytes removed | $(format_value "$CURR_REMOVED") | $(format_value "$prev_removed") | $(format_delta_bytes "$CURR_REMOVED" "$prev_removed") |"
+            echo "- Image workflow: ${WORKFLOW_PATH}"
+          } >> "$GITHUB_STEP_SUMMARY"
+        else
+          echo "::error::Invalid mode '$MODE'. Expected setup or image."
+          exit 1
+        fi

@@ -40,7 +40,11 @@ In GitHub settings, check whether your organization/repository can create and us
 
 - `.github/workflows/devenv-image.yml`
 - `.github/workflows/copilot-setup-steps.yml`
+- `.github/workflows/reusable-devenv-image.yml`
+- `.github/workflows/reusable-copilot-setup-steps.yml`
 - `devenv.nix`
+
+The two trigger workflows are thin wrappers; implementation logic lives in the reusable workflow files.
 
 ## Required Secrets and Access
 
@@ -183,7 +187,8 @@ How to verify refresh actually happened:
 
 ## Image Build and Refresh
 
-Workflow: `.github/workflows/devenv-image.yml`
+Workflow trigger: `.github/workflows/devenv-image.yml`
+Reusable implementation: `.github/workflows/reusable-devenv-image.yml`
 
 Triggers:
 
@@ -201,13 +206,14 @@ Build flow:
 6. Run `devenv shell -- npm install` (normal scripts/hooks enabled)
 7. Generate `/home/runner/copilot-devenv-activate.sh` from base-vs-devenv environment delta
 8. Remove transient caches (`~/.npm`, pip/nix/uv cache dirs) and run `nix store optimise`
-9. Snapshot image as `copilot-devenv`
+9. Snapshot image as `<repo-name>-devenv`
 
-`devenv.nix` keeps gcloud enabled by default for local/team usage. This workflow sets `DEVENV_WITH_GCLOUD=0` during image build to reduce custom image footprint and provisioning time.
+`devenv.nix` includes the same Google Cloud tooling defaults across local, container, and image-build environments.
 
 ## Copilot Setup Flow
 
-Workflow: `.github/workflows/copilot-setup-steps.yml`
+Workflow trigger: `.github/workflows/copilot-setup-steps.yml`
+Reusable implementation: `.github/workflows/reusable-copilot-setup-steps.yml`
 
 Primary path (custom image present):
 

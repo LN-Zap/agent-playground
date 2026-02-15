@@ -1,0 +1,97 @@
+name: Reusable Devenv Image Job
+
+on:
+  workflow_call:
+    inputs:
+      runner-label:
+        description: Runner label used for image generation.
+        required: false
+        type: string
+        default: devenv-image-gen
+      snapshot-name:
+        description: Snapshot name to build for custom runner image usage.
+        required: false
+        type: string
+        default: project-devenv
+      activation-script-path:
+        description: Path where activation script is written in the image.
+        required: false
+        type: string
+        default: /home/runner/copilot-devenv-activate.sh
+      summary-workflow-path:
+        description: Workflow path shown in job summary output.
+        required: false
+        type: string
+        default: .github/workflows/devenv-image.yml
+
+jobs:
+  build-image:
+    runs-on: ${{ inputs.runner-label }}
+    timeout-minutes: 30
+    snapshot: ${{ inputs.snapshot-name }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}
+      GH_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}
+      SNAPSHOT_NAME: ${{ inputs.snapshot-name }}
+      ACTIVATION_SCRIPT_PATH: ${{ inputs.activation-script-path }}
+      SUMMARY_WORKFLOW_PATH: ${{ inputs.summary-workflow-path }}
+    permissions:
+      actions: read
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        env:
+          SKIP_SIMPLE_GIT_HOOKS: '1'
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@4e002c8ec80594ecd40e759629461e26c8abed15 # v31
+
+      - name: Setup Cachix
+        uses: cachix/cachix-action@3ba601ff5bbb07c7220846facfa2cd81eeee15a1 # v16
+        with:
+          name: devenv
+
+      - name: Install devenv
+        run: nix profile install nixpkgs#devenv
+
+      - name: Build devenv shell
+        run: devenv shell -- echo 'devenv ready'
+
+      - name: Setup devenv environment
+        id: setup_devenv
+        uses: ./.github/actions/setup-devenv
+        with:
+          mode: install
+          activation_script_path: ${{ inputs.activation-script-path }}
+          verify_files: rulesync.jsonc
+          verify_commands: |
+            devenv
+            node
+            python3
+            jq
+          runner_label_hint: ${{ inputs.runner-label }}
+
+      - name: Bake devenv image assets
+        id: bake_image
+        uses: ./.github/actions/bake-devenv-image
+        with:
+          snapshot_name: ${{ inputs.snapshot-name }}
+          activation_script_path: ${{ inputs.activation-script-path }}
+          slim_caches: 'true'
+
+      - name: Write image build summary
+        if: always()
+        uses: ./.github/actions/devenv-summary
+        with:
+          mode: image
+          workflow_name: Devenv Image
+          workflow_path: ${{ inputs.summary-workflow-path }}
+          github_token: ${{ github.token }}
+          snapshot_name: ${{ inputs.snapshot-name }}
+          npm_cache_before: ${{ steps.bake_image.outputs.npm_cache_before }}
+          pip_cache_before: ${{ steps.bake_image.outputs.pip_cache_before }}
+          nix_cache_before: ${{ steps.bake_image.outputs.nix_cache_before }}
+          uv_cache_before: ${{ steps.bake_image.outputs.uv_cache_before }}
+          total_removed: ${{ steps.bake_image.outputs.total_removed }}

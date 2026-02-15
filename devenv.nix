@@ -1,15 +1,9 @@
 {
   pkgs,
-  lib,
   config,
   inputs,
   ...
-}:
-
-let
-  enableGcloud = builtins.getEnv "DEVENV_WITH_GCLOUD" != "0";
-in
-{
+}: {
   # https://devenv.sh/basics/
   env.GREET = "devenv";
 
@@ -22,10 +16,10 @@ in
     pkgs.jq
     pkgs.yq-go
     pkgs.yamlfmt
+    pkgs.actionlint
     pkgs.nodejs
     pkgs.twilio-cli
     pkgs.cloudflared
-  ] ++ lib.optionals enableGcloud [
     (pkgs.google-cloud-sdk.withExtraComponents [pkgs.google-cloud-sdk.components.gke-gcloud-auth-plugin])
   ];
 
@@ -65,6 +59,13 @@ in
         ".rulesync"
         "rulesync.jsonc"
       ];
+    };
+  };
+
+  treefmt = {
+    enable = true;
+    config.programs = {
+      actionlint.enable = true;
     };
   };
 
