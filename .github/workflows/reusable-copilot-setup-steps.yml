@@ -55,7 +55,7 @@ jobs:
 
       - name: Activate pre-baked devenv environment
         id: activate_devenv
-        uses: LN-Zap/setup-devenv@ca87b4b78395dddf0939266701bff9bbecbaab72
+        uses: LN-Zap/setup-devenv@master
         with:
           mode: auto
           activation_script_path: ${{ inputs.activation-script-path }}

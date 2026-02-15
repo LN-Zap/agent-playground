@@ -61,7 +61,7 @@ jobs:
 
       - name: Setup devenv environment
         id: setup_devenv
-        uses: LN-Zap/setup-devenv@ca87b4b78395dddf0939266701bff9bbecbaab72
+        uses: LN-Zap/setup-devenv@master
         with:
           mode: install
           activation_script_path: ${{ inputs.activation-script-path }}
@@ -75,7 +75,7 @@ jobs:
 
       - name: Bake devenv image assets
         id: bake_image
-        uses: LN-Zap/bake-devenv-image@c8ab5d378ab615a1686ec4f21c7b19b5ce3c8a69
+        uses: LN-Zap/bake-devenv-image@master
         with:
           snapshot_name: ${{ inputs.snapshot-name }}
           activation_script_path: ${{ inputs.activation-script-path }}
