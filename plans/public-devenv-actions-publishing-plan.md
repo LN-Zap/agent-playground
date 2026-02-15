@@ -8,7 +8,7 @@
 - Public action repos now exist and are live:
   - `LN-Zap/setup-devenv`
   - `LN-Zap/bake-devenv-image`
-- `agent-playground` workflows now consume SHA-pinned refs from those public repos.
+- `agent-playground` and `zap-agent-playground` workflows now consume `@master` refs from those first-party public repos.
 - Latest remote validation is green after migration.
 
 Goal:
@@ -67,14 +67,13 @@ Decision candidate:
 - [x] Add smoke test workflows in each producer repo.
 
 ### Phase C — Consumer integration
-- [x] Update this repo to consume public action refs (SHA pinned).
+- [x] Update first-party consumer repos to consume public action refs.
 - [x] Validate `Copilot Setup Steps` and `Devenv Image`.
 
 ### Phase D — Versioned release
 - [x] Complete full audit of both public action repos.
 - [ ] Decide if public tags should be introduced after audit.
-- [x] This repo currently pinned to immutable SHAs.
-- [x] First-party/internal consumers remain SHA pinned.
+- [x] First-party/internal consumers in org repos now track `@master` by policy.
 - [ ] Document migration snippets for downstream repos.
 
 ---
@@ -91,9 +90,9 @@ Decision candidate:
 
 ## 6) Definition of done
 
-- Public action repos are live with 2 versioned actions.
-- This repo consumes pinned refs from those public action repos.
+- Public action repos are live with the 2 scoped actions.
+- First-party consumer repos consume those public action repos per current ref policy.
 - `zap-github-actions` remains internal-only for shared internal orchestration.
 - `devenv-summary` remains internal or is replaced later by a generic trend-summary abstraction.
 
-Current completion: 3 / 4 done (blocking item is post-audit release/versioning).
+Current completion: implementation complete; remaining item is optional tag/release ergonomics.

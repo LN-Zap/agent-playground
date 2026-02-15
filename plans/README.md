@@ -4,9 +4,10 @@
 
 - [x] Public action repos split to one-repo-per-action (`setup-devenv`, `bake-devenv-image`)
 - [x] `devenv-actions` converted to docs-only hub
-- [x] `agent-playground` workflows migrated to public action refs (SHA pinned)
+- [x] `agent-playground` and `zap-agent-playground` workflows migrated to first-party public action refs (`@master`)
 - [x] `zap-agent-playground` internal downstream baseline created
 - [x] Fresh-history cleanup approach executed for current public-facing repos
+- [x] Public action repos re-curated to clean single-commit histories after doc cleanup
 - [ ] Public action version tags (`v1`) created and adopted
 - [ ] Public template neutralization and governance completion
 

@@ -13,8 +13,9 @@ Done:
 	- `LN-Zap/bake-devenv-image`
 - `LN-Zap/devenv-actions` converted to docs-only hub.
 - `LN-Zap/zap-agent-playground` created and baseline synchronized.
-- `agent-playground` migrated to public SHA-pinned action refs.
+- `agent-playground` and `zap-agent-playground` migrated to first-party public action refs on `@master`.
 - Latest remote runs green for both key workflows after migration.
+- Public action repos (`setup-devenv`, `bake-devenv-image`, `devenv-actions`) were re-curated to clean single-commit histories.
 
 ## Overall checklist
 
@@ -26,8 +27,9 @@ Done:
 - [x] Convert umbrella repo to docs hub
 - [x] Clean up history for active public trajectory
 - [x] Add producer smoke workflows in public action repos
-- [x] Confirm first-party pin strategy: SHA only
+- [x] Confirm first-party internal strategy: track `@master` for org-owned actions
 - [x] Complete full audit of public action repos before creating any tags
+- [x] Keep public action repos on clean curated history
 - [ ] Finish public template neutralization and governance docs
 
 ## Active backlog
@@ -37,7 +39,7 @@ Done:
 2. ✅ Publish action contracts and docs in each repo.
 3. ✅ Add producer smoke workflows in each public action repo.
 4. ✅ Consume refs from this repo and validate.
-5. ✅ Confirm SHA-only pin policy for first-party/internal consumers.
+5. ✅ Confirm first-party/internal policy to consume org-owned actions via `@master`.
 6. ✅ Complete full audit before creating any public tags.
 7. ✅ Reserve `LN-Zap/zap-github-actions` for internal reusable workflows/actions.
 8. ✅ Keep `devenv-summary` internal until/if genericized.
@@ -58,11 +60,12 @@ Done:
 ## Epic 4 — Public history strategy
 1. ✅ Decision made: fresh-history curated import.
 2. ✅ Execute curated public import sequence for active repos.
-3. ⏳ Run final pre-release audits for internal residue.
+3. ✅ Re-run history curation after final documentation simplification.
+4. ⏳ Run final pre-release audits for internal residue.
 
 ## Definition of complete
 
-- Shared actions are published and pinned.
+- Shared actions are published and consumed via current first-party policy.
 - Internal downstream repo exists and is operational.
 - Public `agent-playground` is clean, neutral, and OSS-ready.
 - Public release checks are green.

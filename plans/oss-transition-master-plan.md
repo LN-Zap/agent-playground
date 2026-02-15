@@ -16,10 +16,11 @@ This includes:
 - [x] Dedicated public repos created: `LN-Zap/setup-devenv`, `LN-Zap/bake-devenv-image`
 - [x] Public docs hub created: `LN-Zap/devenv-actions` (docs-only)
 - [x] `zap-agent-playground` created and baseline established
-- [x] `agent-playground` workflows switched to public action refs with SHA pinning
+- [x] `agent-playground` and `zap-agent-playground` workflows switched to public first-party refs on `@master`
 - [x] End-to-end workflow validation passed after migration
 - [x] Fresh-history cleanup executed for the active OSS trajectory
 - [x] Complete full audit of public action repos before any version tags are created
+- [x] Re-curate public action repos to clean single-commit histories after final doc cleanup
 - [ ] Revisit tag strategy post-audit (optional for public consumers)
 - [ ] Complete public template neutralization + governance hardening
 
@@ -40,13 +41,13 @@ Execution:
 1. Create dedicated public action repos (one repo per action).
 2. Add per-action docs (inputs/outputs/examples/failure modes).
 3. Add producer-repo smoke workflows.
-4. Tag versions (`v0.x` then `v1` when stable).
+4. Decide/introduce version tags (`v0.x` then `v1`) when needed.
 5. Switch this repo to pinned public action refs.
 6. Keep `LN-Zap/zap-github-actions` for internal shared workflows/actions only.
 
 Status:
-- Completed: repo split, docs, and pinned consumer migration
-- Remaining: producer smoke workflows + stable tagging strategy
+- Completed: repo split, docs, producer smoke workflows, and consumer migration
+- Remaining: optional stable tagging strategy
 
 Exit criteria:
 - Actions are versioned and consumable externally.
@@ -157,15 +158,15 @@ Release gates:
 
 ## Immediate Next Actions
 
-1. Execute full audit of `setup-devenv` and `bake-devenv-image` before version tagging.
-2. Keep all internal and first-party consumer references pinned to immutable SHAs.
-3. Draft/execute explicit public template keep/remove matrix.
-4. Complete governance and onboarding hardening for public template release.
+1. Draft/execute explicit public template keep/remove matrix.
+2. Complete governance and onboarding hardening for public template release.
+3. Run final pre-release residue audit across public template docs/workflows.
+4. Revisit tag strategy when external consumer ergonomics requires it.
 
 Versioning policy (current):
-- Internal/first-party usage: always SHA pinned.
+- Internal/first-party usage: `@master` is acceptable for org-owned trusted actions.
 - Public publishing: tags are deferred until audit is complete.
-- Post-audit: tags may be introduced for external convenience, while SHA pinning remains the security baseline.
+- Post-audit: tags may be introduced for external convenience when needed.
 
 Current public action scope lock:
 - publish `setup-devenv` and `bake-devenv-image`
