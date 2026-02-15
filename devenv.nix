@@ -67,6 +67,9 @@
       actionlint.enable = true;
       mdformat.enable = true;
     };
+    config.settings.formatter.mdformat.excludes = [
+      ".rulesync/**/*.md"
+    ];
   };
 
   # https://devenv.sh/tests/
