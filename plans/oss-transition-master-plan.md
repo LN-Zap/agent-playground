@@ -156,10 +156,10 @@ Release gates:
 
 ## Immediate Next Actions
 
-1. Add producer smoke workflows to `setup-devenv` and `bake-devenv-image`.
-2. Create stable major tags (`v1`) in both public action repos.
-3. Decide consumer pinning policy (`@v1` vs SHA) and apply consistently.
-4. Draft/execute explicit public template keep/remove matrix.
+1. Create stable major tags (`v1`) in both public action repos.
+2. Decide consumer pinning policy (`@v1` vs SHA) and apply consistently.
+3. Draft/execute explicit public template keep/remove matrix.
+4. Complete governance and onboarding hardening for public template release.
 
 Current public action scope lock:
 - publish `setup-devenv` and `bake-devenv-image`

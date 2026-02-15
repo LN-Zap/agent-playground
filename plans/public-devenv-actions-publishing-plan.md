@@ -64,7 +64,7 @@ Decision candidate:
 ### Phase B — Import actions
 - [x] Copy 2 actions from this repo (`setup-devenv`, `bake-devenv-image`).
 - [x] Add per-action README (inputs/outputs/usage/failure modes).
-- [ ] Add smoke test workflows in each producer repo.
+- [x] Add smoke test workflows in each producer repo.
 
 ### Phase C — Consumer integration
 - [x] Update this repo to consume public action refs (SHA pinned).

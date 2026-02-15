@@ -25,7 +25,7 @@ Done:
 - [x] Establish internal downstream repo baseline
 - [x] Convert umbrella repo to docs hub
 - [x] Clean up history for active public trajectory
-- [ ] Add producer smoke workflows in public action repos
+- [x] Add producer smoke workflows in public action repos
 - [ ] Choose and apply long-term version pin strategy (`@v1` vs SHA)
 - [ ] Finish public template neutralization and governance docs
 
@@ -34,7 +34,7 @@ Done:
 ## Epic 1 — Public actions publishing (now)
 1. ✅ Create dedicated public action repos (`setup-devenv`, `bake-devenv-image`).
 2. ✅ Publish action contracts and docs in each repo.
-3. ⏳ Add producer smoke workflows in each public action repo.
+3. ✅ Add producer smoke workflows in each public action repo.
 4. ✅ Consume refs from this repo and validate.
 5. ⏳ Create stable tags (`v1`) and/or confirm SHA-only pin policy.
 6. ✅ Reserve `LN-Zap/zap-github-actions` for internal reusable workflows/actions.
