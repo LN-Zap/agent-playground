@@ -30,10 +30,11 @@ The agent ecosystem is young and fragmented, with competing standards for how to
 
 ## Supported Tools
 
+These MCP tools are **example defaults enabled in this template**. You can update, replace, or extend them with any other MCP servers that fit your workflow.
+
 | Name | Description |
 | --- | --- |
 | [context7](https://context7.com/docs/resources/all-clients) | Documentation and reference retrieval via Context7 MCP. |
-| [figma](https://developers.figma.com/docs/figma-mcp-server/) | Local Figma MCP bridge for design and file interactions. |
 | [github](https://github.com/github/github-mcp-server) | GitHub MCP integration for repository, issue, and PR operations. |
 | [playwright](https://github.com/microsoft/playwright-mcp) | Browser automation and testing through Playwright MCP. |
 | [chrome-devtools](https://github.com/ChromeDevTools/chrome-devtools-mcp) | Chrome DevTools MCP for browser inspection and debugging. |
@@ -43,15 +44,28 @@ To add support for additional MCP tools, update the `mcpServers` object in [.rul
 
 ## Supported Agents
 
+These agent targets are **example defaults enabled in this template**. You can add, remove, or swap targets based on your preferred tools and delivery model.
+
 | Name | Description |
 | --- | --- |
 | [GitHub Copilot](https://docs.github.com/en/copilot) | AI coding assistant integrated across GitHub and major IDEs. |
 | [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) | Anthropic's CLI-first coding agent for local development workflows. |
-| [Codex CLI](https://github.com/openai/codex) | OpenAI's terminal coding agent for repository-aware development tasks. |
+| [OpenAI Codex](https://github.com/openai/codex) | Codex support in this template is configured through the Codex CLI target; adapt this to other Codex surfaces as needed. |
 | [Gemini CLI](https://github.com/google-gemini/gemini-cli) | Google's open-source command-line AI agent for coding and automation. |
 | [OpenCode](https://opencode.ai/docs) | Open-source AI coding agent with MCP support and provider flexibility. |
 
 To add support for additional agents, configure the `targets` array in [rulesync.jsonc](rulesync.jsonc). See the [rulesync documentation](https://github.com/dyoshikawa/rulesync) for available agent targets and configuration options.
+
+## Supported Skills
+
+These skills are **example defaults bundled in this template**. You can replace these with any public or private skill sources that better match your domain.
+
+| Name | Description |
+| --- | --- |
+| [frontend-design](https://github.com/anthropics/skills) | General frontend design and UX implementation guidance. |
+| [skill-creator](https://github.com/anthropics/skills) | Guidance for creating and refining reusable skills. |
+
+Skill bundles are configured in the `sources` section of [rulesync.jsonc](rulesync.jsonc).
 
 ## Configuration
 

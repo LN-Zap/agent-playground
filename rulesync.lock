@@ -4,26 +4,13 @@
     "anthropics/skills": {
       "requestedRef": "main",
       "resolvedRef": "1ed29a03dc852d30fa6ef2ca53a67dc2c2c2c563",
-      "resolvedAt": "2026-02-12T15:15:52.982Z",
+      "resolvedAt": "2026-02-15T15:03:27.313Z",
       "skills": {
         "frontend-design": {
           "integrity": "sha256-537c1df9d0c694ecf9139a911f9ad0bd111a7ebc173a55457568459e543fe75b"
         },
         "skill-creator": {
           "integrity": "sha256-e141179cf76bbe3fdbd2616f1573b24b8abb3dca93676ca782d736c63a73c074"
-        }
-      }
-    },
-    "openai/skills/tree/main/skills/.curated": {
-      "requestedRef": "main",
-      "resolvedRef": "4ab6e0fd99c6667163bc34173e3ed3a3fed75ebc",
-      "resolvedAt": "2026-02-12T15:15:57.119Z",
-      "skills": {
-        "figma-implement-design": {
-          "integrity": "sha256-52d46d669bb7334200003bc17483fdeb19a6df841c1389b78dd25f11dcf62174"
-        },
-        "figma": {
-          "integrity": "sha256-8965a1edb6080e6e6808fa1c42eba5be826a7c2dcf45cfa00c5a781a9d19bcdb"
         }
       }
     }
