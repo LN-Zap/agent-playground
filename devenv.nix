@@ -67,8 +67,21 @@
       actionlint.enable = true;
       mdformat.enable = true;
     };
+    config.settings.formatter.mdformat.includes = [
+      "README.md"
+      "CLAUDE.md"
+      "GEMINI.md"
+      "docs/**/*.md"
+    ];
     config.settings.formatter.mdformat.excludes = [
       ".rulesync/**/*.md"
+      ".github/instructions/**/*.md"
+      ".github/skills/**/SKILL.md"
+      ".claude/**/*.md"
+      ".agents/**/*.md"
+      ".codex/**/*.md"
+      ".gemini/**/*.md"
+      ".opencode/**/*.md"
     ];
   };
 
