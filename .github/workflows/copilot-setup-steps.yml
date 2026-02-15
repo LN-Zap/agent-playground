@@ -12,7 +12,7 @@ on:
 jobs:
   # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
   copilot-setup-steps:
-    runs-on: copilot-devenv-runner
+    runs-on: ${{ format('{0}-devenv-runner', github.event.repository.name) }}
     timeout-minutes: 15
     env:
       GITHUB_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}

@@ -168,8 +168,8 @@ Recommended for GitHub-hosted source access in CI/Copilot workflows:
 
 These workflows target dedicated runner labels for the prebuilt-image path:
 
-- `devenv-image-gen` builds/refreshes `<repo>-devenv` snapshots.
-- `copilot-devenv-runner` consumes the prebuilt environment for fast setup.
+- `<repo>-devenv-image-gen` builds/refreshes `<repo>-devenv` snapshots.
+- `<repo>-devenv-runner` consumes the prebuilt environment for fast setup.
 
 ### Copilot workflow operations
 
