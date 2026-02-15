@@ -17,6 +17,7 @@
     pkgs.yq-go
     pkgs.yamlfmt
     pkgs.actionlint
+    pkgs.shellcheck
     pkgs.nodejs
     pkgs.twilio-cli
     pkgs.cloudflared
