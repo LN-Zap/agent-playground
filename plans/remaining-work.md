@@ -62,7 +62,7 @@ Done:
 | Area | Candidate | Decision | Action |
 | --- | --- | --- | --- |
 | Workflow runner defaults | `.github/actionlint.yaml` self-hosted label (`copilot-devenv-runner`) | **Make optional** | Keep GitHub-hosted as default path; gate self-hosted checks/docs behind optional mode. |
-| Workflow docs/runbooks | `docs/copilot-coding-agent-devenv-runbook.md` (internal runbook sections) | **Split** | Keep public operator guidance; move internal operational specifics to internal repo. |
+| Workflow docs/runbooks | `docs/copilot-devenv-workflows.md` (internal runbook sections) | **Split** | Keep public operator guidance; move internal operational specifics to internal repo. |
 | Rulesync source config | `rulesync.jsonc`, `rulesync.lock` org/private source references | **Isolate** | Replace public defaults with neutral/public sources; keep internal source wiring only in internal repo. |
 | Dev environment wiring | `devenv.nix` references to org-private resources (for example `LN-Zap/zap-skills`) | **Strip** | Remove private integrations from public template entirely. |
 | Auth/env examples | `.env.example` token guidance tied to private use cases | **Generalize** | Keep only public-safe variables and provider-agnostic guidance. |
@@ -91,7 +91,7 @@ Done:
 | `rulesync.lock` | **Regenerate** | Refresh lockfile after `rulesync.jsonc` neutralization to remove stale private-source coupling. |
 | `devenv.nix` | **Edit** | Completely remove private repo integrations from the public template. |
 | `.env.example` | **Edit** | Keep only broadly applicable variables; rewrite comments to avoid private-org assumptions. |
-| `docs/copilot-coding-agent-devenv-runbook.md` | **Split** | Keep public troubleshooting content here; move internal operations/runbook details to internal repo. |
+| `docs/copilot-devenv-workflows.md` | **Split** | Keep public troubleshooting content here; move internal operations/runbook details to internal repo. |
 | `README.md` | **Edit** | Align setup/onboarding to a fully OSS template model and separate internal implementation repo. |
 | `plans/archive/*` | **Keep** | Preserve historical artifacts; no functional changes required. |
 
