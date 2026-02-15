@@ -15,6 +15,7 @@ jobs:
   build-image:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    snapshot: ${{ github.event.repository.name }}-devenv
     env:
       GITHUB_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}
       GH_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}

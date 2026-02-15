@@ -14,6 +14,7 @@ jobs:
   copilot-setup-steps:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    snapshot: ${{ github.event.repository.name }}-devenv
     env:
       GITHUB_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}
       GH_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}
