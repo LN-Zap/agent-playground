@@ -10,6 +10,18 @@ This includes:
 3. Reworking `agent-playground` into a neutral public template.
 4. Delivering clean, intentional history for the public repo launch.
 
+## Overall Progress Checklist
+
+- [x] Public scope locked: publish `setup-devenv` + `bake-devenv-image`; keep `devenv-summary` internal
+- [x] Dedicated public repos created: `LN-Zap/setup-devenv`, `LN-Zap/bake-devenv-image`
+- [x] Public docs hub created: `LN-Zap/devenv-actions` (docs-only)
+- [x] `zap-agent-playground` created and baseline established
+- [x] `agent-playground` workflows switched to public action refs with SHA pinning
+- [x] End-to-end workflow validation passed after migration
+- [x] Fresh-history cleanup executed for the active OSS trajectory
+- [ ] Create and adopt stable major tags (`v1`) for public actions
+- [ ] Complete public template neutralization + governance hardening
+
 ---
 
 ## Program Tracks
@@ -24,12 +36,16 @@ Scope:
 - Keep `devenv-summary` internal until/if a generic trend-summary core is designed.
 
 Execution:
-1. Create a **public actions repo** (single repo hosting multiple actions is valid and common).
+1. Create dedicated public action repos (one repo per action).
 2. Add per-action docs (inputs/outputs/examples/failure modes).
 3. Add producer-repo smoke workflows.
 4. Tag versions (`v0.x` then `v1` when stable).
 5. Switch this repo to pinned public action refs.
 6. Keep `LN-Zap/zap-github-actions` for internal shared workflows/actions only.
+
+Status:
+- Completed: repo split, docs, and pinned consumer migration
+- Remaining: producer smoke workflows + stable tagging strategy
 
 Exit criteria:
 - Actions are versioned and consumable externally.
@@ -44,13 +60,17 @@ Scope:
 - Push current internal configuration/workflows there.
 
 Execution:
-1. `LN-Zap/zap-agent-playground` has been created (empty).
-2. Push current codebase there as baseline internal state.
+1. `LN-Zap/zap-agent-playground` has been created.
+2. Current codebase baseline has been pushed there.
 3. Keep internal-only items there:
    - private rulesync sources
    - internal runner labels and custom images
    - incident/runbook operational material
 4. Add internal README section defining upstream sync policy.
+
+Status:
+- Completed: creation + baseline push
+- Remaining: codify and document upstream sync policy
 
 Exit criteria:
 - Internal repo is operational and authoritative for Zap-specific ops.
@@ -71,6 +91,10 @@ Execution:
 
 Exit criteria:
 - Fresh external user can onboard without private repos, internal runner labels, or private operational context.
+
+Status:
+- In progress: foundational OSS split complete
+- Remaining: explicit neutralization pass and onboarding polish
 
 ---
 
@@ -94,6 +118,10 @@ Decision:
 
 Exit criteria:
 - Public repo history contains only intended open-source content.
+
+Status:
+- In progress/completed for active repos: history has been cleaned and curated
+- Remaining: final audit at public launch cut
 
 ---
 
@@ -128,10 +156,10 @@ Release gates:
 
 ## Immediate Next Actions
 
-1. Create public actions repository structure and naming decision.
-2. Push baseline state to `zap-agent-playground`.
-3. Draft exact public keep/remove file matrix for template rebuild.
-4. Execute fresh-history public cutover plan.
+1. Add producer smoke workflows to `setup-devenv` and `bake-devenv-image`.
+2. Create stable major tags (`v1`) in both public action repos.
+3. Decide consumer pinning policy (`@v1` vs SHA) and apply consistently.
+4. Draft/execute explicit public template keep/remove matrix.
 
 Current public action scope lock:
 - publish `setup-devenv` and `bake-devenv-image`

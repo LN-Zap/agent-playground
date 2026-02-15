@@ -5,8 +5,11 @@
   - `.github/actions/setup-devenv`
   - `.github/actions/bake-devenv-image`
   - `.github/actions/devenv-summary`
-- Workflows already consume these local actions.
-- Latest remote validation is green.
+- Public action repos now exist and are live:
+  - `LN-Zap/setup-devenv`
+  - `LN-Zap/bake-devenv-image`
+- `agent-playground` workflows now consume SHA-pinned refs from those public repos.
+- Latest remote validation is green after migration.
 
 Goal:
 - Publish these as **public reusable actions**.
@@ -27,15 +30,19 @@ Rationale:
 - `setup-devenv` and `bake-devenv-image` are cleaner public primitives.
 - `devenv-summary` is currently tightly coupled to Devenv-specific metrics and log parsing.
 
+Status: ✅ Completed and aligned
+
 ---
 
 ## 2) Repository model
 
-Use one public repo containing multiple actions (valid and common).
+Use one repo per action for clean external consumer syntax.
 
-Target structure:
-- `.github/actions/setup-devenv/action.yml`
-- `.github/actions/bake-devenv-image/action.yml`
+Selected model:
+- `LN-Zap/setup-devenv`
+- `LN-Zap/bake-devenv-image`
+
+Status: ✅ Completed
 
 ---
 
@@ -50,23 +57,24 @@ Decision candidate:
 
 ## 4) Execution plan
 
-### Phase A — Create public actions repo
-- Initialize repo and baseline docs.
-- Add MIT-aligned licensing/readme metadata.
+### Phase A — Create public action repos
+- [x] Initialize dedicated repos and baseline docs.
+- [x] Add MIT-aligned licensing/readme metadata.
 
 ### Phase B — Import actions
-- Copy 2 actions from this repo (`setup-devenv`, `bake-devenv-image`).
-- Add per-action README (inputs/outputs/usage/failure modes).
-- Add smoke test workflows.
+- [x] Copy 2 actions from this repo (`setup-devenv`, `bake-devenv-image`).
+- [x] Add per-action README (inputs/outputs/usage/failure modes).
+- [ ] Add smoke test workflows in each producer repo.
 
 ### Phase C — Consumer integration
-- Update this repo to consume branch refs from public actions repo.
-- Validate `Copilot Setup Steps` and `Devenv Image`.
+- [x] Update this repo to consume public action refs (SHA pinned).
+- [x] Validate `Copilot Setup Steps` and `Devenv Image`.
 
 ### Phase D — Versioned release
-- Tag release (`v0.x`).
-- Pin this repo to immutable tag/SHA refs.
-- Document migration snippets for other repos.
+- [ ] Create stable tags (`v1`) in both public action repos.
+- [x] This repo currently pinned to immutable SHAs.
+- [ ] Decide whether to retain SHA pins or move consumers to `@v1`.
+- [ ] Document migration snippets for downstream repos.
 
 ---
 
@@ -82,7 +90,9 @@ Decision candidate:
 
 ## 6) Definition of done
 
-- Public actions repo is live with 2 versioned actions.
-- This repo consumes pinned refs from that public actions repo.
+- Public action repos are live with 2 versioned actions.
+- This repo consumes pinned refs from those public action repos.
 - `zap-github-actions` remains internal-only for shared internal orchestration.
 - `devenv-summary` remains internal or is replaced later by a generic trend-summary abstraction.
+
+Current completion: 3 / 4 done (blocking item is version tagging strategy).
