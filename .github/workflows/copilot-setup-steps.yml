@@ -55,7 +55,7 @@ jobs:
 
       - name: Activate pre-baked devenv environment
         id: activate_devenv
-        uses: LN-Zap/setup-devenv@master
+        uses: LN-Zap/setup-devenv@27cef0fd2c4fdb0ef65f31bf1578a1a0633b1ca6 # v1
         with:
           mode: auto
           activation_script_path: /home/runner/copilot-devenv-activate.sh

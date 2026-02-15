@@ -19,6 +19,7 @@ A sandbox for experimenting with AI agent workflows and multi-agent environments
 - [Supported Agents](#supported-agents)
 - [Supported Skills](#supported-skills)
 - [Configuration](#configuration)
+- [Operations Docs](#operations-docs)
 - [Getting Started](#getting-started)
   - [Environment Variables](#environment-variables)
   - [Prerequisites](#prerequisites)
@@ -91,21 +92,18 @@ All configuration lives in [rulesync.jsonc](rulesync.jsonc). Edit this file to c
 
 For detailed configuration options and syntax, see the [rulesync documentation](https://github.com/dyoshikawa/rulesync).
 
+## Operations Docs
+
+- [Synchronization model](docs/synchronization-model.md)
+- [Copilot fast path](docs/copilot-fast-path.md)
+- [Troubleshooting](docs/troubleshooting.md)
+
 ### Synchronizing
 
-All generated output files are **gitignored** and created automatically during setup. The source of truth lives in [.rulesync/](.rulesync) and [rulesync.jsonc](rulesync.jsonc).
+All generated output files are gitignored and created automatically during setup.
 
-Generated files are created and updated automatically. You should rarely need to run anything manually:
-
-| Trigger | Mechanism | Who benefits |
-| --- | --- | --- |
-| `npm install` | `postinstall` script runs `rulesync generate` | Everyone |
-| `git pull` | `post-merge` git hook runs `rulesync generate` | Everyone |
-| Branch switch | `post-checkout` git hook runs `rulesync generate` | Everyone |
-| Source file change | devenv task with `execIfModified` | devenv/direnv users |
-| Codespaces start | `updateContentCommand` triggers devenv | Codespaces users |
-
-To regenerate manually: `npx rulesync generate`
+- Automatic: `npm install`, `post-merge`, and `post-checkout`
+- Manual: `npx rulesync install && npx rulesync generate --delete`
 
 > **Authentication**: Fetching skills from GitHub-hosted sources may require a `GITHUB_TOKEN` depending on environment and API limits. In Codespaces this is usually provided automatically. For local development, add it to `.env` (loaded by devenv via `dotenv.enable`).
 >
@@ -182,33 +180,10 @@ This repository supports [Dev Containers](https://containers.dev/) via [.devcont
 
 ### Copilot Coding Agent Environment
 
-This repository supports two setup paths for Copilot Coding Agent:
+Copilot setup supports a prebuilt fast path and a dynamic fallback path.
 
-- **Fast path (recommended)**: Copilot runs on a custom runner image snapshot named `<repo>-devenv`, built by [.github/workflows/devenv-image.yml](.github/workflows/devenv-image.yml).
-- **Fallback path**: If a runner does not yet have the pre-baked activation script, setup falls back to dynamic `devenv` activation for that run.
-
-`devenv.nix` remains the single source of truth for toolchain and environment configuration in both paths.
-
-#### What you need to do (one-time)
-
-1. Configure a `RULESYNC_GITHUB_TOKEN` secret with read access to all configured rulesync source repositories.
-1. Ensure you have runner capacity for both jobs:
-   - `devenv-image.yml` to build the `<repo>-devenv` image snapshot
-   - `copilot-setup-steps.yml` on a `<repo>-devenv-runner` runner that uses that image
-1. Run `Devenv Image` once.
-1. Run `Copilot Setup Steps` and confirm verification passes.
-
-#### How the fast path works
-
-1. `devenv-image.yml` builds environment assets and publishes snapshot `<repo>-devenv`.
-1. `<repo>-devenv-runner` instances start from that snapshot.
-1. `copilot-setup-steps.yml` activates the pre-baked environment and verifies required tools.
-
-#### Common issues
-
-- `rulesync` fetch/rate-limit failures: configure `RULESYNC_GITHUB_TOKEN` (workflow falls back to `github.token` if unset).
-- Missing verification tools (`devenv`, `node`, `python3`, `jq`): rerun `Devenv Image`, then rerun `Copilot Setup Steps`.
-- Setup logs show missing activation script: runner capacity is stale; refresh/recreate `<repo>-devenv-runner` so new instances use latest `<repo>-devenv` snapshot.
+- Fast path overview: [Copilot fast path](docs/copilot-fast-path.md)
+- Common failures and recovery: [Troubleshooting](docs/troubleshooting.md)
 
 ## Contributing
 

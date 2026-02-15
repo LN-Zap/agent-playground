@@ -47,7 +47,7 @@ jobs:
 
       - name: Setup devenv environment
         id: setup_devenv
-        uses: LN-Zap/setup-devenv@master
+        uses: LN-Zap/setup-devenv@27cef0fd2c4fdb0ef65f31bf1578a1a0633b1ca6 # v1
         with:
           mode: install
           activation_script_path: /home/runner/copilot-devenv-activate.sh
@@ -61,7 +61,7 @@ jobs:
 
       - name: Bake devenv image assets
         id: bake_image
-        uses: LN-Zap/bake-devenv-image@master
+        uses: LN-Zap/bake-devenv-image@12a8bbfa3f60994ed5c69ae01b8e37c8b03d2755 # v1
         with:
           snapshot_name: ${{ env.SNAPSHOT_NAME }}
           activation_script_path: /home/runner/copilot-devenv-activate.sh
