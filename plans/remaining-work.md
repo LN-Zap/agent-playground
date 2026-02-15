@@ -51,11 +51,33 @@ Done:
 4. ⏳ Document upstream sync policy.
 
 ## Epic 3 — Public template rebuild
-1. ⏳ Create neutral keep/remove file matrix.
+1. ✅ Create neutral keep/remove file matrix (initial draft below).
 2. ⏳ Remove internal/private defaults from public template.
 3. ⏳ Default workflows to GitHub-hosted runners.
 4. ⏳ Add public governance files and onboarding docs.
 5. ⏳ Validate clean external onboarding flow.
+
+### Public template neutralization matrix (initial draft)
+
+| Area | Candidate | Decision | Action |
+| --- | --- | --- | --- |
+| Workflow runner defaults | `.github/actionlint.yaml` self-hosted label (`copilot-devenv-runner`) | **Make optional** | Keep GitHub-hosted as default path; gate self-hosted checks/docs behind optional mode. |
+| Workflow docs/runbooks | `docs/copilot-coding-agent-devenv-runbook.md` (internal runbook sections) | **Split** | Keep public operator guidance; move internal operational specifics to internal repo. |
+| Rulesync source config | `rulesync.jsonc`, `rulesync.lock` org/private source references | **Isolate** | Replace public defaults with neutral/public sources; keep internal source wiring only in internal repo. |
+| Dev environment wiring | `devenv.nix` references to org-private resources (for example `LN-Zap/zap-skills`) | **Parameterize** | Convert to optional/local override pattern; public default must work without private repos. |
+| Auth/env examples | `.env.example` token guidance tied to private use cases | **Generalize** | Keep only public-safe variables and provider-agnostic guidance. |
+| CI image workflows | `.github/workflows/devenv-image.yml` + reusable image workflow | **Retain with neutral defaults** | Preserve flow, ensure no internal labels/endpoints are required by default. |
+| Plan/archive residue | `plans/archive/*` internal phrasing/context | **Retain as archive** | Keep archived artifacts; ensure active docs clearly represent current OSS policy. |
+
+### Epic 3 execution checklist (prioritized)
+
+- [ ] Finalize keep/remove decisions for each matrix row with explicit owner/result.
+- [ ] Apply runner-default neutralization in workflow configs and lint config.
+- [ ] Remove or parameterize private Rulesync/skills references from public defaults.
+- [ ] Refactor runbook into public-safe docs + internal-only counterpart.
+- [ ] Normalize `.env.example` to public-safe, least-assumption guidance.
+- [ ] Re-run workflow smoke checks using only public/default path.
+- [ ] Update root README onboarding so external users can succeed without internal assets.
 
 ## Epic 4 — Public history strategy
 1. ✅ Decision made: fresh-history curated import.
