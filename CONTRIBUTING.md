@@ -5,8 +5,8 @@ Thanks for contributing.
 ## Development setup
 
 1. Clone the repository
-2. Run `npm install` (installs hooks and generates rulesync outputs)
-3. Optionally run `direnv allow`
+1. Run `npm install` (installs hooks and generates rulesync outputs)
+1. Optionally run `direnv allow`
 
 See [README.md](README.md) for full setup.
 
