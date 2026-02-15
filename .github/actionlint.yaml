@@ -1,0 +1,4 @@
+self-hosted-runner:
+  labels:
+    - copilot-devenv-runner
+    - devenv-image-gen

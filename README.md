@@ -166,7 +166,10 @@ Recommended for GitHub-hosted source access in CI/Copilot workflows:
 
 - Configure `RULESYNC_GITHUB_TOKEN` with read access to configured source repositories to avoid GitHub API `403`/rate-limit failures during `npm install` (`rulesync install/generate`).
 
-By default, these workflows run on GitHub-hosted runners.
+These workflows target dedicated runner labels for the prebuilt-image path:
+
+- `devenv-image-gen` builds/refreshes `<repo>-devenv` snapshots.
+- `copilot-devenv-runner` consumes the prebuilt environment for fast setup.
 
 ### Copilot workflow operations
 
