@@ -155,7 +155,7 @@ Recommended for GitHub-hosted source access in CI/Copilot workflows:
 
 By default, these workflows run on GitHub-hosted runners. If your organization uses custom image runners, adapt these workflows in your internal implementation repo.
 
-Operator-focused runbook content is being separated into public and internal variants as part of the neutralization pass.
+Public operator guidance is available in [docs/copilot-coding-agent-devenv-runbook.md](docs/copilot-coding-agent-devenv-runbook.md). Internal runner/image operations belong in `zap-agent-playground`.
 
 ## Contributing
 

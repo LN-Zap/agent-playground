@@ -75,7 +75,7 @@ Done:
 - [x] Apply runner-default neutralization in workflow configs and lint config.
 - [x] Remove private Rulesync/skills references from public defaults.
 - [x] Reduce reusable workflow set to exactly `devenv-image` and `copilot-setup-steps`.
-- [ ] Refactor runbook into public-safe docs + internal-only counterpart.
+- [x] Refactor runbook into public-safe docs + internal-only counterpart.
 - [x] Normalize `.env.example` to public-safe, least-assumption guidance.
 - [ ] Re-run workflow smoke checks using only public/default path.
 - [ ] Update root README onboarding so external users can succeed without internal assets.
