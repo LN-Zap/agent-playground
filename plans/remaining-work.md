@@ -47,13 +47,13 @@ Done:
 ## Epic 2 — Internal repo split
 1. ✅ Create `LN-Zap/zap-agent-playground`.
 2. ✅ Push internal baseline from current project state.
-3. ⏳ Keep internal-only sources/runners/runbooks in internal repo.
+3. ⏳ Move all internal-only sources/runners/runbooks into internal repo.
 4. ⏳ Document upstream sync policy.
 
 ## Epic 3 — Public template rebuild
 1. ✅ Create neutral keep/remove file matrix (initial draft below).
 2. ⏳ Remove internal/private defaults from public template.
-3. ⏳ Default workflows to GitHub-hosted runners.
+3. ⏳ Simplify reusable workflow surface to two public workflows only.
 4. ⏳ Add public governance files and onboarding docs.
 5. ⏳ Validate clean external onboarding flow.
 
@@ -64,7 +64,7 @@ Done:
 | Workflow runner defaults | `.github/actionlint.yaml` self-hosted label (`copilot-devenv-runner`) | **Make optional** | Keep GitHub-hosted as default path; gate self-hosted checks/docs behind optional mode. |
 | Workflow docs/runbooks | `docs/copilot-coding-agent-devenv-runbook.md` (internal runbook sections) | **Split** | Keep public operator guidance; move internal operational specifics to internal repo. |
 | Rulesync source config | `rulesync.jsonc`, `rulesync.lock` org/private source references | **Isolate** | Replace public defaults with neutral/public sources; keep internal source wiring only in internal repo. |
-| Dev environment wiring | `devenv.nix` references to org-private resources (for example `LN-Zap/zap-skills`) | **Parameterize** | Convert to optional/local override pattern; public default must work without private repos. |
+| Dev environment wiring | `devenv.nix` references to org-private resources (for example `LN-Zap/zap-skills`) | **Strip** | Remove private integrations from public template entirely. |
 | Auth/env examples | `.env.example` token guidance tied to private use cases | **Generalize** | Keep only public-safe variables and provider-agnostic guidance. |
 | CI image workflows | `.github/workflows/devenv-image.yml` + reusable image workflow | **Retain with neutral defaults** | Preserve flow, ensure no internal labels/endpoints are required by default. |
 | Plan/archive residue | `plans/archive/*` internal phrasing/context | **Retain as archive** | Keep archived artifacts; ensure active docs clearly represent current OSS policy. |
@@ -73,7 +73,8 @@ Done:
 
 - [x] Finalize initial keep/remove decisions for each matrix row with explicit owner/result.
 - [ ] Apply runner-default neutralization in workflow configs and lint config.
-- [ ] Remove or parameterize private Rulesync/skills references from public defaults.
+- [ ] Remove private Rulesync/skills references from public defaults.
+- [ ] Reduce reusable workflow set to exactly `devenv-image` and `copilot-setup-steps`.
 - [ ] Refactor runbook into public-safe docs + internal-only counterpart.
 - [ ] Normalize `.env.example` to public-safe, least-assumption guidance.
 - [ ] Re-run workflow smoke checks using only public/default path.
@@ -89,16 +90,16 @@ Done:
 | `.github/workflows/devenv-image.yml` | **Keep + edit** | Retain pipeline; verify triggers/inputs assume public-safe defaults only. |
 | `rulesync.jsonc` | **Edit** | Replace private/org-specific defaults with neutral/public-safe defaults. |
 | `rulesync.lock` | **Regenerate** | Refresh lockfile after `rulesync.jsonc` neutralization to remove stale private-source coupling. |
-| `devenv.nix` | **Edit** | Parameterize or guard private repo integrations (for example org-private skill sources). |
+| `devenv.nix` | **Edit** | Completely remove private repo integrations from the public template. |
 | `.env.example` | **Edit** | Keep only broadly applicable variables; rewrite comments to avoid private-org assumptions. |
 | `docs/copilot-coding-agent-devenv-runbook.md` | **Split** | Keep public troubleshooting content here; move internal operations/runbook details to internal repo. |
-| `README.md` | **Edit** | Align setup/onboarding steps with neutralized defaults and optional internal overlay model. |
+| `README.md` | **Edit** | Align setup/onboarding to a fully OSS template model and separate internal implementation repo. |
 | `plans/archive/*` | **Keep** | Preserve historical artifacts; no functional changes required. |
 
 ### Step 1 deliverable complete
 
 - Matrix has been converted into a concrete, file-level implementation queue.
-- Next implementation pass should begin with workflow/lint defaults (`.github/actionlint.yaml`, reusable workflows), then config neutralization (`rulesync.jsonc`, `devenv.nix`, `.env.example`).
+- Next implementation pass should begin with workflow/lint defaults plus reusable-workflow simplification, then config neutralization (`rulesync.jsonc`, `devenv.nix`, `.env.example`).
 
 ## Epic 4 — Public history strategy
 1. ✅ Decision made: fresh-history curated import.

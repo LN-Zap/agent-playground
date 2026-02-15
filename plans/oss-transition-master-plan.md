@@ -83,13 +83,15 @@ Exit criteria:
 
 Scope:
 - Make public repo fully neutral and low-friction.
+- Keep public reusable workflow surface minimal (`devenv-image`, `copilot-setup-steps`).
+- Remove private integrations entirely (no internal overlay mode in the public repo).
 
 Execution:
 1. Remove internal/private defaults and references.
 2. Default workflows to GitHub-hosted runners.
-3. Keep advanced custom-runner mode as optional docs.
+3. Keep only the two reusable workflows required for public template usage.
 4. Keep Supported Tools/Agents synced with source config.
-5. Provide clear extension points for private/org customization.
+5. Keep internal implementation details exclusively in `zap-agent-playground`.
 
 Exit criteria:
 - Fresh external user can onboard without private repos, internal runner labels, or private operational context.

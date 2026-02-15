@@ -8,6 +8,7 @@
 - [x] `zap-agent-playground` internal downstream baseline created
 - [x] Fresh-history cleanup approach executed for current public-facing repos
 - [x] Public action repos re-curated to clean single-commit histories after doc cleanup
+- [x] Public/internal strategy clarified: separate projects, no internal overlay model in public template
 - [ ] Public action version tags (`v1`) created and adopted
 - [ ] Public template neutralization and governance completion
 
