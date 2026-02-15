@@ -29,6 +29,17 @@ jobs:
         with:
           clean: false
 
+      - name: Install Nix
+        uses: cachix/install-nix-action@4e002c8ec80594ecd40e759629461e26c8abed15 # v31
+
+      - name: Setup Cachix
+        uses: cachix/cachix-action@3ba601ff5bbb07c7220846facfa2cd81eeee15a1 # v16
+        with:
+          name: devenv
+
+      - name: Install devenv
+        run: nix profile install nixpkgs#devenv
+
       - name: Activate pre-baked devenv environment
         id: activate_devenv
         uses: LN-Zap/setup-devenv@master
