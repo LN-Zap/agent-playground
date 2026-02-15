@@ -19,7 +19,8 @@ This includes:
 - [x] `agent-playground` workflows switched to public action refs with SHA pinning
 - [x] End-to-end workflow validation passed after migration
 - [x] Fresh-history cleanup executed for the active OSS trajectory
-- [ ] Create and adopt stable major tags (`v1`) for public actions
+- [ ] Complete full audit of public action repos before any version tags are created
+- [ ] Revisit tag strategy post-audit (optional for public consumers)
 - [ ] Complete public template neutralization + governance hardening
 
 ---
@@ -156,10 +157,15 @@ Release gates:
 
 ## Immediate Next Actions
 
-1. Create stable major tags (`v1`) in both public action repos.
-2. Decide consumer pinning policy (`@v1` vs SHA) and apply consistently.
+1. Execute full audit of `setup-devenv` and `bake-devenv-image` before version tagging.
+2. Keep all internal and first-party consumer references pinned to immutable SHAs.
 3. Draft/execute explicit public template keep/remove matrix.
 4. Complete governance and onboarding hardening for public template release.
+
+Versioning policy (current):
+- Internal/first-party usage: always SHA pinned.
+- Public publishing: tags are deferred until audit is complete.
+- Post-audit: tags may be introduced for external convenience, while SHA pinning remains the security baseline.
 
 Current public action scope lock:
 - publish `setup-devenv` and `bake-devenv-image`

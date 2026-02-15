@@ -26,7 +26,8 @@ Done:
 - [x] Convert umbrella repo to docs hub
 - [x] Clean up history for active public trajectory
 - [x] Add producer smoke workflows in public action repos
-- [ ] Choose and apply long-term version pin strategy (`@v1` vs SHA)
+- [x] Confirm first-party pin strategy: SHA only
+- [ ] Complete full audit of public action repos before creating any tags
 - [ ] Finish public template neutralization and governance docs
 
 ## Active backlog
@@ -36,9 +37,10 @@ Done:
 2. ✅ Publish action contracts and docs in each repo.
 3. ✅ Add producer smoke workflows in each public action repo.
 4. ✅ Consume refs from this repo and validate.
-5. ⏳ Create stable tags (`v1`) and/or confirm SHA-only pin policy.
-6. ✅ Reserve `LN-Zap/zap-github-actions` for internal reusable workflows/actions.
-7. ✅ Keep `devenv-summary` internal until/if genericized.
+5. ✅ Confirm SHA-only pin policy for first-party/internal consumers.
+6. ⏳ Complete full audit before creating any public tags.
+7. ✅ Reserve `LN-Zap/zap-github-actions` for internal reusable workflows/actions.
+8. ✅ Keep `devenv-summary` internal until/if genericized.
 
 ## Epic 2 — Internal repo split
 1. ✅ Create `LN-Zap/zap-agent-playground`.

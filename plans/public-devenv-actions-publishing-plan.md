@@ -71,9 +71,10 @@ Decision candidate:
 - [x] Validate `Copilot Setup Steps` and `Devenv Image`.
 
 ### Phase D — Versioned release
-- [ ] Create stable tags (`v1`) in both public action repos.
+- [ ] Complete full audit of both public action repos.
+- [ ] Decide if public tags should be introduced after audit.
 - [x] This repo currently pinned to immutable SHAs.
-- [ ] Decide whether to retain SHA pins or move consumers to `@v1`.
+- [x] First-party/internal consumers remain SHA pinned.
 - [ ] Document migration snippets for downstream repos.
 
 ---
@@ -95,4 +96,4 @@ Decision candidate:
 - `zap-github-actions` remains internal-only for shared internal orchestration.
 - `devenv-summary` remains internal or is replaced later by a generic trend-summary abstraction.
 
-Current completion: 3 / 4 done (blocking item is version tagging strategy).
+Current completion: 3 / 4 done (blocking item is post-audit release/versioning).
