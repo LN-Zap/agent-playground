@@ -34,24 +34,8 @@ inputs:
     description: Current verification status.
     required: false
     default: n/a
-  npm_cache_before:
-    description: Current npm cache size before slim.
-    required: false
-    default: n/a
-  pip_cache_before:
-    description: Current pip cache size before slim.
-    required: false
-    default: n/a
-  nix_cache_before:
-    description: Current nix cache size before slim.
-    required: false
-    default: n/a
-  uv_cache_before:
-    description: Current uv cache size before slim.
-    required: false
-    default: n/a
   total_removed:
-    description: Current total removed cache bytes.
+    description: Current total removed bytes from configured cache paths.
     required: false
     default: n/a
 
@@ -71,10 +55,6 @@ runs:
         CURRENT_MODE: ${{ inputs.activation_mode }}
         CURRENT_SECONDS: ${{ inputs.activation_seconds }}
         CURRENT_VERIFY: ${{ inputs.verification_status }}
-        CURR_NPM: ${{ inputs.npm_cache_before }}
-        CURR_PIP: ${{ inputs.pip_cache_before }}
-        CURR_NIX: ${{ inputs.nix_cache_before }}
-        CURR_UV: ${{ inputs.uv_cache_before }}
         CURR_REMOVED: ${{ inputs.total_removed }}
       run: |
         set -euo pipefail
@@ -209,10 +189,6 @@ runs:
           } >> "$GITHUB_STEP_SUMMARY"
 
         elif [[ "$MODE" == "image" ]]; then
-          prev_npm="n/a"
-          prev_pip="n/a"
-          prev_nix="n/a"
-          prev_uv="n/a"
           prev_removed="n/a"
 
           if [[ -n "$previous_run_id" ]]; then
@@ -220,10 +196,6 @@ runs:
             trap 'rm -f "$prev_log"' EXIT
             gh run view "$previous_run_id" --repo "$GITHUB_REPOSITORY" --log > "$prev_log"
 
-            prev_npm=$(awk -F': ' '/~\/\.npm:/ {v=$2} END {print v}' "$prev_log")
-            prev_pip=$(awk -F': ' '/~\/\.cache\/pip:/ {v=$2} END {print v}' "$prev_log")
-            prev_nix=$(awk -F': ' '/~\/\.cache\/nix:/ {v=$2} END {print v}' "$prev_log")
-            prev_uv=$(awk -F': ' '/~\/\.cache\/uv:/ {v=$2} END {print v}' "$prev_log")
             prev_removed=$(awk -F': ' '/Approx cache bytes removed before snapshot:/ {v=$2} END {print v}' "$prev_log")
           fi
 
@@ -237,10 +209,6 @@ runs:
             echo
             echo "| Metric | Current | Previous | Delta |"
             echo "| --- | --- | --- | --- |"
-            echo "| npm cache before slim | $(format_value "$CURR_NPM") | $(format_value "$prev_npm") | $(format_delta_bytes "$CURR_NPM" "$prev_npm") |"
-            echo "| pip cache before slim | $(format_value "$CURR_PIP") | $(format_value "$prev_pip") | $(format_delta_bytes "$CURR_PIP" "$prev_pip") |"
-            echo "| nix cache before slim | $(format_value "$CURR_NIX") | $(format_value "$prev_nix") | $(format_delta_bytes "$CURR_NIX" "$prev_nix") |"
-            echo "| uv cache before slim | $(format_value "$CURR_UV") | $(format_value "$prev_uv") | $(format_delta_bytes "$CURR_UV" "$prev_uv") |"
             echo "| Approx cache bytes removed | $(format_value "$CURR_REMOVED") | $(format_value "$prev_removed") | $(format_delta_bytes "$CURR_REMOVED" "$prev_removed") |"
             echo "- Image workflow: ${WORKFLOW_PATH}"
           } >> "$GITHUB_STEP_SUMMARY"
