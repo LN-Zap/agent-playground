@@ -26,17 +26,9 @@
         "--isolated=true"
       ]
     },
-    "pagerduty": {
-      "command": "uvx",
-      "args": ["pagerduty-mcp"]
-    },
     "deepwiki": {
       "type": "http",
       "url": "https://mcp.deepwiki.com/mcp"
-    },
-    "notion": {
-      "type": "http",
-      "url": "https://mcp.notion.com/mcp"
     }
   }
 }

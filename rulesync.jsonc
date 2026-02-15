@@ -18,7 +18,6 @@
   ],
   "sources": [
     { "source": "https://github.com/anthropics/skills", "skills": ["skill-creator", "frontend-design"] },
-    { "source": "https://github.com/openai/skills/tree/main/skills/.curated", "skills": ["figma", "figma-implement-design"] },
-    { "source": "https://github.com/cloudflare/skills", "skills": ["cloudflare"] }
+    { "source": "https://github.com/openai/skills/tree/main/skills/.curated", "skills": ["figma", "figma-implement-design"] }
   ]
 }

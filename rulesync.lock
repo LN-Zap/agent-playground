@@ -26,16 +26,6 @@
           "integrity": "sha256-8965a1edb6080e6e6808fa1c42eba5be826a7c2dcf45cfa00c5a781a9d19bcdb"
         }
       }
-    },
-    "cloudflare/skills": {
-      "requestedRef": "main",
-      "resolvedRef": "486fb92891e6ea11cc7bf7d2dc178b1b5564faef",
-      "resolvedAt": "2026-02-12T15:17:03.602Z",
-      "skills": {
-        "cloudflare": {
-          "integrity": "sha256-468b0a48c3900a74eca92352e5a399f178b746105133a9fc8ef04741a18f5b65"
-        }
-      }
     }
   }
 }

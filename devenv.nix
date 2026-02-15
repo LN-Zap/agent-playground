@@ -19,9 +19,6 @@
     pkgs.actionlint
     pkgs.shellcheck
     pkgs.nodejs
-    pkgs.twilio-cli
-    pkgs.cloudflared
-    (pkgs.google-cloud-sdk.withExtraComponents [pkgs.google-cloud-sdk.components.gke-gcloud-auth-plugin])
   ];
 
   # https://devenv.sh/languages/
@@ -98,18 +95,6 @@
     GEMINI_API_KEY = {
       description = "API key for Gemini access";
       documentationUrl = "https://aistudio.google.com/api-keys";
-    };
-    CLOUDFLARE_API_TOKEN = {
-      description = "Cloudflare API token for Workers/Observability";
-      documentationUrl = "https://dash.cloudflare.com/profile/api-tokens";
-    };
-    CLOUDFLARE_ACCOUNT_ID = {
-      description = "Cloudflare Account ID";
-      documentationUrl = "https://developers.cloudflare.com/fundamentals/account/account-id/";
-    };
-    PAGERDUTY_USER_API_KEY = {
-      description = "PagerDuty User API key";
-      documentationUrl = "https://support.pagerduty.com/docs/generating-api-keys";
     };
   };
 
