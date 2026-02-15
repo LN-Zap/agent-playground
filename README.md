@@ -24,7 +24,6 @@ A sandbox for experimenting with AI agent workflows and multi-agent environments
   - [Environment Variables](#environment-variables)
   - [Prerequisites](#prerequisites)
   - [Setup](#setup)
-  - [Quick validation (recommended)](#quick-validation-recommended)
   - [Dev Containers](#dev-containers)
   - [Copilot Coding Agent Environment](#copilot-coding-agent-environment)
 - [Contributing](#contributing)
@@ -66,10 +65,10 @@ These agent targets are **example defaults enabled in this template**. You can a
 
 | Name | Description |
 | --- | --- |
-| [GitHub Copilot](https://docs.github.com/en/copilot) | AI coding assistant integrated across GitHub and major IDEs. |
-| [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) | Anthropic's CLI-first coding agent for local development workflows. |
-| [OpenAI Codex](https://github.com/openai/codex) | Codex support in this template is configured through the Codex CLI target; adapt this to other Codex surfaces as needed. |
-| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | Google's open-source command-line AI agent for coding and automation. |
+| [Copilot](https://docs.github.com/en/copilot) | AI coding assistant integrated across GitHub and major IDEs. |
+| [Claude](https://docs.anthropic.com/en/docs/claude-code/overview) | Anthropic's CLI-first coding agent for local development workflows. |
+| [Codex](https://github.com/openai/codex) | Codex support in this template is configured through the Codex CLI target; adapt this to other Codex surfaces as needed. |
+| [Gemini](https://github.com/google-gemini/gemini-cli) | Google's open-source command-line AI agent for coding and automation. |
 | [OpenCode](https://opencode.ai/docs) | Open-source AI coding agent with MCP support and provider flexibility. |
 
 To add support for additional agents, configure the `targets` array in [rulesync.jsonc](rulesync.jsonc). See the [rulesync documentation](https://github.com/dyoshikawa/rulesync) for available agent targets and configuration options.
@@ -82,7 +81,6 @@ These skills are **example defaults bundled in this template**. You can replace 
 | --- | --- |
 | [frontend-design](https://github.com/anthropics/skills) | General frontend design and UX implementation guidance. |
 | [skill-creator](https://github.com/anthropics/skills) | Guidance for creating and refining reusable skills. |
-| [crafting-effective-readmes](https://github.com/softaworks/agent-toolkit/tree/main/skills/crafting-effective-readmes) | Workflow and checklists for writing clearer, audience-focused READMEs. |
 
 Skill bundles are configured in the `sources` section of [rulesync.jsonc](rulesync.jsonc).
 
