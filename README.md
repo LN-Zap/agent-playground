@@ -1,7 +1,6 @@
 # Agent Playground
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/LN-Zap/agent-playground?quickstart=1)
-[![Validate Rulesync](https://github.com/LN-Zap/agent-playground/actions/workflows/validate-rulesync.yml/badge.svg)](https://github.com/LN-Zap/agent-playground/actions/workflows/validate-rulesync.yml)
 [![Copilot Setup Steps](https://github.com/LN-Zap/agent-playground/actions/workflows/copilot-setup-steps.yml/badge.svg)](https://github.com/LN-Zap/agent-playground/actions/workflows/copilot-setup-steps.yml)
 
 A sandbox for experimenting with AI agent workflows and multi-agent environments. This project serves as a reference implementation for building maintainable, provider-agnostic agent ecosystems with fully reproducible development environments.
