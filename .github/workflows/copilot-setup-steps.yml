@@ -5,18 +5,53 @@ on:
   push:
     paths:
       - .github/workflows/copilot-setup-steps.yml
-      - .github/workflows/reusable-copilot-setup-steps.yml
   pull_request:
     paths:
       - .github/workflows/copilot-setup-steps.yml
-      - .github/workflows/reusable-copilot-setup-steps.yml
 
 jobs:
+  # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
   copilot-setup-steps:
-    uses: ./.github/workflows/reusable-copilot-setup-steps.yml
-    with:
-      runner-label: copilot-devenv-runner
-      activation-script-path: /home/runner/copilot-devenv-activate.sh
-      required-artifact-file: rulesync.jsonc
-      summary-workflow-path: .github/workflows/copilot-setup-steps.yml
-    secrets: inherit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GITHUB_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}
+      GH_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}
+      SKIP_SIMPLE_GIT_HOOKS: '1'
+
+    permissions:
+      actions: read
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          clean: false
+
+      - name: Activate pre-baked devenv environment
+        id: activate_devenv
+        uses: LN-Zap/setup-devenv@master
+        with:
+          mode: auto
+          activation_script_path: /home/runner/copilot-devenv-activate.sh
+          verify_files: rulesync.jsonc
+          verify_commands: |
+            devenv
+            node
+            python3
+            jq
+          runner_label_hint: ubuntu-latest
+
+      - name: Write setup summary
+        if: always()
+        uses: ./.github/actions/devenv-summary
+        with:
+          mode: setup
+          workflow_name: Copilot Setup Steps
+          workflow_path: .github/workflows/copilot-setup-steps.yml
+          github_token: ${{ github.token }}
+          runner_label: ubuntu-latest
+          activation_mode: ${{ steps.activate_devenv.outputs.activation_mode }}
+          activation_seconds: ${{ steps.activate_devenv.outputs.activation_seconds }}
+          verification_status: ${{ steps.activate_devenv.outputs.verification_status }}

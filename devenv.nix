@@ -94,13 +94,6 @@
   devcontainer.settings.customizations.codespaces.openFiles = [
     "README.md"
   ];
-  devcontainer.settings.customizations.codespaces.repositories = {
-    "LN-Zap/zap-skills" = {
-      permissions = {
-        contents = "read";
-      };
-    };
-  };
   devcontainer.settings.secrets = {
     GEMINI_API_KEY = {
       description = "API key for Gemini access";

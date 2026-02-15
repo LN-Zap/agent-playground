@@ -72,11 +72,11 @@ Done:
 ### Epic 3 execution checklist (prioritized)
 
 - [x] Finalize initial keep/remove decisions for each matrix row with explicit owner/result.
-- [ ] Apply runner-default neutralization in workflow configs and lint config.
-- [ ] Remove private Rulesync/skills references from public defaults.
-- [ ] Reduce reusable workflow set to exactly `devenv-image` and `copilot-setup-steps`.
+- [x] Apply runner-default neutralization in workflow configs and lint config.
+- [x] Remove private Rulesync/skills references from public defaults.
+- [x] Reduce reusable workflow set to exactly `devenv-image` and `copilot-setup-steps`.
 - [ ] Refactor runbook into public-safe docs + internal-only counterpart.
-- [ ] Normalize `.env.example` to public-safe, least-assumption guidance.
+- [x] Normalize `.env.example` to public-safe, least-assumption guidance.
 - [ ] Re-run workflow smoke checks using only public/default path.
 - [ ] Update root README onboarding so external users can succeed without internal assets.
 
@@ -85,9 +85,8 @@ Done:
 | File / Area | Decision | Planned change |
 | --- | --- | --- |
 | `.github/actionlint.yaml` | **Edit** | Remove hard requirement on self-hosted label; validate GitHub-hosted default path. |
-| `.github/workflows/reusable-copilot-setup-steps.yml` | **Edit** | Keep first-party action refs; ensure default execution path does not require internal runner labels. |
-| `.github/workflows/reusable-devenv-image.yml` | **Edit** | Keep workflow; ensure defaults stay public-safe and internal optimizations are optional inputs only. |
-| `.github/workflows/devenv-image.yml` | **Keep + edit** | Retain pipeline; verify triggers/inputs assume public-safe defaults only. |
+| `.github/workflows/copilot-setup-steps.yml` | **Edit** | Keep first-party action refs; ensure default execution path does not require internal runner labels. |
+| `.github/workflows/devenv-image.yml` | **Edit** | Keep workflow; ensure defaults stay public-safe with GitHub-hosted defaults. |
 | `rulesync.jsonc` | **Edit** | Replace private/org-specific defaults with neutral/public-safe defaults. |
 | `rulesync.lock` | **Regenerate** | Refresh lockfile after `rulesync.jsonc` neutralization to remove stale private-source coupling. |
 | `devenv.nix` | **Edit** | Completely remove private repo integrations from the public template. |

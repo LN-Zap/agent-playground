@@ -10,14 +10,74 @@ on:
       - devenv.yaml
       - devenv.lock
       - .github/workflows/devenv-image.yml
-      - .github/workflows/reusable-devenv-image.yml
 
 jobs:
   build-image:
-    uses: ./.github/workflows/reusable-devenv-image.yml
-    with:
-      runner-label: devenv-image-gen
-      snapshot-name: ${{ github.event.repository.name }}-devenv
-      activation-script-path: /home/runner/copilot-devenv-activate.sh
-      summary-workflow-path: .github/workflows/devenv-image.yml
-    secrets: inherit
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GITHUB_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}
+      GH_TOKEN: ${{ secrets.RULESYNC_GITHUB_TOKEN || github.token }}
+      SNAPSHOT_NAME: ${{ github.event.repository.name }}-devenv
+
+    permissions:
+      actions: read
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        env:
+          SKIP_SIMPLE_GIT_HOOKS: '1'
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@4e002c8ec80594ecd40e759629461e26c8abed15 # v31
+
+      - name: Setup Cachix
+        uses: cachix/cachix-action@3ba601ff5bbb07c7220846facfa2cd81eeee15a1 # v16
+        with:
+          name: devenv
+
+      - name: Install devenv
+        run: nix profile install nixpkgs#devenv
+
+      - name: Build devenv shell
+        run: devenv shell -- echo 'devenv ready'
+
+      - name: Setup devenv environment
+        id: setup_devenv
+        uses: LN-Zap/setup-devenv@master
+        with:
+          mode: install
+          activation_script_path: /home/runner/copilot-devenv-activate.sh
+          verify_files: rulesync.jsonc
+          verify_commands: |
+            devenv
+            node
+            python3
+            jq
+          runner_label_hint: ubuntu-latest
+
+      - name: Bake devenv image assets
+        id: bake_image
+        uses: LN-Zap/bake-devenv-image@master
+        with:
+          snapshot_name: ${{ env.SNAPSHOT_NAME }}
+          activation_script_path: /home/runner/copilot-devenv-activate.sh
+          slim_caches: 'true'
+          cache_paths: |
+            $HOME/.npm
+            $HOME/.cache/pip
+            $HOME/.cache/nix
+            $HOME/.cache/uv
+
+      - name: Write image build summary
+        if: always()
+        uses: ./.github/actions/devenv-summary
+        with:
+          mode: image
+          workflow_name: Devenv Image
+          workflow_path: .github/workflows/devenv-image.yml
+          github_token: ${{ github.token }}
+          snapshot_name: ${{ env.SNAPSHOT_NAME }}
+          total_removed: ${{ steps.bake_image.outputs.cache_bytes_removed }}

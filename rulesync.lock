@@ -1,34 +1,6 @@
 {
   "lockfileVersion": 1,
   "sources": {
-    "ln-zap/zap-skills": {
-      "requestedRef": "master",
-      "resolvedRef": "2f7da9aa432b9ce262a01d83b2fdab354792a07f",
-      "resolvedAt": "2026-02-12T15:15:49.473Z",
-      "skills": {
-        "brand-guidelines": {
-          "integrity": "sha256-be550c91b3bda605a754c61f27f65dcf82a9b5ad1621fe2fc35aef856d95d02e"
-        },
-        "conducting-interviews": {
-          "integrity": "sha256-9a40adf314ceba91b0d780e680e1daa018bac1ccc2a6e30da0dfebe3ed964a57"
-        },
-        "generating-figma-variations": {
-          "integrity": "sha256-b7e37f3a5424e8d3b31ca7e0b775a9fa8c392f932f4e5763855e5ef327f56078"
-        },
-        "generating-images": {
-          "integrity": "sha256-13c4ccf7105fb5a8deb7fcf3d13356e949c0f03c516baaedaeec36c78c3f95a7"
-        },
-        "performing-self-reflection": {
-          "integrity": "sha256-6069c5a59850fcd332eff3863940c925e92d4306a00de0c4e8c3049e2c38004b"
-        },
-        "refining-skills": {
-          "integrity": "sha256-38fe4a86df875aa73854732c09dd8c01e89ecc9649df0e798e660cf2fffea9a7"
-        },
-        "using-strike-cli": {
-          "integrity": "sha256-a5875b15d436c0a1272888b236a68d78003882246d8bea4d08b2de45e70c9e71"
-        }
-      }
-    },
     "anthropics/skills": {
       "requestedRef": "main",
       "resolvedRef": "1ed29a03dc852d30fa6ef2ca53a67dc2c2c2c563",
