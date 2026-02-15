@@ -92,26 +92,25 @@ To regenerate manually: `npx rulesync generate`
 > **Authentication**: Fetching skills from GitHub-hosted sources may require a `GITHUB_TOKEN` depending on environment and API limits. In Codespaces this is usually provided automatically. For local development, add it to `.env` (loaded by devenv via `dotenv.enable`).
 >
 > **Recommended scopes**:
+>
 > - **Fine-grained PAT (recommended)**: Grant access to required source repositories and set **Contents: Read-only** and **Metadata: Read-only**.
 > - **Classic PAT**: Use the minimal read scope needed for your configured sources.
 
 ## Getting Started
 
-
 ### Environment Variables
 
 Add the following variables to your `.env` file:
 
-| Variable                   | Description                                 | Documentation |
+| Variable | Description | Documentation |
 |----------------------------|---------------------------------------------|---------------|
-| `GEMINI_API_KEY`           | API key for Gemini access                   | [Get key](https://aistudio.google.com/api-keys) |
-| `GITHUB_TOKEN`             | GitHub token for GitHub-hosted source access (recommended) | [Create token](https://github.com/settings/tokens) |
+| `GITHUB_TOKEN` | GitHub token for GitHub-hosted source access (recommended) | [Create token](https://github.com/settings/tokens) |
 
 See [.env.example](.env.example) for a documented template.
 
 If you only need core rulesync setup, start with `GITHUB_TOKEN` and add other variables only when using those integrations.
 
----
+______________________________________________________________________
 
 ### Prerequisites
 
@@ -128,7 +127,7 @@ If you only need core rulesync setup, start with `GITHUB_TOKEN` and add other va
    cd agent-playground
    ```
 
-2. Install dependencies:
+1. Install dependencies:
 
    ```bash
    npm install
@@ -136,14 +135,14 @@ If you only need core rulesync setup, start with `GITHUB_TOKEN` and add other va
 
    This installs dependencies, generates all agent configuration files via `rulesync generate`, and installs git hooks for ongoing synchronization.
 
-3. *(Optional)* Enable automatic environment loading with `direnv`:
+1. *(Optional)* Enable automatic environment loading with `direnv`:
 
    ```bash
    direnv allow
    ```
 
    devenv provides additional auto-regeneration when source files change. See [devenv.nix](devenv.nix).
-   Workflow linting is available via `actionlint` (enabled in `treefmt`).
+   Formatting/linting is available via `treefmt` (including `actionlint` and `mdformat`).
 
 ### Quick validation (recommended)
 
@@ -152,9 +151,12 @@ After setup, run:
 ```bash
 npx rulesync generate
 devenv shell -- actionlint .github/workflows/*.yml
+devenv shell -- treefmt
 ```
 
-This confirms rulesync generation and workflow linting on a fresh clone.
+This confirms rulesync generation plus formatting/linting on a fresh clone.
+
+Git hooks automatically run `treefmt` on commit via the devenv git-hooks integration.
 
 ### Dev Containers
 
@@ -182,8 +184,8 @@ These workflows use a build/consume split for the prebuilt-image path:
 Use this sequence when validating or updating the Copilot environment:
 
 1. Run `Devenv Image`.
-2. Run `Copilot Setup Steps`.
-3. Confirm setup summary reports successful verification.
+1. Run `Copilot Setup Steps`.
+1. Confirm setup summary reports successful verification.
 
 Common issues:
 

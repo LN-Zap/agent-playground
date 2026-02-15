@@ -18,6 +18,7 @@
     pkgs.yamlfmt
     pkgs.actionlint
     pkgs.shellcheck
+    pkgs.mdformat
     pkgs.nodejs
   ];
 
@@ -64,6 +65,7 @@
     enable = true;
     config.programs = {
       actionlint.enable = true;
+      mdformat.enable = true;
     };
   };
 
@@ -74,7 +76,7 @@
   '';
 
   # https://devenv.sh/git-hooks/
-  # git-hooks.hooks.shellcheck.enable = true;
+  git-hooks.hooks.treefmt.enable = true;
 
   # https://devenv.sh/integrations/codespaces-devcontainer/
   devcontainer.enable = true;
@@ -91,12 +93,5 @@
   devcontainer.settings.customizations.codespaces.openFiles = [
     "README.md"
   ];
-  devcontainer.settings.secrets = {
-    GEMINI_API_KEY = {
-      description = "API key for Gemini access";
-      documentationUrl = "https://aistudio.google.com/api-keys";
-    };
-  };
-
   # See full reference at https://devenv.sh/reference/options/
 }
