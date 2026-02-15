@@ -166,9 +166,25 @@ Recommended for GitHub-hosted source access in CI/Copilot workflows:
 
 - Configure `RULESYNC_GITHUB_TOKEN` with read access to configured source repositories to avoid GitHub API `403`/rate-limit failures during `npm install` (`rulesync install/generate`).
 
-By default, these workflows run on GitHub-hosted runners. If your organization uses custom image runners, adapt these workflows in your internal implementation repo.
+By default, these workflows run on GitHub-hosted runners.
 
-Public operator guidance is available in [docs/copilot-devenv-workflows.md](docs/copilot-devenv-workflows.md). Internal runner/image operations belong in `zap-agent-playground`.
+### Copilot workflow operations
+
+Use this sequence when validating or updating the Copilot environment:
+
+1. Run `Devenv Image`.
+2. Run `Copilot Setup Steps`.
+3. Confirm setup summary reports successful verification.
+
+Recommended secret for stable GitHub API access in CI:
+
+- `RULESYNC_GITHUB_TOKEN` (falls back to `github.token` when absent).
+
+Common issues:
+
+- `rulesync` fetch/rate-limit failures: set `RULESYNC_GITHUB_TOKEN` with read access to configured sources.
+- Missing tool verification (`devenv`, `node`, `python3`, `jq`): rerun `Devenv Image`, then rerun `Copilot Setup Steps`.
+- Nix/devenv installation failures on hosted runners: rerun once to rule out transient network/cache failures.
 
 ## Contributing
 
