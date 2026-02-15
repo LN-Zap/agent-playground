@@ -19,7 +19,7 @@ This includes:
 - [x] `agent-playground` workflows switched to public action refs with SHA pinning
 - [x] End-to-end workflow validation passed after migration
 - [x] Fresh-history cleanup executed for the active OSS trajectory
-- [ ] Complete full audit of public action repos before any version tags are created
+- [x] Complete full audit of public action repos before any version tags are created
 - [ ] Revisit tag strategy post-audit (optional for public consumers)
 - [ ] Complete public template neutralization + governance hardening
 

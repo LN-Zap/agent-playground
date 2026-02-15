@@ -27,7 +27,7 @@ Done:
 - [x] Clean up history for active public trajectory
 - [x] Add producer smoke workflows in public action repos
 - [x] Confirm first-party pin strategy: SHA only
-- [ ] Complete full audit of public action repos before creating any tags
+- [x] Complete full audit of public action repos before creating any tags
 - [ ] Finish public template neutralization and governance docs
 
 ## Active backlog
@@ -38,7 +38,7 @@ Done:
 3. ✅ Add producer smoke workflows in each public action repo.
 4. ✅ Consume refs from this repo and validate.
 5. ✅ Confirm SHA-only pin policy for first-party/internal consumers.
-6. ⏳ Complete full audit before creating any public tags.
+6. ✅ Complete full audit before creating any public tags.
 7. ✅ Reserve `LN-Zap/zap-github-actions` for internal reusable workflows/actions.
 8. ✅ Keep `devenv-summary` internal until/if genericized.
 

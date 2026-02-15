@@ -71,7 +71,7 @@ Decision candidate:
 - [x] Validate `Copilot Setup Steps` and `Devenv Image`.
 
 ### Phase D — Versioned release
-- [ ] Complete full audit of both public action repos.
+- [x] Complete full audit of both public action repos.
 - [ ] Decide if public tags should be introduced after audit.
 - [x] This repo currently pinned to immutable SHAs.
 - [x] First-party/internal consumers remain SHA pinned.
