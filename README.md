@@ -67,7 +67,7 @@ These agent targets are **example defaults enabled in this template**. You can a
 | --- | --- |
 | [Copilot](https://docs.github.com/en/copilot) | AI coding assistant integrated across GitHub and major IDEs. |
 | [Claude](https://docs.anthropic.com/en/docs/claude-code/overview) | Anthropic's CLI-first coding agent for local development workflows. |
-| [Codex](https://github.com/openai/codex) | Codex support in this template is configured through the Codex CLI target; adapt this to other Codex surfaces as needed. |
+| [Codex](https://github.com/openai/codex) | Codex support in this repo is configured through the Codex CLI target. |
 | [Gemini](https://github.com/google-gemini/gemini-cli) | Google's open-source command-line AI agent for coding and automation. |
 | [OpenCode](https://opencode.ai/docs) | Open-source AI coding agent with MCP support and provider flexibility. |
 
