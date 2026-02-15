@@ -13,7 +13,7 @@ on:
 
 jobs:
   build-image:
-    runs-on: ${{ format('{0}-devenv-image-gen', github.event.repository.name) }}
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     snapshot: ${{ github.event.repository.name }}-devenv
     env:
