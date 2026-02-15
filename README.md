@@ -192,3 +192,7 @@ Copilot setup supports a prebuilt fast path and a dynamic fallback path.
 ## Contributing
 
 Contributions focusing on new provider-agnostic patterns and cross-agent workflows are welcome!
+
+- [Contributing guide](CONTRIBUTING.md)
+- [Maintenance guide](MAINTENANCE.md)
+- [Security policy](SECURITY.md)
