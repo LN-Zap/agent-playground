@@ -4,7 +4,7 @@
     "anthropics/skills": {
       "requestedRef": "main",
       "resolvedRef": "1ed29a03dc852d30fa6ef2ca53a67dc2c2c2c563",
-      "resolvedAt": "2026-02-15T16:55:22.659Z",
+      "resolvedAt": "2026-02-16T16:35:47.644Z",
       "skills": {
         "frontend-design": {
           "integrity": "sha256-537c1df9d0c694ecf9139a911f9ad0bd111a7ebc173a55457568459e543fe75b"

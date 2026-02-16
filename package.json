@@ -15,7 +15,7 @@
     "post-checkout": "npx rulesync install --frozen && npx rulesync generate --delete"
   },
   "dependencies": {
-    "rulesync": "7.2.0"
+    "rulesync": "github:LN-Zap/rulesync#integration/frozen-plus-pr1044"
   },
   "devDependencies": {
     "simple-git-hooks": "2.13.1"
