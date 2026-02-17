@@ -4,13 +4,20 @@
     "anthropics/skills": {
       "requestedRef": "main",
       "resolvedRef": "1ed29a03dc852d30fa6ef2ca53a67dc2c2c2c563",
-      "resolvedAt": "2026-02-16T16:35:47.644Z",
+      "resolvedAt": "2026-02-17T09:49:59.986Z",
       "skills": {
-        "frontend-design": {
-          "integrity": "sha256-537c1df9d0c694ecf9139a911f9ad0bd111a7ebc173a55457568459e543fe75b"
-        },
         "skill-creator": {
           "integrity": "sha256-e141179cf76bbe3fdbd2616f1573b24b8abb3dca93676ca782d736c63a73c074"
+        }
+      }
+    },
+    "dyoshikawa/rulesync": {
+      "requestedRef": "main",
+      "resolvedRef": "46d318258ab34e8b5001f8dd66ebfd6dbbb80584",
+      "resolvedAt": "2026-02-17T09:50:04.804Z",
+      "skills": {
+        "rulesync": {
+          "integrity": "sha256-2a2b101754ccb3cab5365c3b7b66ccda3d32b9854b2af7532a14882baa85df32"
         }
       }
     }

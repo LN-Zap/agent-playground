@@ -17,6 +17,17 @@
     "subagents"
   ],
   "sources": [
-    { "source": "https://github.com/anthropics/skills", "skills": ["skill-creator", "frontend-design"] }
+    {
+      "source": "https://github.com/anthropics/skills",
+      "skills": [
+        "skill-creator"
+      ]
+    },
+    {
+      "source": "https://github.com/dyoshikawa/rulesync",
+      "skills": [
+        "rulesync"
+      ]
+    }
   ]
 }
