@@ -24,8 +24,10 @@ Generated outputs are created by `rulesync generate` into tool-specific paths (f
 Automatic post-merge/post-checkout regeneration depends on git hooks being installed once.
 
 - Run `npm install` after cloning to install hooks.
-- In dev containers/Codespaces, `postCreateCommand` runs `npm run prepare` to install hooks in the live checkout.
-- `devenv` shell prints a warning when hooks are still missing.
+- In dev containers/Codespaces, `postCreateCommand` runs `devenv shell -- npm run prepare` to install hooks in the live checkout.
+- In dev containers/Codespaces, `updateContentCommand` runs a one-time warm-up and writes `.devenv/.warmup-done` so repeated startups skip duplicate warm-up.
+- If hooks are still missing in a shell and `node_modules` exists, `devenv` shell retries `npm run prepare` automatically.
+- `devenv` shell prints a warning only if hooks are still missing after that retry.
 - `devenv` shell also prints a reminder when `.rulesync/**`, `rulesync.jsonc`, or `rulesync.lock` are modified.
 
 ## Frozen-lock policy

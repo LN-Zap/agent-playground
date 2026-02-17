@@ -49,7 +49,14 @@
     python3 --version
 
     if [ -d .git ] && [ ! -x .git/hooks/post-checkout -o ! -x .git/hooks/post-merge ]; then
-      echo "⚠️  Git sync hooks are not installed yet. Run: npm run prepare"
+      if [ -d node_modules ]; then
+        echo "ℹ️  Git sync hooks missing; attempting install via npm run prepare"
+        npm run --silent prepare >/dev/null 2>&1 || true
+      fi
+
+      if [ ! -x .git/hooks/post-checkout -o ! -x .git/hooks/post-merge ]; then
+        echo "⚠️  Git sync hooks are not installed yet. Run: npm run prepare"
+      fi
     fi
 
     if [ -d .git ] && {
@@ -102,9 +109,9 @@
   # https://devenv.sh/integrations/codespaces-devcontainer/
   devcontainer.enable = true;
   devcontainer.settings.name = "Agent Playground Dev Container";
-  devcontainer.settings.postCreateCommand = "npm run prepare";
-  # Build shell with persistent state during prebuild, then trust .envrc for auto-activation
-  devcontainer.settings.updateContentCommand = "devenv shell -- echo 'devenv ready' && direnv allow";
+  devcontainer.settings.postCreateCommand = "devenv shell -- npm run prepare";
+  # Warm once per workspace snapshot, then rely on .envrc auto-activation.
+  devcontainer.settings.updateContentCommand = "mkdir -p .devenv && if [ ! -f .devenv/.warmup-done ]; then devenv shell -- echo 'devenv ready' && touch .devenv/.warmup-done; fi && direnv allow";
   devcontainer.settings.customizations.vscode.extensions = [
     "github.copilot-chat"
     "arrterian.nix-env-selector"
