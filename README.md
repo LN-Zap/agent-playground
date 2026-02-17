@@ -79,8 +79,8 @@ These skills are **example defaults bundled in this template**. You can replace 
 
 | Name | Description |
 | --- | --- |
-| [frontend-design](https://github.com/anthropics/skills) | General frontend design and UX implementation guidance. |
 | [skill-creator](https://github.com/anthropics/skills) | Guidance for creating and refining reusable skills. |
+| [rulesync](https://github.com/dyoshikawa/rulesync) | Unified cross-agent rules and skills synchronization tooling. |
 
 Skill bundles are configured in the `sources` section of [rulesync.jsonc](rulesync.jsonc).
 
