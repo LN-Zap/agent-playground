@@ -109,7 +109,8 @@
   # https://devenv.sh/integrations/codespaces-devcontainer/
   devcontainer.enable = true;
   devcontainer.settings.name = "Agent Playground Dev Container";
-  devcontainer.settings.postCreateCommand = "devenv shell -- npm run prepare";
+  devcontainer.settings.containerEnv.TREEFMT_NO_CACHE = "1";
+  devcontainer.settings.postCreateCommand = "npm run prepare";
   # Warm once per workspace snapshot, then rely on .envrc auto-activation.
   devcontainer.settings.updateContentCommand = "mkdir -p .devenv && if [ ! -f .devenv/.warmup-done ]; then devenv shell -- echo 'devenv ready' && touch .devenv/.warmup-done; fi && direnv allow";
   devcontainer.settings.customizations.vscode.extensions = [

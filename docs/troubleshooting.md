@@ -32,3 +32,9 @@
 
 - Symptom: `copilot-setup-steps` verification step fails
 - Fix: rebuild image with `Devenv Image`, then rerun `Copilot Setup Steps`
+
+## `devenv:treefmt:run` cache timeout on startup
+
+- Symptom: startup fails with `failed to open cache db ... treefmt ... timeout`
+- Cause: concurrent access to treefmt evaluation cache during startup
+- Fix: this repo sets `TREEFMT_NO_CACHE=1` for devcontainer/Codespaces startup to avoid cache-db lock contention

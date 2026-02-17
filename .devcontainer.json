@@ -1,4 +1,7 @@
 {
+  "containerEnv": {
+    "TREEFMT_NO_CACHE": "1"
+  },
   "customizations": {
     "codespaces": {
       "openFiles": [
@@ -17,6 +20,6 @@
   "image": "ghcr.io/cachix/devenv/devcontainer:latest",
   "name": "Agent Playground Dev Container",
   "overrideCommand": false,
-  "postCreateCommand": "devenv shell -- npm run prepare",
+  "postCreateCommand": "npm run prepare",
   "updateContentCommand": "mkdir -p .devenv && if [ ! -f .devenv/.warmup-done ]; then devenv shell -- echo 'devenv ready' && touch .devenv/.warmup-done; fi && direnv allow"
 }
