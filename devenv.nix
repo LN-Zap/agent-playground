@@ -53,19 +53,6 @@
     fi
   '';
 
-  # https://devenv.sh/tasks/
-
-  tasks = {
-    "rulesync:generate" = {
-      exec = "npx rulesync generate";
-      execIfModified = [
-        ".rulesync"
-        "rulesync.jsonc"
-        "rulesync.lock"
-      ];
-    };
-  };
-
   treefmt = {
     enable = true;
     config.programs = {

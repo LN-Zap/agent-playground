@@ -157,7 +157,7 @@ ______________________________________________________________________
    direnv allow
    ```
 
-   devenv provides additional auto-regeneration when source files change. See [devenv.nix](devenv.nix).
+   Synchronization is automated via `npm install` (`postinstall`) and git hooks (`post-merge`/`post-checkout`).
    Formatting/linting is available via `treefmt` (including `actionlint` and `mdformat`).
 
 ### Dev Containers
