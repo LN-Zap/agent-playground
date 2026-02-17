@@ -17,6 +17,6 @@
   "image": "ghcr.io/cachix/devenv/devcontainer:latest",
   "name": "Agent Playground Dev Container",
   "overrideCommand": false,
-  "postCreateCommand": "true",
+  "postCreateCommand": "npm run prepare",
   "updateContentCommand": "devenv shell -- echo 'devenv ready' && direnv allow"
 }

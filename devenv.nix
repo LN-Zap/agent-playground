@@ -49,7 +49,7 @@
     python3 --version
 
     if [ -d .git ] && [ ! -x .git/hooks/post-checkout -o ! -x .git/hooks/post-merge ]; then
-      echo "⚠️  Git sync hooks are not installed yet. Run: npm install"
+      echo "⚠️  Git sync hooks are not installed yet. Run: npm run prepare"
     fi
 
     if [ -d .git ] && {
@@ -102,7 +102,7 @@
   # https://devenv.sh/integrations/codespaces-devcontainer/
   devcontainer.enable = true;
   devcontainer.settings.name = "Agent Playground Dev Container";
-  devcontainer.settings.postCreateCommand = "true"; # No-op - setup runs in updateContentCommand
+  devcontainer.settings.postCreateCommand = "npm run prepare";
   # Build shell with persistent state during prebuild, then trust .envrc for auto-activation
   devcontainer.settings.updateContentCommand = "devenv shell -- echo 'devenv ready' && direnv allow";
   devcontainer.settings.customizations.vscode.extensions = [
