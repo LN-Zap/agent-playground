@@ -27,6 +27,7 @@ Configured in `package.json` (`simple-git-hooks`):
 Configured in `devenv.nix` (`git-hooks`):
 
 - `pre-commit`: `treefmt` (through generated `.pre-commit-config.yaml`)
+- `pre-commit` (conditional): `npx rulesync install --frozen && npx rulesync generate --delete` when staged files match `.rulesync/**`, `rulesync.jsonc`, or `rulesync.lock`
 
 ## Manual commands
 

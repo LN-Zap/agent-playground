@@ -15,6 +15,7 @@ Generated outputs are created by `rulesync generate` into tool-specific paths (f
 
 - `npm install` runs `postinstall` (`rulesync install --frozen` + `rulesync generate --delete`)
 - Git hooks (`post-merge`, `post-checkout`) run the same frozen flow
+- `pre-commit` runs the same frozen flow when staged files match `.rulesync/**`, `rulesync.jsonc`, or `rulesync.lock`
 - Manual deterministic regen: `npx rulesync generate --delete`
 - Manual source refresh: `npm run rulesync:update`
 

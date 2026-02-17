@@ -84,6 +84,13 @@
 
   # https://devenv.sh/git-hooks/
   git-hooks.hooks.treefmt.enable = true;
+  git-hooks.hooks.rulesync-regenerate = {
+    enable = true;
+    name = "rulesync regenerate on source changes";
+    files = "^(\\.rulesync/|rulesync\\.jsonc$|rulesync\\.lock$)";
+    pass_filenames = false;
+    entry = "npx rulesync install --frozen && npx rulesync generate --delete";
+  };
 
   # https://devenv.sh/integrations/codespaces-devcontainer/
   devcontainer.enable = true;
