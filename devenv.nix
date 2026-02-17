@@ -16,10 +16,10 @@
     pkgs.jq
     pkgs.yq-go
     pkgs.yamlfmt
+    pkgs.tree
     pkgs.actionlint
     pkgs.shellcheck
     pkgs.mdformat
-    pkgs.nodejs
   ];
 
   # https://devenv.sh/languages/
