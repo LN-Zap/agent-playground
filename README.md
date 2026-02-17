@@ -102,6 +102,7 @@ For detailed configuration options and syntax, see the [rulesync documentation](
 All generated output files are gitignored and created automatically during setup.
 
 - Automatic (frozen lock): `npm install`, `post-merge`, and `post-checkout`
+- Developer reminder: `devenv shell` warns when `.rulesync/**`, `rulesync.jsonc`, or `rulesync.lock` are modified
 - Manual deterministic regen: `npx rulesync generate --delete`
 - Manual source refresh (updates `rulesync.lock`): `npm run rulesync:update`
 

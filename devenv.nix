@@ -51,6 +51,13 @@
     if [ -d .git ] && [ ! -x .git/hooks/post-checkout -o ! -x .git/hooks/post-merge ]; then
       echo "⚠️  Git sync hooks are not installed yet. Run: npm install"
     fi
+
+    if [ -d .git ] && {
+      ! git diff --quiet -- .rulesync rulesync.jsonc rulesync.lock 2>/dev/null ||
+      ! git diff --cached --quiet -- .rulesync rulesync.jsonc rulesync.lock 2>/dev/null;
+    }; then
+      echo "⚠️  Rulesync source files changed. Regenerate outputs: npx rulesync generate --delete"
+    fi
   '';
 
   treefmt = {

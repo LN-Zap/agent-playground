@@ -16,6 +16,13 @@
 - Cause: `rulesync.lock` is out of sync with configured sources
 - Fix: run `npm run rulesync:update`, review lockfile changes, and commit them intentionally
 
+## Shell reminder: rulesync sources changed
+
+- Symptom: `devenv shell` prints: `Rulesync source files changed. Regenerate outputs: npx rulesync generate --delete`
+- Cause: One of `.rulesync/**`, `rulesync.jsonc`, or `rulesync.lock` has staged or unstaged changes
+- Fix: run `npx rulesync generate --delete`
+- Note: pre-commit also runs frozen install + generate when those files are staged
+
 ## Copilot setup missing activation script
 
 - Symptom: setup falls back to dynamic activation and is slower

@@ -25,6 +25,7 @@ Automatic post-merge/post-checkout regeneration depends on git hooks being insta
 
 - Run `npm install` after cloning to install hooks.
 - `devenv` shell prints a warning when those hooks are missing.
+- `devenv` shell also prints a reminder when `.rulesync/**`, `rulesync.jsonc`, or `rulesync.lock` are modified.
 
 ## Frozen-lock policy
 
