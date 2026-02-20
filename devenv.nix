@@ -103,7 +103,7 @@
     name = "rulesync regenerate on source changes";
     files = "^(\\.rulesync/|rulesync\\.jsonc$|rulesync\\.lock$)";
     pass_filenames = false;
-    entry = "npx rulesync install --frozen && npx rulesync generate --delete";
+    entry = "npm run postinstall";
   };
 
   # https://devenv.sh/integrations/codespaces-devcontainer/
