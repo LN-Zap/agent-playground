@@ -11,10 +11,10 @@
   ],
   "features": {
     "copilot": ["*"],
-    "claudecode": ["*"],
-    "codexcli": ["mcp", "ignore", "skills", "subagents"],
+    "claudecode": ["rules", "ignore", "mcp", "commands", "subagents", "skills"],
+    "codexcli": ["mcp", "commands", "skills", "subagents"],
     "geminicli": ["*"],
-    "opencode": ["mcp", "ignore", "skills", "subagents"],
+    "opencode": ["mcp", "commands", "skills", "subagents"],
     "agentsmd": ["*"],
     "agentsskills": ["*"]
   },
