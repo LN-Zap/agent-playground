@@ -27,13 +27,13 @@ These patterns are the heart of the template. Everything else is implementation 
 
 ### 1) Centralized config (with rulesync)
 
-Instead of maintaining a pile of [CLAUDE.md](CLAUDE.md) / [GEMINI.md](GEMINI.md) / tool-specific config files, keep a single source of truth and generate outputs.
+Instead of maintaining a pile of CLAUDE.md / GEMINI.md / tool-specific config files, keep a single source of truth and generate outputs.
 
 - Source of truth: [.rulesync](.rulesync) and [rulesync.jsonc](rulesync.jsonc)
 - Generator: [rulesync](https://github.com/dyoshikawa/rulesync)
-- Result: tool-specific outputs (for example [.claude/](.claude/), [.gemini/](.gemini/), [.opencode/](.opencode/)) are generated and gitignored
+- Result: tool-specific outputs (for example .claude/, .gemini/, .opencode/) are generated and gitignored
 
-This makes the project advocate for open, vendor-agnostic standards (for example [AGENTS.md](AGENTS.md)) rather than a growing pile of proprietary equivalents.
+This makes the project advocate for open, vendor-agnostic standards (for example AGENTS.md) rather than a growing pile of proprietary equivalents.
 
 ### 2) Pinned skills via lockfiles (security + reproducibility)
 
