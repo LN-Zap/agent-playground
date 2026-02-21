@@ -1,0 +1,38 @@
+name: Agent Config Check
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - "rulesync.jsonc"
+      - "rulesync.lock"
+      - ".rulesync/**"
+      - ".gitignore"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/agent-config-check.yml"
+  push:
+    branches: [master]
+    paths:
+      - "rulesync.jsonc"
+      - "rulesync.lock"
+      - ".rulesync/**"
+      - ".gitignore"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/agent-config-check.yml"
+
+jobs:
+  check:
+    name: Validate Agent Config
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - name: Install Node dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Verify rulesync install and generation
+        run: npm run --silent rulesync:verify

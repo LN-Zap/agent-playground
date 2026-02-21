@@ -9,7 +9,7 @@
     "postinstall": "npm run --silent rulesync:sync",
     "rulesync:sync": "npx rulesync install --frozen && npx rulesync generate --delete",
     "rulesync:update": "npx rulesync install --update && npx rulesync generate --delete",
-    "rulesync:verify": "npm run --silent rulesync:sync && npm run --silent rulesync:check"
+    "rulesync:verify": "npm run --silent rulesync:sync && npx rulesync generate --check"
   },
   "simple-git-hooks": {
     "post-merge": "npm run --silent rulesync:sync",
