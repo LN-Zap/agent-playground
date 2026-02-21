@@ -27,20 +27,20 @@ These patterns are the heart of the template. Everything else is implementation 
 
 ### 1) Centralized config (with rulesync)
 
-Instead of maintaining a pile of `CLAUDE.md` / `GEMINI.md` / tool-specific config files, keep a single source of truth and generate outputs.
+Instead of maintaining a pile of [CLAUDE.md](CLAUDE.md) / [GEMINI.md](GEMINI.md) / tool-specific config files, keep a single source of truth and generate outputs.
 
 - Source of truth: [.rulesync](.rulesync) and [rulesync.jsonc](rulesync.jsonc)
 - Generator: [rulesync](https://github.com/dyoshikawa/rulesync)
-- Result: tool-specific outputs (for example `.claude/`, `.gemini/`, `.opencode/`) are generated and gitignored
+- Result: tool-specific outputs (for example [.claude/](.claude/), [.gemini/](.gemini/), [.opencode/](.opencode/)) are generated and gitignored
 
-This makes the project advocate for open, vendor-agnostic standards (for example `AGENTS.md`) rather than a growing pile of proprietary equivalents.
+This makes the project advocate for open, vendor-agnostic standards (for example [AGENTS.md](AGENTS.md)) rather than a growing pile of proprietary equivalents.
 
 ### 2) Pinned skills via lockfiles (security + reproducibility)
 
 Skills are powerful, but “pull from `main`” is a supply-chain footgun.
 
 - Skill sources are declared in [rulesync.jsonc](rulesync.jsonc)
-- Resolved versions are pinned via `rulesync.lock`
+- Resolved versions are pinned via [rulesync.lock](rulesync.lock)
 - Default behavior is deterministic (`--frozen`) so local dev and CI match
 
 ### 3) Unified MCP (tool access defined once)
@@ -50,14 +50,14 @@ Tool access is part of the environment, not an afterthought.
 - MCP servers are defined once in [.rulesync/mcp.json](.rulesync/mcp.json)
 - rulesync distributes them to each supported agent format
 
-### 4) Reproducibility (devenv + direnv)
+### 4) Reproducibility ([devenv](https://devenv.sh/) + [direnv](https://direnv.net/))
 
 Onboarding succeeds when “works on my machine” stops being a thing.
 
-- Toolchain is defined in `devenv.nix`
-- `direnv` can auto-load the environment on `cd`
+- Toolchain is defined in [devenv.nix](devenv.nix) + [devenv.yaml](devenv.yaml) (pinned via [devenv.lock](devenv.lock))
+- [direnv](https://direnv.net/) can auto-load the environment on `cd` via [.envrc](.envrc)
 
-### 5) Prebuilt cloud agents (devenv-actions)
+### 5) Prebuilt cloud agents ([devenv-actions](https://github.com/LN-Zap/devenv-actions))
 
 Waiting for environment bootstrapping on every run is the quiet productivity killer.
 
@@ -88,6 +88,8 @@ cd agent-playground
 npm install
 ```
 
+`npm install` does more than install Node dependencies in this repo: a `postinstall` hook in [package.json](package.json) runs `npx rulesync install --frozen` (using the pinned versions in [rulesync.lock](rulesync.lock)) and then regenerates the agent-specific outputs with `npx rulesync generate --delete`.
+
 Optional (recommended):
 
 ```bash
@@ -100,14 +102,14 @@ The goal is to make changes *once*, then let automation do the boring part.
 
 - **Rules, MCP, subagents metadata**: [.rulesync/](.rulesync)
 - **Targets, features, skill sources**: [rulesync.jsonc](rulesync.jsonc)
-- **Environment / toolchain**: `devenv.nix` + `devenv.yaml`
+- **Environment / toolchain**: [devenv.nix](devenv.nix) + [devenv.yaml](devenv.yaml)
 
 For the detailed mechanics, see [Synchronization model](docs/synchronization-model.md).
 
 ## Common Commands
 
 - Regenerate all agent outputs (deterministic): `npx rulesync generate --delete`
-- Intentionally refresh pinned sources (updates `rulesync.lock`): `npm run rulesync:update`
+- Intentionally refresh pinned sources (updates [rulesync.lock](rulesync.lock)): `npm run rulesync:update`
 
 ## Supported Tools
 
