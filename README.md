@@ -2,48 +2,112 @@
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/LN-Zap/agent-playground?quickstart=1)
 
-A sandbox for experimenting with AI agent workflows and multi-agent environments. This project serves as a reference implementation for building maintainable, provider-agnostic agent ecosystems with fully reproducible development environments.
+A reference template for **portable, vendor-agnostic agent environments**.
 
-**Key objectives:**
+If you’ve ever tried to roll out “AI coding agents” to a team, you’ve probably felt the trap:
 
-- **Provider-agnostic agent management**: Centrally define skills, rules, and configurations once, then distribute them across multiple AI coding assistants
-- **Reproducible environments**: Ensure consistent development environments across all platforms and contributors
-- **Automated workflows**: Leverage git hooks and package scripts for seamless synchronization without manual intervention
-- **Real-world patterns**: Demonstrate practical approaches to managing complexity in modern AI-assisted development
+- Every vendor wants its *own* config format
+- Rules, skills, tools (MCP), and hooks get duplicated across files
+- One small change turns into five PRs and a lot of drift
 
-## Table of Contents
+This repo is a pragmatic escape hatch: **a collection of patterns** that lets you define your agent environment once, keep it reproducible, and run it across multiple agent runtimes (Copilot, Claude Code, Gemini CLI, etc.) without betting the farm on any single provider.
 
-- [Core Philosophy](#core-philosophy)
-- [Key Components](#key-components)
-- [Supported Tools](#supported-tools)
-- [Supported Agents](#supported-agents)
-- [Supported Skills](#supported-skills)
-- [Configuration](#configuration)
-- [Operations Docs](#operations-docs)
-- [Getting Started](#getting-started)
-  - [Environment Variables](#environment-variables)
-  - [Prerequisites](#prerequisites)
-  - [Setup](#setup)
-  - [Dev Containers](#dev-containers)
-  - [Copilot Coding Agent Environment](#copilot-coding-agent-environment)
-- [Contributing](#contributing)
+**Jump to:** [Quick Start](#quick-start-time-to-first-hello-agent) · [5 Patterns](#the-portable-agent-playbook-5-patterns) · [Tools](#supported-tools) · [Agents](#supported-agents) · [Skills](#supported-skills) · [Docs](#operations-docs)
 
-## Core Philosophy
+## What You Get
 
-The agent ecosystem is young and fragmented, with competing standards for how tools store skills, rules, MCP configurations, hooks, commands, and ignore lists. This repo exists as a boilerplate for dealing with that complexity: keeping flexibility across agent harnesses, avoiding lock-in, and resisting proprietary formats.
+- **Portability (no lock-in)**: Define skills, rules, MCP configs, commands, subagents, and hooks once, then run them anywhere.
+- **Instant cloud agents**: Fast startup via dynamic prebuilds (Copilot runner images / Codespaces).
+- **Fast onboarding**: A bootstrapped dev environment that “just shows up” for new contributors.
+- **Incremental adoption**: Adopt one pattern at a time. Keep what helps; delete what doesn’t.
 
-**[rulesync](https://github.com/dyoshikawa/rulesync)** is the engine that makes this possible. It provides a provider-agnostic framework for managing agent configurations centrally and distributing them to multiple agent platforms. This project demonstrates how rulesync can be applied in a real-world development environment to maintain consistency across diverse AI coding assistants.
+## The Portable-Agent Playbook (5 Patterns)
 
-- **Define Once, Support Everywhere**: Rules and capabilities are defined centrally in [.rulesync](.rulesync) and distributed to all supported agents.
-- **Provider Agnostic**: Skills and instructions are managed independently of any specific AI platform.
-- **Automated Synchronization**: rulesync propagates rules, skills, and configurations to all agent interfaces. Generated files are gitignored and created automatically. Nothing to commit.
-- **Declarative Sources**: Remote skill repositories are declared in [rulesync.jsonc](rulesync.jsonc) and fetched automatically with lockfile-based determinism.
+These patterns are the heart of the template. Everything else is implementation detail.
 
-## Key Components
+### 1) Centralized config (with rulesync)
 
-- **Skills**: A curated collection of reusable capability modules. Skills are declared in [rulesync.jsonc](rulesync.jsonc), fetched from remote GitHub repositories, and distributed to all agents.
-- **Rules**: Provider-agnostic instructions defined in [.rulesync/rules](.rulesync/rules) and generated into each agent's native format.
-- **MCP Servers**: External tool integrations defined in [.rulesync/mcp.json](.rulesync/mcp.json) and synchronized across agents.
+Instead of maintaining a pile of `CLAUDE.md` / `GEMINI.md` / tool-specific config files, keep a single source of truth and generate outputs.
+
+- Source of truth: [.rulesync](.rulesync) and [rulesync.jsonc](rulesync.jsonc)
+- Generator: [rulesync](https://github.com/dyoshikawa/rulesync)
+- Result: tool-specific outputs (for example `.claude/`, `.gemini/`, `.opencode/`) are generated and gitignored
+
+This makes the project advocate for open, vendor-agnostic standards (for example `AGENTS.md`) rather than a growing pile of proprietary equivalents.
+
+### 2) Pinned skills via lockfiles (security + reproducibility)
+
+Skills are powerful, but “pull from `main`” is a supply-chain footgun.
+
+- Skill sources are declared in [rulesync.jsonc](rulesync.jsonc)
+- Resolved versions are pinned via `rulesync.lock`
+- Default behavior is deterministic (`--frozen`) so local dev and CI match
+
+### 3) Unified MCP (tool access defined once)
+
+Tool access is part of the environment, not an afterthought.
+
+- MCP servers are defined once in [.rulesync/mcp.json](.rulesync/mcp.json)
+- rulesync distributes them to each supported agent format
+
+### 4) Reproducibility (devenv + direnv)
+
+Onboarding succeeds when “works on my machine” stops being a thing.
+
+- Toolchain is defined in `devenv.nix`
+- `direnv` can auto-load the environment on `cd`
+
+### 5) Prebuilt cloud agents (devenv-actions)
+
+Waiting for environment bootstrapping on every run is the quiet productivity killer.
+
+- GitHub Actions can prebuild runner snapshots for faster Copilot setup
+- There’s also a dynamic fallback path if the snapshot isn’t present
+
+See [Copilot fast path](docs/copilot-fast-path.md).
+
+## Quick Start (Time To First “Hello, Agent”)
+
+### Fastest path: Codespaces
+
+Click the badge at the top of this README. It opens a fully bootstrapped environment.
+
+### Local path
+
+Prereqs:
+
+- [Nix](https://nixos.org/download.html)
+- [devenv.sh](https://devenv.sh/)
+- [direnv](https://direnv.net/)
+
+Then:
+
+```bash
+git clone https://github.com/LN-Zap/agent-playground.git
+cd agent-playground
+npm install
+```
+
+Optional (recommended):
+
+```bash
+direnv allow
+```
+
+## Where To Change Things
+
+The goal is to make changes *once*, then let automation do the boring part.
+
+- **Rules, MCP, subagents metadata**: [.rulesync/](.rulesync)
+- **Targets, features, skill sources**: [rulesync.jsonc](rulesync.jsonc)
+- **Environment / toolchain**: `devenv.nix` + `devenv.yaml`
+
+For the detailed mechanics, see [Synchronization model](docs/synchronization-model.md).
+
+## Common Commands
+
+- Regenerate all agent outputs (deterministic): `npx rulesync generate --delete`
+- Intentionally refresh pinned sources (updates `rulesync.lock`): `npm run rulesync:update`
 
 ## Supported Tools
 
@@ -57,7 +121,7 @@ These MCP tools are **example defaults enabled in this template**. You can updat
 | [chrome-devtools](https://github.com/ChromeDevTools/chrome-devtools-mcp) | Chrome DevTools MCP for browser inspection and debugging. |
 | [deepwiki](https://docs.devin.ai/work-with-devin/deepwiki-mcp) | DeepWiki MCP for AI-powered repository documentation queries. |
 
-To add support for additional MCP tools, update the `mcpServers` object in [.rulesync/mcp.json](.rulesync/mcp.json). See the [rulesync documentation](https://github.com/dyoshikawa/rulesync) for synchronization behavior and target support.
+To add support for additional MCP tools, update the `mcpServers` object in [.rulesync/mcp.json](.rulesync/mcp.json).
 
 ## Supported Agents
 
@@ -72,7 +136,7 @@ These agent targets are **example defaults enabled in this template**. You can a
 | [OpenCode](https://opencode.ai/docs) | Open-source AI coding agent with support for flexible model providers. |
 | [Generic](https://github.com/dyoshikawa/rulesync) | Broad compatibility with agents supporting open instruction standards. |
 
-To add support for additional agents, configure the `targets` array in [rulesync.jsonc](rulesync.jsonc). See the [rulesync documentation](https://github.com/dyoshikawa/rulesync) for available agent targets and configuration options.
+To add support for additional agents, configure the `targets` array in [rulesync.jsonc](rulesync.jsonc).
 
 ## Supported Skills
 
@@ -85,12 +149,6 @@ These skills are **example defaults bundled in this template**. You can replace 
 
 Skill bundles are configured in the `sources` section of [rulesync.jsonc](rulesync.jsonc).
 
-## Configuration
-
-All configuration lives in [rulesync.jsonc](rulesync.jsonc). Edit this file to control which agent formats to generate, which features to enable, and which remote skill repositories to fetch.
-
-For detailed configuration options and syntax, see the [rulesync documentation](https://github.com/dyoshikawa/rulesync).
-
 ## Operations Docs
 
 - [Synchronization model](docs/synchronization-model.md)
@@ -98,80 +156,11 @@ For detailed configuration options and syntax, see the [rulesync documentation](
 - [Troubleshooting](docs/troubleshooting.md)
 - [Formatting and hooks](docs/formatting-and-hooks.md)
 
-### Synchronizing
+## Environment Variables
 
-All generated output files are gitignored and created automatically during setup.
+Some setups may need GitHub auth for fetching skills.
 
-- Automatic (frozen lock): `npm install`, `post-merge`, and `post-checkout`
-- Developer reminder: `devenv shell` warns when `.rulesync/**`, `rulesync.jsonc`, or `rulesync.lock` are modified
-- Manual deterministic regen: `npx rulesync generate --delete`
-- Manual source refresh (updates `rulesync.lock`): `npm run rulesync:update`
-
-> **Authentication**: Fetching skills from GitHub-hosted sources may require a `GITHUB_TOKEN` depending on environment and API limits. In Codespaces this is usually provided automatically. For local development, add it to `.env` (loaded by devenv via `dotenv.enable`).
->
-> **Recommended scopes**:
->
-> - **Fine-grained PAT (recommended)**: Grant access to required source repositories and set **Contents: Read-only** and **Metadata: Read-only**.
-> - **Classic PAT**: Use the minimal read scope needed for your configured sources.
-
-## Getting Started
-
-### Environment Variables
-
-Add the following variables to your `.env` file:
-
-| Variable | Description | Documentation |
-|----------------------------|---------------------------------------------|---------------|
-| `GITHUB_TOKEN` | GitHub token for GitHub-hosted source access (recommended) | [Create token](https://github.com/settings/tokens) |
-
-See [.env.example](.env.example) for a documented template.
-
-If you only need core rulesync setup, start with `GITHUB_TOKEN` and add other variables only when using those integrations.
-
-______________________________________________________________________
-
-### Prerequisites
-
-- [Nix](https://nixos.org/download.html): Declarative package manager for reproducible environments.
-- [devenv.sh](https://devenv.sh/): Developer environment manager.
-- [direnv](https://direnv.net/): Shell extension to automatically load the environment.
-
-### Setup
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/LN-Zap/agent-playground.git
-   cd agent-playground
-   ```
-
-1. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-   This installs dependencies, generates all agent configuration files via `rulesync generate`, and installs git hooks for ongoing synchronization.
-
-1. *(Optional)* Enable automatic environment loading with `direnv`:
-
-   ```bash
-   direnv allow
-   ```
-
-   Synchronization is automated via `npm install` (`postinstall`) and git hooks (`post-merge`/`post-checkout`).
-   Formatting/linting is available via `treefmt` (including `actionlint` and `mdformat`).
-
-### Dev Containers
-
-This repository supports [Dev Containers](https://containers.dev/) via [.devcontainer.json](.devcontainer.json), generated by [devenv](https://devenv.sh/integrations/codespaces-devcontainer/). Use with VS Code or GitHub Codespaces for a preconfigured environment.
-
-### Copilot Coding Agent Environment
-
-Copilot setup supports a prebuilt fast path and a dynamic fallback path.
-
-- Fast path overview: [Copilot fast path](docs/copilot-fast-path.md)
-- Common failures and recovery: [Troubleshooting](docs/troubleshooting.md)
+- `GITHUB_TOKEN`: recommended for local development when using GitHub-hosted sources (see [.env.example](.env.example))
 
 ## Contributing
 
