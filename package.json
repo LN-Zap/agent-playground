@@ -1,18 +1,19 @@
 {
   "name": "agent-playground",
-  "description": "A development environment for the Agent Playground project.",
+  "description": "A set of patterns for portable agent configuration and tooling.",
   "author": "Tom Kirkpatrick <tom@strike.me>",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "prepare": "simple-git-hooks",
-    "postinstall": "npx rulesync install --frozen && npx rulesync generate --delete",
-    "rulesync": "npx rulesync",
-    "rulesync:update": "npx rulesync install --update && npx rulesync generate --delete"
+    "postinstall": "npm run --silent rulesync:sync",
+    "rulesync:sync": "npx rulesync install --frozen && npx rulesync generate --delete",
+    "rulesync:update": "npx rulesync install --update && npx rulesync generate --delete",
+    "rulesync:verify": "npm run --silent rulesync:sync && npm run --silent rulesync:check"
   },
   "simple-git-hooks": {
-    "post-merge": "npx rulesync install --frozen && npx rulesync generate --delete",
-    "post-checkout": "npx rulesync install --frozen && npx rulesync generate --delete"
+    "post-merge": "npm run --silent rulesync:sync",
+    "post-checkout": "npm run --silent rulesync:sync"
   },
   "devDependencies": {
     "rulesync": "7.6.3",
