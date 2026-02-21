@@ -9,13 +9,15 @@
     "agentsmd",
     "agentsskills"
   ],
-  "features": [
-    "mcp",
-    "ignore",
-    "rules",
-    "skills",
-    "subagents"
-  ],
+  "features": {
+    "copilot": ["*"],
+    "claudecode": ["*"],
+    "codexcli": ["mcp", "ignore", "skills", "subagents"],
+    "geminicli": ["*"],
+    "opencode": ["mcp", "ignore", "skills", "subagents"],
+    "agentsmd": ["*"],
+    "agentsskills": ["*"]
+  },
   "sources": [
     {
       "source": "https://github.com/anthropics/skills",
