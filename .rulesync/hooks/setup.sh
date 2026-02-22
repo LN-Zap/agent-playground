@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/sh
+set -eu
 
 # Only run in remote environments
 if [ "$CLAUDE_CODE_REMOTE" != "true" ]; then
@@ -15,5 +15,6 @@ fi
 
 # Persist environment variables for subsequent Bash commands
 if [ -n "${CLAUDE_ENV_FILE:-}" ]; then
+  # shellcheck disable=SC2016 # single quotes intentional — written literally to env file
   echo 'export PATH="$PATH:./node_modules/.bin"' >> "$CLAUDE_ENV_FILE"
 fi

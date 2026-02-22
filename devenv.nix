@@ -40,38 +40,17 @@
 
   # https://devenv.sh/scripts/
   scripts.hello.exec = ''
-    echo hello from $GREET
+    echo "hello from $GREET"
   '';
 
-  enterShell = ''
-    hello
-    git --version
-    python3 --version
-
-    if [ -d .git ] && [ ! -x .git/hooks/post-checkout -o ! -x .git/hooks/post-merge ]; then
-      if [ -d node_modules ]; then
-        echo "ℹ️  Git sync hooks missing; attempting install via npm run prepare"
-        npm run --silent prepare >/dev/null 2>&1 || true
-      fi
-
-      if [ ! -x .git/hooks/post-checkout -o ! -x .git/hooks/post-merge ]; then
-        echo "⚠️  Git sync hooks are not installed yet. Run: npm run prepare"
-      fi
-    fi
-
-    if [ -d .git ] && {
-      ! git diff --quiet -- .rulesync rulesync.jsonc rulesync.lock 2>/dev/null ||
-      ! git diff --cached --quiet -- .rulesync rulesync.jsonc rulesync.lock 2>/dev/null;
-    }; then
-      echo "⚠️  Rulesync source files changed. Regenerate outputs: npx rulesync generate --delete"
-    fi
-  '';
+  enterShell = builtins.readFile ./scripts/devenv-enter.sh;
 
   treefmt = {
     enable = true;
     config.programs = {
       actionlint.enable = true;
       mdformat.enable = true;
+      shellcheck.enable = true;
     };
     config.settings.formatter.mdformat.includes = [
       "README.md"
@@ -87,6 +66,10 @@
       ".gemini/**/*.md"
       ".opencode/**/*.md"
       "workspace/**/*.md"
+    ];
+    config.settings.formatter.shellcheck.excludes = [
+      ".envrc"
+      "workspace/**"
     ];
   };
 

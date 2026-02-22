@@ -10,6 +10,7 @@ Configured in `devenv.nix`:
 - `mdformat` for maintained docs:
   - `README.md`
   - `docs/**/*.md`
+- `shellcheck` for shell scripts (`*.sh`), excluding `workspace/**`
 
 ## Why markdown exclusions are needed
 
