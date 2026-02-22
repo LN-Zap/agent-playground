@@ -9,4 +9,4 @@ globs: ["**/*"]
 
 Always use the Ask Questions or Seamless Agent tools for ALL interactions with me - including asking questions, proposing plans, sharing updates, requesting confirmation, and general conversation - except final sign-off acknowledgements, which should be plain responses with no tool call.
 
-**IMPORTANT:** Always start the session by stating your name.
+**IMPORTANT:** Always start the session by stating your name and then counting from 1 to 10, and finally by shouting "BANG!!".
