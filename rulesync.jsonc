@@ -11,7 +11,7 @@
   ],
   "features": {
     "copilot": ["*"],
-    "claudecode": ["rules", "ignore", "mcp", "commands", "subagents", "skills"],
+    "claudecode": ["rules", "ignore", "mcp", "commands", "subagents", "skills", "hooks"],
     "codexcli": ["mcp", "commands", "skills", "subagents"],
     "geminicli": ["*"],
     "opencode": ["mcp", "commands", "skills", "subagents"],
