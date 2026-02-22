@@ -3,7 +3,7 @@
   "hooks": {
     "sessionStart": [
       {
-        "matcher": "startup",
+        "matcher": "startup|resume",
         "type": "command",
         "command": ".rulesync/hooks/setup.sh"
       }
