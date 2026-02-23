@@ -13,6 +13,7 @@
   # https://devenv.sh/packages/
   packages = [
     pkgs.git
+    pkgs.bash
     pkgs.jq
     pkgs.yq-go
     pkgs.yamlfmt
