@@ -5,7 +5,7 @@
       {
         "matcher": "startup|resume",
         "type": "command",
-        "command": ".rulesync/hooks/setup.sh"
+        "command": "scripts/setup.sh"
       }
     ]
   }
