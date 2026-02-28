@@ -16,7 +16,7 @@
     "post-checkout": "npm run --silent rulesync:sync"
   },
   "devDependencies": {
-    "rulesync": "7.6.3",
+    "rulesync": "7.10.0",
     "simple-git-hooks": "2.13.1"
   }
 }
