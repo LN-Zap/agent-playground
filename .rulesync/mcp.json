@@ -4,9 +4,9 @@
       "type": "http",
       "url": "https://mcp.context7.com/mcp"
     },
-    "github": {
+    "bifrost": {
       "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/"
+      "url": "https://bifrost.live.zaphq.io/mcp"
     },
     "playwright": {
       "command": "npx",
@@ -21,10 +21,6 @@
         "chrome-devtools-mcp@latest",
         "--isolated=true"
       ]
-    },
-    "deepwiki": {
-      "type": "http",
-      "url": "https://mcp.deepwiki.com/mcp"
     }
   }
 }

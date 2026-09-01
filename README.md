@@ -117,11 +117,10 @@ These MCP tools are **example defaults enabled in this template**. You can updat
 
 | Name | Description |
 | --- | --- |
+| bifrost | Strike MCP gateway (`https://bifrost.live.zaphq.io/mcp`) serving all approved remote servers (GitHub, DeepWiki, Notion, PagerDuty, and more). Access per server is granted via the `MCP - <Server>` Okta groups. |
 | [context7](https://context7.com/docs/resources/all-clients) | Documentation and reference retrieval via Context7 MCP. |
-| [github](https://github.com/github/github-mcp-server) | GitHub MCP integration for repository, issue, and PR operations. |
 | [playwright](https://github.com/microsoft/playwright-mcp) | Browser automation and testing through Playwright MCP. |
 | [chrome-devtools](https://github.com/ChromeDevTools/chrome-devtools-mcp) | Chrome DevTools MCP for browser inspection and debugging. |
-| [deepwiki](https://docs.devin.ai/work-with-devin/deepwiki-mcp) | DeepWiki MCP for AI-powered repository documentation queries. |
 
 To add support for additional MCP tools, update the `mcpServers` object in [.rulesync/mcp.json](.rulesync/mcp.json).
 
